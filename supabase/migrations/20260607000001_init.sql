@@ -119,10 +119,13 @@ insert into storage.buckets (id, name, public)
 values ('product-images', 'product-images', true)
 on conflict (id) do nothing;
 
--- Leitura pública das imagens.
-create policy "imagens: leitura publica"
+-- Obs.: por ser bucket PÚBLICO, o anon vê as imagens pela URL pública sem
+-- precisar de policy de SELECT (por isso não damos SELECT ao anon — evita
+-- listar todos os arquivos). O autenticado precisa de SELECT por causa do
+-- upsert (regra do Storage: upsert = INSERT + SELECT + UPDATE).
+create policy "imagens: select autenticado"
   on storage.objects for select
-  to anon, authenticated
+  to authenticated
   using (bucket_id = 'product-images');
 
 -- Upload, substituição (upsert) e remoção: somente autenticado.
