@@ -50,6 +50,15 @@ No painel admin (`/admin`) ou rodando o `supabase/seed.sql`.
 
 **Pronto.** Nenhum componente precisa ser editado.
 
+### Revenda (1 código, várias lojas)
+
+Para revender, prefira **não** editar o `theme.config.ts` por loja — defina as
+variáveis `NEXT_PUBLIC_STORE_*` e `NEXT_PUBLIC_COLOR_*` (ver `.env.example`) no
+deploy de cada loja (ex.: Environment Variables da Vercel). Assim cada loja é o
+**mesmo código com env vars diferentes**. O `theme.config.ts` usa essas
+variáveis e cai nos defaults quando vazias. O único arquivo por loja é o logo
+em `/public` (ou aponte `NEXT_PUBLIC_STORE_LOGO_URL`).
+
 > Como funciona: `theme.config.ts` → `<ThemeInjector>` injeta as cores como
 > CSS variables (`--store-*`) no `:root` → o Tailwind (em `globals.css`, via
 > `@theme inline`) gera os utilitários `bg-bg`, `bg-surface`, `text-primary`,

@@ -38,22 +38,41 @@ export type StoreConfig = {
   colors: StoreColors;
 };
 
+/**
+ * Lê uma variável de ambiente, caindo no fallback quando vazia.
+ *
+ * IMPORTANTE: cada `process.env.NEXT_PUBLIC_*` precisa ser referenciado de forma
+ * ESTÁTICA (literal) para o Next inlinar o valor no bundle do client. Por isso
+ * cada chave aparece escrita por extenso abaixo — não dá para fazer em loop.
+ */
+const v = (value: string | undefined, fallback: string) =>
+  value && value.trim() !== "" ? value : fallback;
+
+/**
+ * Revenda white-label: defina estas variáveis no deploy de cada loja (ex.: na
+ * Vercel) para personalizar SEM tocar no código. Se não definir, usa os
+ * defaults abaixo (a loja "iDemo"). O logo continua sendo o arquivo em
+ * /public (troque-o ou aponte NEXT_PUBLIC_STORE_LOGO_URL para outro caminho).
+ */
 export const storeConfig: StoreConfig = {
-  name: "iDemo",
-  description: "Os melhores iPhones da região, com garantia e procedência.",
-  logoUrl: "/logo.svg",
-  whatsapp: "5533999999999",
+  name: v(process.env.NEXT_PUBLIC_STORE_NAME, "iDemo"),
+  description: v(
+    process.env.NEXT_PUBLIC_STORE_DESCRIPTION,
+    "Os melhores iPhones da região, com garantia e procedência.",
+  ),
+  logoUrl: v(process.env.NEXT_PUBLIC_STORE_LOGO_URL, "/logo.svg"),
+  whatsapp: v(process.env.NEXT_PUBLIC_STORE_WHATSAPP, "5533999999999"),
   social: {
-    instagram: "https://instagram.com/",
-    facebook: "",
-    tiktok: "",
+    instagram: v(process.env.NEXT_PUBLIC_STORE_INSTAGRAM, ""),
+    facebook: v(process.env.NEXT_PUBLIC_STORE_FACEBOOK, ""),
+    tiktok: v(process.env.NEXT_PUBLIC_STORE_TIKTOK, ""),
   },
   colors: {
-    bg: "#000000", // preto absoluto
-    surface: "#0E0E12",
-    primary: "#0A84FF", // azul Apple (combina com o gradiente do logo)
-    accent: "#6E5CF6", // roxo
-    text: "#F5F5F7",
-    muted: "#9A9AA2",
+    bg: v(process.env.NEXT_PUBLIC_COLOR_BG, "#000000"),
+    surface: v(process.env.NEXT_PUBLIC_COLOR_SURFACE, "#0E0E12"),
+    primary: v(process.env.NEXT_PUBLIC_COLOR_PRIMARY, "#0A84FF"),
+    accent: v(process.env.NEXT_PUBLIC_COLOR_ACCENT, "#6E5CF6"),
+    text: v(process.env.NEXT_PUBLIC_COLOR_TEXT, "#F5F5F7"),
+    muted: v(process.env.NEXT_PUBLIC_COLOR_MUTED, "#9A9AA2"),
   },
 };
