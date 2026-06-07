@@ -36,6 +36,7 @@ function parseProduct(formData: FormData) {
     description: formData.get("description"),
     price_cents: formData.get("price_cents"),
     stock: formData.get("stock"),
+    installments: formData.get("installments"),
     is_active: formData.get("is_active") === "on",
     sort_order: formData.get("sort_order"),
   });

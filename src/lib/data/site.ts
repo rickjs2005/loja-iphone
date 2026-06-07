@@ -19,6 +19,7 @@ const DEMO_SETTINGS: StoreSettingsRow = {
   address: "Av. Exemplo, 123 — Centro, Sua Cidade/UF",
   hours: "Seg a Sex, 9h às 18h · Sáb, 9h às 13h",
   maps_url: "",
+  payment_methods: "Pix, cartão em até 12x e dinheiro",
   updated_at: "2026-01-01T00:00:00.000Z",
 };
 
@@ -34,7 +35,14 @@ export async function getStoreSettings(): Promise<StoreSettingsRow> {
 
   if (error) throw new Error(`Falha ao carregar config: ${error.message}`);
   return (
-    data ?? { id: 1, address: null, hours: null, maps_url: null, updated_at: "" }
+    data ?? {
+      id: 1,
+      address: null,
+      hours: null,
+      maps_url: null,
+      payment_methods: null,
+      updated_at: "",
+    }
   );
 }
 
@@ -68,6 +76,7 @@ export async function updateStoreSettings(
       address: input.address ?? null,
       hours: input.hours ?? null,
       maps_url: input.maps_url ?? null,
+      payment_methods: input.payment_methods ?? null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", 1);

@@ -93,6 +93,21 @@ export function ProductForm({ product }: { product?: ProductRow }) {
       </div>
 
       <div>
+        <Label htmlFor="installments">Parcelas no cartão (sem juros)</Label>
+        <Input
+          id="installments"
+          name="installments"
+          type="number"
+          min={1}
+          max={24}
+          step={1}
+          defaultValue={product?.installments ?? 12}
+        />
+        <FormHelp>Quantas vezes no cartão sem juros (ex.: 12).</FormHelp>
+        <FieldError>{err.installments?.[0]}</FieldError>
+      </div>
+
+      <div>
         <Label htmlFor="sort_order">Ordem de exibição</Label>
         <Input
           id="sort_order"

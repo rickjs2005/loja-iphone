@@ -12,6 +12,7 @@ import { ProductReviews } from "@/components/product/product-reviews";
 import { RelatedProducts } from "@/components/product/related-products";
 import { ChevronLeftIcon, ShieldIcon, WhatsappIcon } from "@/components/ui/icons";
 import { getActiveProducts, getProductById } from "@/lib/data/products";
+import { getStoreSettings } from "@/lib/data/site";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
 import { buildProductInquiryUrl } from "@/lib/whatsapp";
@@ -33,6 +34,7 @@ export default async function ProdutoPage({ params }: Props) {
   if (!product) notFound();
 
   const cover = coverImage(product);
+  const settings = await getStoreSettings();
   const related = (await getActiveProducts())
     .filter((p) => p.id !== product.id)
     .slice(0, 3);
@@ -66,12 +68,19 @@ export default async function ProdutoPage({ params }: Props) {
             {formatCents(product.price_cents)}
           </p>
           <p className="mt-1 text-muted">
-            ou {formatInstallments(product.price_cents)} sem juros
+            ou {formatInstallments(product.price_cents, product.installments)}{" "}
+            sem juros
           </p>
           <div className="mt-3 flex items-center gap-2 text-sm text-muted">
             <ShieldIcon className="size-4 text-emerald-400" />
             Garantia inclusa · aparelho testado e com procedência
           </div>
+          {settings.payment_methods && (
+            <p className="mt-2 text-sm text-muted">
+              <span className="text-fg">Pagamento:</span>{" "}
+              {settings.payment_methods}
+            </p>
+          )}
 
           {product.description && (
             <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">

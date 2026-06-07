@@ -88,6 +88,7 @@ export async function createProduct(input: ProductInput): Promise<string> {
       description: input.description ?? null,
       price_cents: input.price_cents,
       stock: input.stock,
+      installments: input.installments,
       is_active: input.is_active,
       sort_order: input.sort_order,
     })
@@ -110,6 +111,7 @@ export async function updateProduct(
       description: input.description ?? null,
       price_cents: input.price_cents,
       stock: input.stock,
+      installments: input.installments,
       is_active: input.is_active,
       sort_order: input.sort_order,
     })

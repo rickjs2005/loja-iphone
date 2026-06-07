@@ -9,11 +9,12 @@
 -- store_settings (linha única, id sempre = 1)
 -- ---------------------------------------------------------------------------
 create table if not exists public.store_settings (
-  id         integer primary key default 1 check (id = 1),
-  address    text,
-  hours      text,
-  maps_url   text,
-  updated_at timestamptz not null default now()
+  id              integer primary key default 1 check (id = 1),
+  address         text,
+  hours           text,
+  maps_url        text,
+  payment_methods text,
+  updated_at      timestamptz not null default now()
 );
 
 -- Garante a existência da linha única.

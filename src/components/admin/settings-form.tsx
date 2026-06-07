@@ -41,6 +41,18 @@ export function SettingsForm({ settings }: { settings: StoreSettingsRow }) {
       </div>
 
       <div>
+        <Label htmlFor="payment_methods">Formas de pagamento</Label>
+        <Input
+          id="payment_methods"
+          name="payment_methods"
+          defaultValue={settings.payment_methods ?? ""}
+          placeholder="Pix, cartão em até 12x e dinheiro"
+        />
+        <FormHelp>Aparece nas páginas dos produtos.</FormHelp>
+        <FieldError>{err.payment_methods?.[0]}</FieldError>
+      </div>
+
+      <div>
         <Label htmlFor="maps_url">Link do Google Maps (opcional)</Label>
         <Input
           id="maps_url"

@@ -103,7 +103,8 @@ export function ProductCard({
             {formatCents(product.price_cents)}
           </p>
           <p className="text-sm text-muted">
-            ou {formatInstallments(product.price_cents)} sem juros
+            ou {formatInstallments(product.price_cents, product.installments)}{" "}
+            sem juros
           </p>
         </div>
 

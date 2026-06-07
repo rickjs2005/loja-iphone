@@ -28,6 +28,7 @@ export type Database = {
           description: string | null;
           price_cents: number;
           stock: number;
+          installments: number;
           is_active: boolean;
           sort_order: number | null;
           created_at: string;
@@ -38,6 +39,7 @@ export type Database = {
           description?: string | null;
           price_cents: number;
           stock?: number;
+          installments?: number;
           is_active?: boolean;
           sort_order?: number | null;
           created_at?: string;
@@ -48,6 +50,7 @@ export type Database = {
           description?: string | null;
           price_cents?: number;
           stock?: number;
+          installments?: number;
           is_active?: boolean;
           sort_order?: number | null;
           created_at?: string;
@@ -60,6 +63,7 @@ export type Database = {
           address: string | null;
           hours: string | null;
           maps_url: string | null;
+          payment_methods: string | null;
           updated_at: string;
         };
         Insert: {
@@ -67,6 +71,7 @@ export type Database = {
           address?: string | null;
           hours?: string | null;
           maps_url?: string | null;
+          payment_methods?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -74,6 +79,7 @@ export type Database = {
           address?: string | null;
           hours?: string | null;
           maps_url?: string | null;
+          payment_methods?: string | null;
           updated_at?: string;
         };
         Relationships: [];

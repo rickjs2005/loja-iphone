@@ -28,6 +28,13 @@ export const productSchema = z.object({
     .number({ message: "Estoque inválido" })
     .int("O estoque deve ser um número inteiro")
     .min(0, "O estoque não pode ser negativo"),
+  installments: z.coerce
+    .number({ message: "Parcelas inválidas" })
+    .int("Use um número inteiro de parcelas")
+    .min(1, "Mínimo de 1 parcela")
+    .max(24, "Máximo de 24 parcelas")
+    .optional()
+    .transform((v) => v ?? 12),
   is_active: z.coerce.boolean().default(true),
   sort_order: z.coerce
     .number()

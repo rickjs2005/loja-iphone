@@ -13,6 +13,10 @@ export const siteSettingsSchema = z.object({
     emptyToUndefined,
     z.string().trim().url("Link do mapa inválido").max(500).optional(),
   ),
+  payment_methods: z.preprocess(
+    emptyToUndefined,
+    z.string().trim().max(300).optional(),
+  ),
 });
 
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;

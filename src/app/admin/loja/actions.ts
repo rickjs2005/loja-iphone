@@ -32,6 +32,7 @@ export async function saveSettingsAction(
     address: formData.get("address"),
     hours: formData.get("hours"),
     maps_url: formData.get("maps_url"),
+    payment_methods: formData.get("payment_methods"),
   });
   if (!parsed.success) {
     return {
