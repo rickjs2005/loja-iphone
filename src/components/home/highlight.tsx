@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
-import { IphoneRender } from "@/components/visual/iphone-render";
 
 /** Seção "Destaque" — momento emocional com um iPhone grande. */
 export function Highlight() {
@@ -18,15 +18,19 @@ export function Highlight() {
           <div className="relative grid items-center gap-8 p-8 sm:p-12 lg:grid-cols-2 lg:gap-4">
             {/* Aparelho grande */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.85, rotate: -8 }}
-              whileInView={{ opacity: 1, scale: 1, rotate: -6 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="order-2 mx-auto h-[380px] sm:h-[460px] lg:order-1"
+              className="relative order-2 mx-auto h-[360px] w-full max-w-[460px] sm:h-[460px] lg:order-1"
             >
-              <div className="h-full drop-shadow-[0_40px_70px_rgba(0,0,0,0.6)]">
-                <IphoneRender uid="highlight" colorway="natural" />
-              </div>
+              <Image
+                src="/iphone-split.png"
+                alt="iPhone 17 Pro Max — visão completa"
+                fill
+                sizes="(max-width: 1024px) 90vw, 480px"
+                className="object-contain"
+              />
             </motion.div>
 
             {/* Texto */}
