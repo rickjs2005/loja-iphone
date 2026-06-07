@@ -1,0 +1,71 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { CartIcon, MinusIcon, PlusIcon } from "@/components/ui/icons";
+import { useCartStore, type CartItem } from "@/lib/cart/store";
+
+/** Seletor de quantidade + adicionar ao carrinho (página de detalhe). */
+export function PurchasePanel({
+  product,
+}: {
+  product: Omit<CartItem, "quantity">;
+}) {
+  const addItem = useCartStore((s) => s.addItem);
+  const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
+  const esgotado = product.stock <= 0;
+  const max = Math.max(1, product.stock);
+
+  function handleAdd() {
+    addItem(product, qty);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1500);
+  }
+
+  if (esgotado) {
+    return (
+      <Button variant="outline" size="lg" disabled className="w-full">
+        Produto esgotado
+      </Button>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex h-13 items-center justify-between rounded-xl border border-white/15 bg-surface/60 px-2 sm:w-36">
+        <button
+          type="button"
+          onClick={() => setQty((q) => Math.max(1, q - 1))}
+          disabled={qty <= 1}
+          aria-label="Diminuir"
+          className="inline-flex size-9 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40"
+        >
+          <MinusIcon className="size-4" />
+        </button>
+        <span className="min-w-8 text-center font-semibold tabular-nums">
+          {qty}
+        </span>
+        <button
+          type="button"
+          onClick={() => setQty((q) => Math.min(max, q + 1))}
+          disabled={qty >= max}
+          aria-label="Aumentar"
+          className="inline-flex size-9 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40"
+        >
+          <PlusIcon className="size-4" />
+        </button>
+      </div>
+
+      <Button
+        size="lg"
+        onClick={handleAdd}
+        className="flex-1"
+        aria-live="polite"
+      >
+        <CartIcon className="size-5" />
+        {added ? "Adicionado ao carrinho!" : "Adicionar ao carrinho"}
+      </Button>
+    </div>
+  );
+}
