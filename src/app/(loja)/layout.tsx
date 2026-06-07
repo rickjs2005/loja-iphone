@@ -16,9 +16,9 @@ export default function LojaLayout({ children }: { children: ReactNode }) {
       <AuroraBackground />
       <MouseSpotlight />
       {demo && (
-        <div className="bg-accent/15 px-4 py-2 text-center text-xs text-accent">
-          Modo demonstração · dados de exemplo. Configure o Supabase
-          (.env.local) para usar de verdade.
+        <div className="bg-gradient-to-r from-primary/15 via-accent/15 to-[#FF2D55]/15 px-4 py-2 text-center text-xs text-fg/85">
+          ✨ Demonstração — esta loja pode ser <strong>a sua</strong>: sua marca,
+          suas cores, seus produtos e suas fotos.
         </div>
       )}
       <Header />
