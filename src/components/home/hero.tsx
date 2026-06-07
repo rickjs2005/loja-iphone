@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
+import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
 import { StarIcon, WhatsappIcon } from "@/components/ui/icons";
+import { Iphone3DLazy } from "@/components/visual/iphone-3d-lazy";
 import { storeConfig } from "@/config/theme.config";
 
 // Posições fixas das partículas (determinístico → sem mismatch de hidratação).
@@ -39,70 +34,24 @@ const fade = {
   }),
 };
 
-function PhoneVisual({
-  mx,
-  my,
-}: {
-  mx: MotionValue<number>;
-  my: MotionValue<number>;
-}) {
-  const spring = { stiffness: 110, damping: 16 };
-  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-16, 16]), spring);
-  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [12, -12]), spring);
-  const x = useSpring(useTransform(mx, [-0.5, 0.5], [-22, 22]), spring);
-
+function PhoneVisual() {
   return (
-    <div className="relative [perspective:1400px]">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      className="relative h-[420px] sm:h-[520px] lg:h-[600px]"
+    >
       {/* Orbe de luz grande atrás do aparelho */}
       <div className="absolute left-1/2 top-1/2 -z-10 size-[640px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(110,92,246,0.5),rgba(10,132,255,0.28)_38%,transparent_70%)] blur-2xl" />
-
-      <motion.div
-        style={{ rotateX, rotateY, x, transformStyle: "preserve-3d" }}
-        initial={{ opacity: 0, y: 50, scale: 0.92 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto w-full max-w-[540px]"
-      >
-        <motion.div
-          animate={{ y: [0, -18, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {/* Moldura premium em gradiente */}
-          <div className="rounded-[2.4rem] bg-gradient-to-br from-primary/70 via-accent/50 to-[#FF2D55]/60 p-[2px] shadow-[0_60px_120px_-25px_rgba(10,132,255,0.5)]">
-            <video
-              src="/hero.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              aria-label="iPhone em destaque"
-              className="block w-full rounded-[2.3rem]"
-            />
-          </div>
-          {/* Reflexo no chão */}
-          <div className="mx-auto mt-3 h-16 w-3/4 rounded-[50%] bg-primary/20 blur-2xl" />
-        </motion.div>
-      </motion.div>
-    </div>
+      <Iphone3DLazy />
+    </motion.div>
   );
 }
 
 export function Hero() {
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-
-  function onMove(e: React.MouseEvent<HTMLDivElement>) {
-    const r = e.currentTarget.getBoundingClientRect();
-    mx.set((e.clientX - r.left) / r.width - 0.5);
-    my.set((e.clientY - r.top) / r.height - 0.5);
-  }
-
   return (
-    <section
-      onMouseMove={onMove}
-      className="relative flex min-h-[92vh] items-center overflow-hidden py-16 lg:py-0"
-    >
+    <section className="relative flex min-h-[92vh] items-center overflow-hidden py-16 lg:py-0">
       {/* Partículas flutuando */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         {PARTICLES.map((p, i) => (
@@ -215,8 +164,8 @@ export function Hero() {
             </motion.div>
           </div>
 
-          {/* Coluna do mockup */}
-          <PhoneVisual mx={mx} my={my} />
+          {/* Coluna do mockup 3D */}
+          <PhoneVisual />
         </div>
       </Container>
 
