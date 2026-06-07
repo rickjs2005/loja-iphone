@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
+import { SectionHeading } from "@/components/ui/section-heading";
 import type { SiteImageRow } from "@/types/database.types";
 
 /** "Como entregamos": fotos da entrega — reforça confiança. */
@@ -8,17 +9,13 @@ export function DeliverySection({ images }: { images: SiteImageRow[] }) {
   if (images.length === 0) return null;
 
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-16 sm:py-24">
       <Container>
         <Reveal>
-          <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-fg sm:text-3xl">
-              Como entregamos
-            </h2>
-            <p className="mt-2 text-muted">
-              Embalagem caprichada e envio com rastreio para todo o Brasil.
-            </p>
-          </div>
+          <SectionHeading
+            title="Como entregamos"
+            subtitle="Embalagem caprichada e envio com rastreio para todo o Brasil."
+          />
         </Reveal>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">

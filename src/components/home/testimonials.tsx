@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { StarIcon } from "@/components/ui/icons";
 
 const REVIEWS = [
@@ -26,27 +27,23 @@ const REVIEWS = [
 /** Depoimentos com avaliação — prova social. */
 export function Testimonials() {
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-16 sm:py-24">
       <Container>
         <Reveal>
-          <div className="mb-10 text-center">
-            <div className="mb-3 flex items-center justify-center gap-2">
-              <div className="flex text-amber-400">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <StarIcon key={i} className="size-5" />
-                ))}
-              </div>
-              <span className="text-sm text-muted">
-                <strong className="text-fg">4,9</strong> de 5
-              </span>
+          <div className="mb-3 flex items-center justify-center gap-2">
+            <div className="flex text-amber-400">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <StarIcon key={i} className="size-5" />
+              ))}
             </div>
-            <h2 className="text-2xl font-bold text-fg sm:text-3xl">
-              Quem comprou, recomenda
-            </h2>
-            <p className="mt-2 text-muted">
-              Centenas de clientes satisfeitos em toda a região.
-            </p>
+            <span className="text-sm text-muted">
+              <strong className="text-fg">4,9</strong> de 5
+            </span>
           </div>
+          <SectionHeading
+            title="Quem comprou, recomenda"
+            subtitle="Centenas de clientes satisfeitos em toda a região."
+          />
         </Reveal>
 
         <div className="grid gap-5 md:grid-cols-3">

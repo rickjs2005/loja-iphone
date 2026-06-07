@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { AccessoryCard } from "@/components/product/accessory-card";
 import { ACCESSORY_CATEGORIES, type ProductWithImages } from "@/lib/data/types";
 import { cn } from "@/lib/cn";
@@ -34,16 +35,12 @@ export function AccessoriesSection({
       : accessories.filter((a) => a.accessory_category === active);
 
   return (
-    <section id="acessorios" className="scroll-mt-20 py-16 sm:py-20">
+    <section id="acessorios" className="scroll-mt-20 py-16 sm:py-24">
       <Container>
-        <div className="mb-8 text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-fg sm:text-4xl">
-            Complete seu ecossistema
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-lg text-muted">
-            Capas, películas, carregadores e áudio para o seu iPhone.
-          </p>
-        </div>
+        <SectionHeading
+          title="Complete seu ecossistema"
+          subtitle="Capas, películas, carregadores e áudio para o seu iPhone."
+        />
 
         {/* Filtro por categoria */}
         <div className="mb-8 flex flex-wrap justify-center gap-2">

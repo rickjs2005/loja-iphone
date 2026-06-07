@@ -5,6 +5,7 @@ import { AuroraBackground } from "@/components/visual/aurora-background";
 import { MouseSpotlight } from "@/components/visual/mouse-spotlight";
 import { WhatsappFab } from "@/components/layout/whatsapp-fab";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { MotionProvider } from "@/components/visual/motion-provider";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getActiveProducts } from "@/lib/data/products";
 import { coverImage } from "@/lib/data/types";
@@ -31,7 +32,7 @@ export default async function LojaLayout({
     }));
 
   return (
-    <>
+    <MotionProvider>
       <AuroraBackground />
       <MouseSpotlight />
       {demo && (
@@ -45,6 +46,6 @@ export default async function LojaLayout({
       <Footer />
       <WhatsappFab />
       <CartDrawer accessories={upsellAccessories} />
-    </>
+    </MotionProvider>
   );
 }

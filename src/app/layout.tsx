@@ -14,12 +14,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: storeConfig.name,
+    default: `${storeConfig.name} · iPhones com garantia`,
     template: `%s · ${storeConfig.name}`,
   },
   description: storeConfig.description,
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: storeConfig.name,
+    title: storeConfig.name,
+    description: storeConfig.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: storeConfig.name,
+    description: storeConfig.description,
+  },
 };
 
 export default function RootLayout({

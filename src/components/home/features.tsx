@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
+import { SectionHeading } from "@/components/ui/section-heading";
 import {
   BadgeCheckIcon,
   BoltIcon,
@@ -34,17 +35,13 @@ const FEATURES: { icon: ReactNode; title: string; text: string }[] = [
 /** Bloco "por que comprar aqui" — reforça confiança e valor. */
 export function Features() {
   return (
-    <section className="py-16">
+    <section className="py-16 sm:py-24">
       <Container>
         <Reveal>
-          <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-fg sm:text-3xl">
-              Por que comprar na iDemo
-            </h2>
-            <p className="mt-2 text-muted">
-              Confiança não se promete, se entrega.
-            </p>
-          </div>
+          <SectionHeading
+            title="Por que comprar na iDemo"
+            subtitle="Confiança não se promete, se entrega."
+          />
         </Reveal>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

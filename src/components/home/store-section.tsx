@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { buttonClasses } from "@/components/ui/button";
 import { PhoneIcon } from "@/components/ui/icons";
 import type { SiteImageRow, StoreSettingsRow } from "@/types/database.types";
@@ -17,17 +18,13 @@ export function StoreSection({
   if (images.length === 0 && !hasInfo) return null;
 
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-16 sm:py-24">
       <Container>
         <Reveal>
-          <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-fg sm:text-3xl">
-              Nossa loja
-            </h2>
-            <p className="mt-2 text-muted">
-              Loja física de verdade, para você comprar com confiança.
-            </p>
-          </div>
+          <SectionHeading
+            title="Nossa loja"
+            subtitle="Loja física de verdade, para você comprar com confiança."
+          />
         </Reveal>
 
         <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">

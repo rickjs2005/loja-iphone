@@ -9,6 +9,7 @@ import { DeliverySection } from "@/components/home/delivery-section";
 import { AccessoriesSection } from "@/components/home/accessories-section";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Reveal } from "@/components/ui/reveal";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { Container } from "@/components/ui/container";
 import { getActiveProducts } from "@/lib/data/products";
 import { getSiteImages, getStoreSettings } from "@/lib/data/site";
@@ -36,15 +37,10 @@ export default async function HomePage() {
       <section id="produtos" className="scroll-mt-20 py-16 sm:py-24">
         <Container>
           <Reveal>
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-fg sm:text-5xl">
-                Escolha o seu iPhone
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-lg text-muted sm:text-xl">
-                Modelos disponíveis para entrega imediata. Finalize pelo
-                WhatsApp em segundos.
-              </p>
-            </div>
+            <SectionHeading
+              title="Escolha o seu iPhone"
+              subtitle="Modelos disponíveis para entrega imediata. Finalize pelo WhatsApp em segundos."
+            />
           </Reveal>
 
           <ProductGrid products={iphones} />
