@@ -26,6 +26,10 @@ export type ProductFormState = {
   fieldErrors?: Record<string, string[]>;
 };
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isUuid = (v: string) => UUID_RE.test(v);
+
 function parseProduct(formData: FormData) {
   return productSchema.safeParse({
     name: formData.get("name"),
@@ -103,7 +107,7 @@ export async function uploadImagesAction(
   await requireUser();
 
   const productId = String(formData.get("productId") || "");
-  if (!productId) return { error: "Produto inválido." };
+  if (!isUuid(productId)) return { error: "Produto inválido." };
 
   const files = formData
     .getAll("images")
