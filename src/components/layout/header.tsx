@@ -13,10 +13,10 @@ export function Header() {
           <Image
             src={storeConfig.logoUrl}
             alt={storeConfig.name}
-            width={132}
-            height={32}
+            width={400}
+            height={120}
             priority
-            className="h-8 w-auto"
+            className="h-9 w-auto"
           />
           <span className="sr-only">{storeConfig.name}</span>
         </Link>

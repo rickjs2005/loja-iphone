@@ -14,9 +14,9 @@ export default function LoginPage() {
           <Image
             src={storeConfig.logoUrl}
             alt={storeConfig.name}
-            width={148}
-            height={36}
-            className="h-9 w-auto"
+            width={400}
+            height={120}
+            className="h-12 w-auto"
           />
           <h1 className="mt-6 text-xl font-bold text-fg">Painel da loja</h1>
           <p className="mt-1 text-sm text-muted">

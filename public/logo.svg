@@ -1,5 +1,20 @@
-<svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="iStore">
-  <rect x="2" y="6" width="28" height="28" rx="8" fill="var(--store-primary, #3B82F6)"/>
-  <path d="M16 12.5c.9 0 1.7.4 2.2 1-.6.4-1 .9-1 1.7 0 .9.6 1.5 1.3 1.8-.3.9-.9 2-1.6 2-.5 0-.8-.3-1.4-.3s-.9.3-1.4.3c-.9 0-2.1-1.8-2.1-3.6 0-1.7 1.1-2.6 2.1-2.6.5 0 1 .3 1.3.3.3 0 .9-.3 1.6-.3-.4 0-.6 0-.6 0z" fill="#fff"/>
-  <text x="40" y="26" font-family="Geist, Arial, sans-serif" font-size="18" font-weight="700" fill="var(--store-text, #FAFAFA)">iStore</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="premiumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#007AFF" /> <stop offset="50%" stop-color="#5856D6" /> <stop offset="100%" stop-color="#FF2D55" /> </linearGradient>
+  </defs>
+
+  <g transform="translate(10, 10)">
+    <rect x="10" y="5" width="65" height="90" rx="14" fill="none" stroke="url(#premiumGrad)" stroke-width="5" />
+
+    <rect x="32.5" y="13" width="20" height="5" rx="2.5" fill="url(#premiumGrad)" />
+
+    <path d="M40 37 L53 45 L40 53 Z" fill="url(#premiumGrad)" stroke="url(#premiumGrad)" stroke-width="2" stroke-linejoin="round" />
+
+    <line x1="30" y1="88" x2="55" y2="88" stroke="url(#premiumGrad)" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+  </g>
+
+  <text x="105" y="68" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="38" font-weight="800" fill="#FFFFFF">i<tspan fill="url(#premiumGrad)">Demo</tspan></text>
+
+  <text x="107" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="500" fill="#8E8E93" letter-spacing="2">IPHONE SIMULATOR</text>
 </svg>

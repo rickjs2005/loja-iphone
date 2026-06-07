@@ -28,9 +28,9 @@ export default async function AdminLayout({
               <Image
                 src={storeConfig.logoUrl}
                 alt={storeConfig.name}
-                width={120}
-                height={28}
-                className="h-7 w-auto"
+                width={400}
+                height={120}
+                className="h-8 w-auto"
               />
               <span className="rounded-md bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
                 admin

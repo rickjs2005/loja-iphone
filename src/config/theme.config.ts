@@ -39,7 +39,7 @@ export type StoreConfig = {
 };
 
 export const storeConfig: StoreConfig = {
-  name: "iStore",
+  name: "iDemo",
   description: "Os melhores iPhones da região, com garantia e procedência.",
   logoUrl: "/logo.svg",
   whatsapp: "5533999999999",
