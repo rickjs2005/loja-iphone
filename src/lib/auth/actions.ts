@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { loginSchema } from "@/lib/validation/auth.schema";
 import {
   checkLoginRate,
@@ -29,6 +30,13 @@ export async function loginAction(
   _prev: LoginState,
   formData: FormData,
 ): Promise<LoginState> {
+  if (!isSupabaseConfigured()) {
+    return {
+      error:
+        "Modo demo: configure o Supabase (.env.local) para acessar o admin.",
+    };
+  }
+
   const ip = await clientIp();
   const now = Date.now();
 

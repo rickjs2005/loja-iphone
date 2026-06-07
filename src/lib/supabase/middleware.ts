@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Database } from "@/types/database.types";
 
 /**
@@ -11,6 +12,10 @@ import type { Database } from "@/types/database.types";
  */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
+
+  // MODO DEMO: sem Supabase, não há sessão a renovar. Deixa a loja pública
+  // funcionar; o admin é tratado nas próprias páginas (requireUser).
+  if (!isSupabaseConfigured()) return response;
 
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

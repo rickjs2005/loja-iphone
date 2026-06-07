@@ -1,8 +1,10 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { ProductInput } from "@/lib/validation/product.schema";
 import type { ProductImageRow } from "@/types/database.types";
 import type { ProductWithImages } from "./types";
+import { demoProducts, findDemoProduct } from "./demo";
 
 /**
  * ÚNICA camada que conversa com o Supabase (tabelas products/product_images).
@@ -27,6 +29,8 @@ function sortImages(images: ProductImageRow[] | null): ProductImageRow[] {
 // ---------------------------------------------------------------------------
 
 export async function getActiveProducts(): Promise<ProductWithImages[]> {
+  if (!isSupabaseConfigured()) return demoProducts;
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("products")
@@ -43,6 +47,8 @@ export async function getActiveProducts(): Promise<ProductWithImages[]> {
 export async function getProductById(
   id: string,
 ): Promise<ProductWithImages | null> {
+  if (!isSupabaseConfigured()) return findDemoProduct(id);
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("products")
