@@ -42,6 +42,12 @@ export default async function AdminLayout({
             >
               Produtos
             </Link>
+            <Link
+              href="/admin/loja"
+              className="text-sm text-muted transition-colors hover:text-fg"
+            >
+              Conteúdo da loja
+            </Link>
           </div>
 
           <div className="flex items-center gap-3">

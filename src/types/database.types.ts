@@ -54,6 +54,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      store_settings: {
+        Row: {
+          id: number;
+          address: string | null;
+          hours: string | null;
+          maps_url: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          address?: string | null;
+          hours?: string | null;
+          maps_url?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          id?: number;
+          address?: string | null;
+          hours?: string | null;
+          maps_url?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      site_images: {
+        Row: {
+          id: string;
+          section: string;
+          url: string;
+          sort_order: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          section: string;
+          url: string;
+          sort_order?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          section?: string;
+          url?: string;
+          sort_order?: number | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       product_images: {
         Row: {
           id: string;
@@ -98,3 +146,7 @@ export type ProductImageRow =
   Database["public"]["Tables"]["product_images"]["Row"];
 export type ProductImageInsert =
   Database["public"]["Tables"]["product_images"]["Insert"];
+export type StoreSettingsRow =
+  Database["public"]["Tables"]["store_settings"]["Row"];
+export type SiteImageRow = Database["public"]["Tables"]["site_images"]["Row"];
+export type SiteSection = "loja" | "entrega";

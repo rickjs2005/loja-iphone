@@ -36,6 +36,28 @@ export async function uploadProductImage(
   return data.publicUrl;
 }
 
+/** Upload de imagem de conteúdo do site (loja física / entrega). */
+export async function uploadSiteImage(
+  section: string,
+  file: File,
+  index: number,
+): Promise<string> {
+  const supabase = await createClient();
+  const safe = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+  const path = `site/${section}/${index}-${safe}`;
+
+  const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+    cacheControl: "3600",
+    upsert: true,
+    contentType: file.type,
+  });
+
+  if (error) throw new Error(`Falha no upload da imagem: ${error.message}`);
+
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+}
+
 /** Extrai o caminho interno do bucket a partir da URL pública. */
 export function storagePathFromUrl(url: string): string | null {
   const marker = `/storage/v1/object/public/${BUCKET}/`;

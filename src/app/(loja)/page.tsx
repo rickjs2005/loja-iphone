@@ -4,16 +4,24 @@ import { Highlight } from "@/components/home/highlight";
 import { Stats } from "@/components/home/stats";
 import { Features } from "@/components/home/features";
 import { Testimonials } from "@/components/home/testimonials";
+import { StoreSection } from "@/components/home/store-section";
+import { DeliverySection } from "@/components/home/delivery-section";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Reveal } from "@/components/ui/reveal";
 import { Container } from "@/components/ui/container";
 import { getActiveProducts } from "@/lib/data/products";
+import { getSiteImages, getStoreSettings } from "@/lib/data/site";
 
 // Sempre buscar dados frescos (estoque/preço mudam no admin).
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const products = await getActiveProducts();
+  const [products, settings, lojaImgs, entregaImgs] = await Promise.all([
+    getActiveProducts(),
+    getStoreSettings(),
+    getSiteImages("loja"),
+    getSiteImages("entrega"),
+  ]);
 
   return (
     <>
@@ -41,6 +49,8 @@ export default async function HomePage() {
 
       <Stats />
       <Features />
+      <StoreSection settings={settings} images={lojaImgs} />
+      <DeliverySection images={entregaImgs} />
       <Testimonials />
     </>
   );
