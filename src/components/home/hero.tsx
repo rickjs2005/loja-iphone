@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
@@ -37,26 +36,30 @@ const fade = {
 function PhoneVisual() {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.92 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-      className="relative h-[420px] sm:h-[520px] lg:h-[600px]"
+      className="relative flex items-center justify-center"
     >
       {/* Orbe de luz grande atrás do aparelho */}
       <div className="absolute left-1/2 top-1/2 -z-10 size-[640px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(110,92,246,0.5),rgba(10,132,255,0.28)_38%,transparent_70%)] blur-2xl" />
       <motion.div
         animate={{ y: [0, -16, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="relative h-full w-full drop-shadow-[0_40px_70px_rgba(0,0,0,0.5)]"
+        className="w-full max-w-[460px]"
       >
-        <Image
-          src="/hero-iphone.png"
-          alt="iPhone 17 Pro Max"
-          fill
-          priority
-          sizes="(max-width: 1024px) 90vw, 620px"
-          className="object-contain [-webkit-mask-image:radial-gradient(ellipse_70%_94%_at_center,#000_60%,transparent_100%)] [mask-image:radial-gradient(ellipse_70%_94%_at_center,#000_60%,transparent_100%)]"
-        />
+        <div className="overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.7)]">
+          <video
+            src="/hero.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            aria-label="iPhone em destaque"
+            className="block w-full"
+          />
+        </div>
       </motion.div>
     </motion.div>
   );
