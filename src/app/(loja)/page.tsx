@@ -1,5 +1,9 @@
 import { Hero } from "@/components/home/hero";
+import { TrustBand } from "@/components/home/trust-band";
+import { Features } from "@/components/home/features";
+import { Testimonials } from "@/components/home/testimonials";
 import { ProductGrid } from "@/components/product/product-grid";
+import { Reveal } from "@/components/ui/reveal";
 import { Container } from "@/components/ui/container";
 import { getActiveProducts } from "@/lib/data/products";
 
@@ -12,23 +16,28 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
+      <TrustBand />
 
-      <section id="produtos" className="scroll-mt-20 py-16">
+      <section id="produtos" className="scroll-mt-20 py-16 sm:py-20">
         <Container>
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-fg sm:text-3xl">
-                Modelos disponíveis
+          <Reveal>
+            <div className="mb-10 text-center">
+              <h2 className="text-3xl font-bold tracking-tight text-fg sm:text-4xl">
+                Escolha o seu iPhone
               </h2>
-              <p className="mt-1 text-muted">
-                Escolha o seu e finalize a compra pelo WhatsApp.
+              <p className="mt-3 text-lg text-muted">
+                Modelos disponíveis para entrega imediata. Finalize pelo
+                WhatsApp em segundos.
               </p>
             </div>
-          </div>
+          </Reveal>
 
           <ProductGrid products={products} />
         </Container>
       </section>
+
+      <Features />
+      <Testimonials />
     </>
   );
 }

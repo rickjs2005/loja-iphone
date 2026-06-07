@@ -7,9 +7,10 @@ import { Gallery } from "@/components/product/gallery";
 import { StockBadge } from "@/components/product/stock-badge";
 import { PurchasePanel } from "@/components/cart/purchase-panel";
 import { ChevronLeftIcon, WhatsappIcon } from "@/components/ui/icons";
+import { ShieldIcon } from "@/components/ui/icons";
 import { getProductById } from "@/lib/data/products";
 import { coverImage } from "@/lib/data/types";
-import { formatCents } from "@/lib/format";
+import { formatCents, formatInstallments } from "@/lib/format";
 import { buildProductInquiryUrl } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
@@ -41,7 +42,11 @@ export default async function ProdutoPage({ params }: Props) {
       </Link>
 
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-        <Gallery images={product.images} productName={product.name} />
+        <Gallery
+          images={product.images}
+          productName={product.name}
+          productId={product.id}
+        />
 
         <div className="flex flex-col">
           <StockBadge stock={product.stock} className="mb-4 w-fit" />
@@ -50,9 +55,16 @@ export default async function ProdutoPage({ params }: Props) {
             {product.name}
           </h1>
 
-          <p className="mt-4 text-3xl font-bold text-primary">
+          <p className="mt-4 text-4xl font-extrabold tracking-tight text-fg">
             {formatCents(product.price_cents)}
           </p>
+          <p className="mt-1 text-muted">
+            ou {formatInstallments(product.price_cents)} sem juros
+          </p>
+          <div className="mt-3 flex items-center gap-2 text-sm text-muted">
+            <ShieldIcon className="size-4 text-emerald-400" />
+            Garantia inclusa · aparelho testado e com procedência
+          </div>
 
           {product.description && (
             <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">

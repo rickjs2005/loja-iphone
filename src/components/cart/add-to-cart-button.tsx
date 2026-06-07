@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CartIcon } from "@/components/ui/icons";
+import { BagIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
 
 type Props = {
@@ -40,7 +40,7 @@ export function AddToCartButton({
       className={fullWidth ? "w-full" : undefined}
       aria-live="polite"
     >
-      <CartIcon className="size-4" />
+      <BagIcon className="size-4" />
       {esgotado ? "Esgotado" : added ? "Adicionado!" : "Adicionar ao carrinho"}
     </Button>
   );

@@ -26,10 +26,10 @@ export function ProductGrid({ products }: { products: ProductWithImages[] }) {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-80px" }}
-      className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+      className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+      {products.map((product, i) => (
+        <ProductCard key={product.id} product={product} index={i} />
       ))}
     </motion.div>
   );

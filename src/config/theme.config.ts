@@ -49,11 +49,11 @@ export const storeConfig: StoreConfig = {
     tiktok: "",
   },
   colors: {
-    bg: "#0A0A0B",
-    surface: "#141416",
-    primary: "#3B82F6",
-    accent: "#A855F7",
-    text: "#FAFAFA",
-    muted: "#A1A1AA",
+    bg: "#000000", // preto absoluto
+    surface: "#0E0E12",
+    primary: "#0A84FF", // azul Apple (combina com o gradiente do logo)
+    accent: "#6E5CF6", // roxo
+    text: "#F5F5F7",
+    muted: "#9A9AA2",
   },
 };

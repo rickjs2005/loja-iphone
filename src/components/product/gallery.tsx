@@ -3,22 +3,26 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
+import { IphoneRender } from "@/components/visual/iphone-render";
 import { cn } from "@/lib/cn";
 import type { ProductImageRow } from "@/types/database.types";
 
 export function Gallery({
   images,
   productName,
+  productId,
 }: {
   images: ProductImageRow[];
   productName: string;
+  productId: string;
 }) {
   const [active, setActive] = useState(0);
   const current = images[active] ?? null;
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative aspect-square overflow-hidden rounded-2xl border border-white/10 bg-surface/60">
+      <div className="relative aspect-square overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(110,92,246,0.18),transparent_60%)]" />
         <AnimatePresence mode="wait">
           <motion.div
             key={current?.id ?? "empty"}
@@ -28,12 +32,20 @@ export function Gallery({
             transition={{ duration: 0.3 }}
             className="absolute inset-0"
           >
-            <ProductImage
-              url={current?.url ?? null}
-              alt={productName}
-              priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
-            />
+            {current ? (
+              <ProductImage
+                url={current.url}
+                alt={productName}
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center p-10">
+                <div className="h-full w-auto drop-shadow-[0_24px_50px_rgba(0,0,0,0.55)]">
+                  <IphoneRender uid={`detail-${productId}`} colorway="natural" />
+                </div>
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
       </div>

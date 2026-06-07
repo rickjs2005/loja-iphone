@@ -17,3 +17,8 @@ export function formatCents(cents: number): string {
 export function centsToReaisInput(cents: number): string {
   return (cents / 100).toFixed(2).replace(".", ",");
 }
+
+/** Parcelamento padrão (12x sem juros). 999900 -> "12x de R$ 833,25" */
+export function formatInstallments(cents: number, parts = 12): string {
+  return `${parts}x de ${formatCents(Math.round(cents / parts))}`;
+}

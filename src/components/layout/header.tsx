@@ -16,7 +16,7 @@ export function Header() {
             width={400}
             height={120}
             priority
-            className="h-9 w-auto"
+            className="h-10 w-auto"
           />
           <span className="sr-only">{storeConfig.name}</span>
         </Link>
