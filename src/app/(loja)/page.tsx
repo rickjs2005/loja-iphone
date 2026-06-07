@@ -3,7 +3,6 @@ import { TrustBand } from "@/components/home/trust-band";
 import { Highlight } from "@/components/home/highlight";
 import { Stats } from "@/components/home/stats";
 import { Features } from "@/components/home/features";
-import { Testimonials } from "@/components/home/testimonials";
 import { StoreSection } from "@/components/home/store-section";
 import { DeliverySection } from "@/components/home/delivery-section";
 import { AccessoriesSection } from "@/components/home/accessories-section";
@@ -53,7 +52,6 @@ export default async function HomePage() {
       <Features />
       <StoreSection settings={settings} images={lojaImgs} />
       <DeliverySection images={entregaImgs} />
-      <Testimonials />
     </>
   );
 }

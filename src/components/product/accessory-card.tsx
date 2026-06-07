@@ -30,7 +30,7 @@ export function AccessoryCard({ product }: { product: ProductWithImages }) {
         href={`/produtos/${product.id}`}
         className="relative mb-3 block aspect-square overflow-hidden rounded-xl bg-bg"
       >
-        <div className="transition-transform duration-500 group-hover:scale-105">
+        <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
           <ProductImage
             url={cover?.url ?? null}
             alt={product.name}
