@@ -15,14 +15,16 @@ export default async function AdminLojaPage() {
 
   return (
     <div>
-      <h1 className="mb-1 text-2xl font-bold text-fg">Conteúdo da loja</h1>
-      <p className="mb-8 text-sm text-muted">
+      <h1 className="mb-1 text-xl font-semibold text-zinc-100">
+        Conteúdo da loja
+      </h1>
+      <p className="mb-8 text-sm text-zinc-500">
         Endereço, horário e fotos da loja física e da entrega. Aparecem na
         página inicial só quando você preenche.
       </p>
 
       <section className="mb-10">
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted">
+        <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-400">
           Endereço e horário
         </h2>
         <SettingsForm settings={settings} />

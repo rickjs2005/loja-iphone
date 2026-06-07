@@ -11,7 +11,7 @@ import {
   resetLoginRate,
 } from "@/lib/auth/rate-limit";
 
-export type LoginState = { error?: string };
+export type LoginState = { error?: string; retryAfterMs?: number };
 
 async function clientIp(): Promise<string> {
   const h = await headers();
@@ -42,8 +42,10 @@ export async function loginAction(
 
   const rate = checkLoginRate(ip, now);
   if (!rate.allowed) {
-    const min = Math.ceil(rate.retryAfterMs / 60000);
-    return { error: `Muitas tentativas. Tente novamente em ${min} min.` };
+    return {
+      error: "Muitas tentativas. Aguarde para tentar novamente.",
+      retryAfterMs: rate.retryAfterMs,
+    };
   }
 
   const parsed = loginSchema.safeParse({

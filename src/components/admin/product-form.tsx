@@ -125,9 +125,9 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           type="checkbox"
           name="is_active"
           defaultChecked={product?.is_active ?? true}
-          className="size-5 rounded border-white/20 bg-bg text-primary accent-primary"
+          className="size-5 rounded border-zinc-700 bg-zinc-950 text-primary accent-primary"
         />
-        <span className="text-sm text-fg">
+        <span className="text-sm text-zinc-300">
           Produto ativo (visível na loja)
         </span>
       </label>

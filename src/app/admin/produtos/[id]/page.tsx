@@ -22,24 +22,24 @@ export default async function EditarProdutoPage({
     <div>
       <Link
         href="/admin/produtos"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-fg"
+        className="mb-6 inline-flex items-center gap-1 text-sm text-zinc-400 transition-colors hover:text-zinc-100"
       >
         <ChevronLeftIcon className="size-4" />
         Voltar
       </Link>
 
-      <h1 className="mb-6 text-2xl font-bold text-fg">Editar produto</h1>
+      <h1 className="mb-6 text-xl font-semibold text-zinc-100">Editar produto</h1>
 
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
         <section>
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted">
+          <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-400">
             Dados
           </h2>
           <ProductForm product={product} />
         </section>
 
         <section>
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted">
+          <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-400">
             Fotos
           </h2>
           <ImageManager productId={product.id} images={product.images} />

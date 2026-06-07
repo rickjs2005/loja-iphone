@@ -5,6 +5,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { FieldError, FormHelp } from "@/components/ui/field";
 import { TrashIcon } from "@/components/ui/icons";
+import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
 import {
   uploadSiteImagesAction,
   deleteSiteImageAction,
@@ -31,7 +32,6 @@ export function SiteImageManager({
 
   useEffect(() => {
     if (state.ok) {
-      // Limpa previews após upload concluído.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPreviews((prev) => {
         prev.forEach((u) => URL.revokeObjectURL(u));
@@ -47,39 +47,36 @@ export function SiteImageManager({
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-      <h3 className="mb-4 font-semibold text-fg">{title}</h3>
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+      <h3 className="mb-4 font-semibold text-zinc-100">{title}</h3>
 
       {images.length > 0 ? (
         <div className="mb-4 grid grid-cols-3 gap-3 sm:grid-cols-4">
           {images.map((img) => (
             <div
               key={img.id}
-              className="group relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-bg"
+              className="group relative aspect-square overflow-hidden rounded-md border border-zinc-800 bg-zinc-950"
             >
               <Image src={img.url} alt="" fill sizes="120px" className="object-cover" />
-              <form
-                action={deleteSiteImageAction}
-                onSubmit={(e) => {
-                  if (!confirm("Remover esta imagem?")) e.preventDefault();
-                }}
-                className="absolute right-1.5 top-1.5"
-              >
-                <input type="hidden" name="id" value={img.id} />
-                <input type="hidden" name="url" value={img.url} />
-                <button
-                  type="submit"
-                  aria-label="Remover imagem"
-                  className="inline-flex size-8 items-center justify-center rounded-lg bg-black/60 text-white opacity-0 backdrop-blur transition-opacity hover:bg-red-500/80 group-hover:opacity-100"
+              <div className="pointer-events-none absolute inset-0 hidden bg-black/45 opacity-0 transition-opacity group-hover:opacity-100 sm:block" />
+              <div className="absolute inset-0 flex items-center justify-center transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+                <ConfirmDeleteButton
+                  action={deleteSiteImageAction}
+                  fields={{ id: img.id, url: img.url }}
+                  title="Remover imagem?"
+                  description="A foto será excluída desta seção."
+                  confirmLabel="Remover"
+                  triggerLabel="Remover imagem"
+                  triggerClassName="inline-flex size-10 items-center justify-center rounded-full bg-red-500/90 text-white shadow-lg transition-colors hover:bg-red-500"
                 >
-                  <TrashIcon className="size-4" />
-                </button>
-              </form>
+                  <TrashIcon className="size-5" />
+                </ConfirmDeleteButton>
+              </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="mb-4 text-sm text-muted">Nenhuma imagem ainda.</p>
+        <p className="mb-4 text-sm text-zinc-500">Nenhuma imagem ainda.</p>
       )}
 
       <form action={formAction} className="flex flex-col gap-3">
@@ -91,7 +88,7 @@ export function SiteImageManager({
           accept="image/jpeg,image/png,image/webp"
           multiple
           onChange={onSelect}
-          className="block w-full text-sm text-muted file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white hover:file:brightness-110"
+          className="block w-full text-sm text-zinc-400 file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white hover:file:brightness-110"
         />
         <FormHelp>JPG, PNG ou WebP, até 5 MB cada.</FormHelp>
 
@@ -103,7 +100,7 @@ export function SiteImageManager({
                 key={src}
                 src={src}
                 alt="Pré-visualização"
-                className="aspect-square w-full rounded-lg object-cover opacity-80"
+                className="aspect-square w-full rounded-md object-cover opacity-80"
               />
             ))}
           </div>
