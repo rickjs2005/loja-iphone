@@ -8,7 +8,11 @@ import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { ShieldIcon } from "@/components/ui/icons";
 import { IphoneRender, colorwayByIndex } from "@/components/visual/iphone-render";
 import { formatCents, formatInstallments } from "@/lib/format";
-import { coverImage, type ProductWithImages } from "@/lib/data/types";
+import {
+  coverImage,
+  conditionLabel,
+  type ProductWithImages,
+} from "@/lib/data/types";
 
 const item = {
   hidden: { opacity: 0, y: 30, scale: 0.92, filter: "blur(6px)" },
@@ -69,6 +73,10 @@ export function ProductCard({
             <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
               <ProductImage url={cover.url} alt={product.name} />
             </div>
+          ) : product.category === "accessory" ? (
+            <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
+              <ProductImage url={null} alt={product.name} variant="accessory" />
+            </div>
           ) : (
             <div className="absolute inset-0 flex items-center justify-center p-8 transition-transform duration-500 group-hover:scale-[1.06] group-hover:-rotate-1">
               <div className="h-full w-auto drop-shadow-[0_24px_40px_rgba(0,0,0,0.5)]">
@@ -83,6 +91,11 @@ export function ProductCard({
           <div className="absolute left-3 top-3 z-20">
             <StockBadge stock={product.stock} />
           </div>
+          {conditionLabel(product.condition) && (
+            <div className="absolute right-3 top-3 z-20 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-zinc-100 backdrop-blur">
+              {conditionLabel(product.condition)}
+            </div>
+          )}
         </div>
       </Link>
 
@@ -110,7 +123,8 @@ export function ProductCard({
 
         <div className="flex items-center gap-1.5 text-xs text-muted">
           <ShieldIcon className="size-3.5 text-emerald-400" />
-          Garantia inclusa · aparelho testado
+          Garantia inclusa
+          {product.battery_health ? ` · Bateria ${product.battery_health}%` : ""}
         </div>
 
         <AddToCartButton
@@ -122,6 +136,7 @@ export function ProductCard({
             priceCents: product.price_cents,
             imageUrl: cover?.url ?? null,
             stock: product.stock,
+            category: product.category === "accessory" ? "accessory" : "iphone",
           }}
         />
       </div>

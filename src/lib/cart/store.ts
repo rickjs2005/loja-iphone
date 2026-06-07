@@ -14,6 +14,7 @@ export type CartItem = {
   priceCents: number;
   imageUrl: string | null;
   stock: number;
+  category: "iphone" | "accessory";
   quantity: number;
 };
 
@@ -84,3 +85,6 @@ export const selectTotalItems = (s: CartState) =>
 
 export const selectTotalCents = (s: CartState) =>
   s.items.reduce((acc, i) => acc + i.priceCents * i.quantity, 0);
+
+export const selectHasIphone = (s: CartState) =>
+  s.items.some((i) => i.category === "iphone");

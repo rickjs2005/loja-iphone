@@ -15,21 +15,34 @@ import {
   useCartStore,
   selectTotalCents,
   selectTotalItems,
+  selectHasIphone,
+  type CartItem,
 } from "@/lib/cart/store";
 import { useCartUI } from "@/lib/cart/ui-store";
 import { useHydrated } from "@/lib/cart/use-hydrated";
 import { formatCents } from "@/lib/format";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
 
-export function CartDrawer() {
+export function CartDrawer({
+  accessories = [],
+}: {
+  accessories?: Omit<CartItem, "quantity">[];
+}) {
   const isOpen = useCartUI((s) => s.isOpen);
   const close = useCartUI((s) => s.close);
   const items = useCartStore((s) => s.items);
+  const addItem = useCartStore((s) => s.addItem);
   const totalCents = useCartStore(selectTotalCents);
   const totalItems = useCartStore(selectTotalItems);
+  const hasIphone = useCartStore(selectHasIphone);
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const hydrated = useHydrated();
+
+  // Upsell: acessórios ainda não adicionados (até 3), só se há iPhone no carrinho.
+  const upsell = accessories
+    .filter((a) => !items.some((i) => i.productId === a.productId))
+    .slice(0, 3);
 
   // Fecha com ESC e trava o scroll do body quando aberto.
   useEffect(() => {
@@ -155,6 +168,45 @@ export function CartDrawer() {
                     </li>
                   ))}
                 </ul>
+
+                {hasIphone && upsell.length > 0 && (
+                  <div className="border-t border-white/10 p-5">
+                    <p className="mb-3 text-sm font-semibold text-fg">
+                      Proteja seu novo iPhone 🛡️
+                    </p>
+                    <div className="space-y-2">
+                      {upsell.map((a) => (
+                        <div
+                          key={a.productId}
+                          className="flex items-center gap-3 rounded-xl border border-white/10 bg-bg/40 p-2"
+                        >
+                          <div className="relative size-12 shrink-0 overflow-hidden rounded-lg bg-bg">
+                            <ProductImage
+                              url={a.imageUrl}
+                              alt={a.name}
+                              variant="accessory"
+                              sizes="48px"
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm text-fg">{a.name}</p>
+                            <p className="text-sm font-semibold text-fg">
+                              {formatCents(a.priceCents)}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => addItem(a, 1)}
+                            disabled={a.stock <= 0}
+                            className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white transition-all hover:brightness-110 active:scale-95 disabled:opacity-50"
+                          >
+                            + Adicionar
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-3 border-t border-white/10 p-5">
                   <div className="flex items-center justify-between">

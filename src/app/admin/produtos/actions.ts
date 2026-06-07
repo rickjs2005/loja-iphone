@@ -37,6 +37,10 @@ function parseProduct(formData: FormData) {
     price_cents: formData.get("price_cents"),
     stock: formData.get("stock"),
     installments: formData.get("installments"),
+    category: formData.get("category") || "iphone",
+    accessory_category: formData.get("accessory_category"),
+    battery_health: formData.get("battery_health"),
+    condition: formData.get("condition"),
     is_active: formData.get("is_active") === "on",
     sort_order: formData.get("sort_order"),
   });

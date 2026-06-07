@@ -6,6 +6,17 @@ import type { ProductImageRow } from "@/types/database.types";
 import type { ProductWithImages } from "./types";
 import { demoProducts, findDemoProduct } from "./demo";
 
+/** Normaliza os campos específicos de categoria (zera o que não se aplica). */
+function categoryFields(input: ProductInput) {
+  const isAcc = input.category === "accessory";
+  return {
+    category: input.category,
+    accessory_category: isAcc ? (input.accessory_category ?? null) : null,
+    battery_health: isAcc ? null : (input.battery_health ?? null),
+    condition: isAcc ? null : (input.condition ?? null),
+  };
+}
+
 /**
  * ÚNICA camada que conversa com o Supabase (tabelas products/product_images).
  * Nenhum componente importa o client diretamente — tudo passa por aqui.
@@ -91,6 +102,7 @@ export async function createProduct(input: ProductInput): Promise<string> {
       installments: input.installments,
       is_active: input.is_active,
       sort_order: input.sort_order,
+      ...categoryFields(input),
     })
     .select("id")
     .single();
@@ -114,6 +126,7 @@ export async function updateProduct(
       installments: input.installments,
       is_active: input.is_active,
       sort_order: input.sort_order,
+      ...categoryFields(input),
     })
     .eq("id", id);
 

@@ -6,6 +6,7 @@ import { Features } from "@/components/home/features";
 import { Testimonials } from "@/components/home/testimonials";
 import { StoreSection } from "@/components/home/store-section";
 import { DeliverySection } from "@/components/home/delivery-section";
+import { AccessoriesSection } from "@/components/home/accessories-section";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Reveal } from "@/components/ui/reveal";
 import { Container } from "@/components/ui/container";
@@ -22,6 +23,9 @@ export default async function HomePage() {
     getSiteImages("loja"),
     getSiteImages("entrega"),
   ]);
+
+  const iphones = products.filter((p) => p.category !== "accessory");
+  const accessories = products.filter((p) => p.category === "accessory");
 
   return (
     <>
@@ -43,9 +47,11 @@ export default async function HomePage() {
             </div>
           </Reveal>
 
-          <ProductGrid products={products} />
+          <ProductGrid products={iphones} />
         </Container>
       </section>
+
+      <AccessoriesSection accessories={accessories} />
 
       <Stats />
       <Features />

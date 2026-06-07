@@ -11,10 +11,12 @@ export function Gallery({
   images,
   productName,
   productId,
+  accessory = false,
 }: {
   images: ProductImageRow[];
   productName: string;
   productId: string;
+  accessory?: boolean;
 }) {
   const [active, setActive] = useState(0);
   const current = images[active] ?? null;
@@ -39,6 +41,8 @@ export function Gallery({
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
+            ) : accessory ? (
+              <ProductImage url={null} alt={productName} variant="accessory" />
             ) : (
               <div className="flex h-full items-center justify-center p-10">
                 <div className="h-full w-auto drop-shadow-[0_24px_50px_rgba(0,0,0,0.55)]">

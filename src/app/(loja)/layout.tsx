@@ -6,10 +6,29 @@ import { MouseSpotlight } from "@/components/visual/mouse-spotlight";
 import { WhatsappFab } from "@/components/layout/whatsapp-fab";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { getActiveProducts } from "@/lib/data/products";
+import { coverImage } from "@/lib/data/types";
 
 /** Layout das rotas públicas: cabeçalho + conteúdo + rodapé. */
-export default function LojaLayout({ children }: { children: ReactNode }) {
+export default async function LojaLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const demo = !isSupabaseConfigured();
+
+  // Acessórios em estoque para o upsell no carrinho.
+  const upsellAccessories = (await getActiveProducts())
+    .filter((p) => p.category === "accessory" && p.stock > 0)
+    .slice(0, 6)
+    .map((p) => ({
+      productId: p.id,
+      name: p.name,
+      priceCents: p.price_cents,
+      imageUrl: coverImage(p)?.url ?? null,
+      stock: p.stock,
+      category: "accessory" as const,
+    }));
 
   return (
     <>
@@ -25,7 +44,7 @@ export default function LojaLayout({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <WhatsappFab />
-      <CartDrawer />
+      <CartDrawer accessories={upsellAccessories} />
     </>
   );
 }

@@ -29,6 +29,10 @@ export type Database = {
           price_cents: number;
           stock: number;
           installments: number;
+          category: string;
+          accessory_category: string | null;
+          battery_health: number | null;
+          condition: string | null;
           is_active: boolean;
           sort_order: number | null;
           created_at: string;
@@ -40,6 +44,10 @@ export type Database = {
           price_cents: number;
           stock?: number;
           installments?: number;
+          category?: string;
+          accessory_category?: string | null;
+          battery_health?: number | null;
+          condition?: string | null;
           is_active?: boolean;
           sort_order?: number | null;
           created_at?: string;
@@ -51,6 +59,10 @@ export type Database = {
           price_cents?: number;
           stock?: number;
           installments?: number;
+          category?: string;
+          accessory_category?: string | null;
+          battery_health?: number | null;
+          condition?: string | null;
           is_active?: boolean;
           sort_order?: number | null;
           created_at?: string;

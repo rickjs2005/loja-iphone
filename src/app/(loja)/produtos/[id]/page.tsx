@@ -36,8 +36,9 @@ export default async function ProdutoPage({ params }: Props) {
   const cover = coverImage(product);
   const settings = await getStoreSettings();
   const related = (await getActiveProducts())
-    .filter((p) => p.id !== product.id)
+    .filter((p) => p.id !== product.id && p.category === product.category)
     .slice(0, 3);
+  const isAccessory = product.category === "accessory";
 
   return (
     <Container className="py-8 pb-28 sm:py-12 lg:pb-12">
@@ -55,6 +56,7 @@ export default async function ProdutoPage({ params }: Props) {
           images={product.images}
           productName={product.name}
           productId={product.id}
+          accessory={isAccessory}
         />
 
         <div className="flex flex-col self-start lg:sticky lg:top-24">
@@ -96,6 +98,7 @@ export default async function ProdutoPage({ params }: Props) {
                 priceCents: product.price_cents,
                 imageUrl: cover?.url ?? null,
                 stock: product.stock,
+                category: isAccessory ? "accessory" : "iphone",
               }}
             />
           </div>
@@ -126,6 +129,7 @@ export default async function ProdutoPage({ params }: Props) {
           priceCents: product.price_cents,
           imageUrl: cover?.url ?? null,
           stock: product.stock,
+          category: isAccessory ? "accessory" : "iphone",
         }}
       />
     </Container>

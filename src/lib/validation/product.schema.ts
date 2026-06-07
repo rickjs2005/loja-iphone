@@ -35,6 +35,19 @@ export const productSchema = z.object({
     .max(24, "Máximo de 24 parcelas")
     .optional()
     .transform((v) => v ?? 12),
+  category: z.enum(["iphone", "accessory"]).default("iphone"),
+  accessory_category: z.preprocess(
+    emptyToUndefined,
+    z.enum(["carregadores", "capas", "audio", "outros"]).optional(),
+  ),
+  battery_health: z.preprocess(
+    emptyToUndefined,
+    z.coerce.number().int().min(0).max(100).optional(),
+  ),
+  condition: z.preprocess(
+    emptyToUndefined,
+    z.enum(["vitrine", "excelente", "bom"]).optional(),
+  ),
   is_active: z.coerce.boolean().default(true),
   sort_order: z.coerce
     .number()

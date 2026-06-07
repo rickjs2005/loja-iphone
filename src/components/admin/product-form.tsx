@@ -14,6 +14,8 @@ import {
   type ProductFormState,
 } from "@/app/admin/produtos/actions";
 import { formatCents } from "@/lib/format";
+import { ACCESSORY_CATEGORIES, CONDITIONS } from "@/lib/data/types";
+import { cn } from "@/lib/cn";
 import type { ProductRow } from "@/types/database.types";
 
 export function ProductForm({ product }: { product?: ProductRow }) {
@@ -24,13 +26,40 @@ export function ProductForm({ product }: { product?: ProductRow }) {
   const [priceCents, setPriceCents] = useState(
     product ? String(product.price_cents) : "",
   );
+  const [category, setCategory] = useState<"iphone" | "accessory">(
+    (product?.category as "iphone" | "accessory") ?? "iphone",
+  );
 
   const err = state.fieldErrors ?? {};
   const preview = Number(priceCents);
+  const isIphone = category === "iphone";
 
   return (
     <form action={formAction} className="flex max-w-2xl flex-col gap-5">
       {product && <input type="hidden" name="id" value={product.id} />}
+      <input type="hidden" name="category" value={category} />
+
+      {/* Seletor de tipo */}
+      <div>
+        <Label>Tipo de produto</Label>
+        <div className="grid grid-cols-2 gap-2 rounded-xl border border-zinc-800 bg-zinc-950 p-1">
+          {(["iphone", "accessory"] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCategory(c)}
+              className={cn(
+                "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                category === c
+                  ? "bg-primary text-white"
+                  : "text-zinc-400 hover:text-zinc-100",
+              )}
+            >
+              {c === "iphone" ? "iPhone" : "Acessório"}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div>
         <Label htmlFor="name">Nome</Label>
@@ -39,7 +68,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           name="name"
           required
           defaultValue={product?.name}
-          placeholder="iPhone 15 Pro 256GB"
+          placeholder={isIphone ? "iPhone 15 Pro 256GB" : "Capa MagSafe transparente"}
         />
         <FieldError>{err.name?.[0]}</FieldError>
       </div>
@@ -103,9 +132,63 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           step={1}
           defaultValue={product?.installments ?? 12}
         />
-        <FormHelp>Quantas vezes no cartão sem juros (ex.: 12).</FormHelp>
         <FieldError>{err.installments?.[0]}</FieldError>
       </div>
+
+      {/* Campos específicos de iPhone */}
+      {isIphone && (
+        <div className="grid gap-5 rounded-xl border border-zinc-800 bg-zinc-950/50 p-4 sm:grid-cols-2">
+          <div>
+            <Label htmlFor="battery_health">Saúde da bateria (%)</Label>
+            <Input
+              id="battery_health"
+              name="battery_health"
+              type="number"
+              min={0}
+              max={100}
+              step={1}
+              defaultValue={product?.battery_health ?? ""}
+              placeholder="100"
+            />
+            <FieldError>{err.battery_health?.[0]}</FieldError>
+          </div>
+          <div>
+            <Label htmlFor="condition">Condição estética</Label>
+            <select
+              id="condition"
+              name="condition"
+              defaultValue={product?.condition ?? ""}
+              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/40"
+            >
+              <option value="">—</option>
+              {CONDITIONS.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
+
+      {/* Campos específicos de Acessório */}
+      {!isIphone && (
+        <div>
+          <Label htmlFor="accessory_category">Categoria do acessório</Label>
+          <select
+            id="accessory_category"
+            name="accessory_category"
+            defaultValue={product?.accessory_category ?? "outros"}
+            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/40"
+          >
+            {ACCESSORY_CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div>
         <Label htmlFor="sort_order">Ordem de exibição</Label>
@@ -117,7 +200,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           step={1}
           defaultValue={product?.sort_order ?? 0}
         />
-        <FormHelp>Menor número aparece primeiro na loja.</FormHelp>
+        <FormHelp>Menor número aparece primeiro.</FormHelp>
       </div>
 
       <label className="flex items-center gap-3">
@@ -137,7 +220,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
         <p className="text-sm text-emerald-400">Alterações salvas com sucesso.</p>
       )}
 
-      <div className="flex gap-3">
+      <div>
         <SubmitButton size="lg">
           {product ? "Salvar alterações" : "Criar produto"}
         </SubmitButton>
