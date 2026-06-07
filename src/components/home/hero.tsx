@@ -1,10 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
 import { StarIcon, WhatsappIcon } from "@/components/ui/icons";
-import { Iphone3DLazy } from "@/components/visual/iphone-3d-lazy";
 import { storeConfig } from "@/config/theme.config";
 
 // Posições fixas das partículas (determinístico → sem mismatch de hidratação).
@@ -44,7 +44,20 @@ function PhoneVisual() {
     >
       {/* Orbe de luz grande atrás do aparelho */}
       <div className="absolute left-1/2 top-1/2 -z-10 size-[640px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(110,92,246,0.5),rgba(10,132,255,0.28)_38%,transparent_70%)] blur-2xl" />
-      <Iphone3DLazy />
+      <motion.div
+        animate={{ y: [0, -16, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="relative h-full w-full drop-shadow-[0_40px_70px_rgba(0,0,0,0.5)]"
+      >
+        <Image
+          src="/hero-iphone.png"
+          alt="iPhone 17 Pro Max"
+          fill
+          priority
+          sizes="(max-width: 1024px) 90vw, 620px"
+          className="object-contain [-webkit-mask-image:radial-gradient(ellipse_70%_94%_at_center,#000_60%,transparent_100%)] [mask-image:radial-gradient(ellipse_70%_94%_at_center,#000_60%,transparent_100%)]"
+        />
+      </motion.div>
     </motion.div>
   );
 }
