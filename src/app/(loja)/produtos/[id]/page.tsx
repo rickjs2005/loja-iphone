@@ -6,9 +6,12 @@ import { buttonClasses } from "@/components/ui/button";
 import { Gallery } from "@/components/product/gallery";
 import { StockBadge } from "@/components/product/stock-badge";
 import { PurchasePanel } from "@/components/cart/purchase-panel";
-import { ChevronLeftIcon, WhatsappIcon } from "@/components/ui/icons";
-import { ShieldIcon } from "@/components/ui/icons";
-import { getProductById } from "@/lib/data/products";
+import { MobilePurchaseBar } from "@/components/cart/mobile-purchase-bar";
+import { Specs } from "@/components/product/specs";
+import { ProductReviews } from "@/components/product/product-reviews";
+import { RelatedProducts } from "@/components/product/related-products";
+import { ChevronLeftIcon, ShieldIcon, WhatsappIcon } from "@/components/ui/icons";
+import { getActiveProducts, getProductById } from "@/lib/data/products";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
 import { buildProductInquiryUrl } from "@/lib/whatsapp";
@@ -30,9 +33,12 @@ export default async function ProdutoPage({ params }: Props) {
   if (!product) notFound();
 
   const cover = coverImage(product);
+  const related = (await getActiveProducts())
+    .filter((p) => p.id !== product.id)
+    .slice(0, 3);
 
   return (
-    <Container className="py-8 sm:py-12">
+    <Container className="py-8 pb-28 sm:py-12 lg:pb-12">
       <Link
         href="/"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-fg"
@@ -41,6 +47,7 @@ export default async function ProdutoPage({ params }: Props) {
         Voltar para a loja
       </Link>
 
+      {/* Topo: galeria + compra */}
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
         <Gallery
           images={product.images}
@@ -48,7 +55,7 @@ export default async function ProdutoPage({ params }: Props) {
           productId={product.id}
         />
 
-        <div className="flex flex-col">
+        <div className="flex flex-col self-start lg:sticky lg:top-24">
           <StockBadge stock={product.stock} className="mb-4 w-fit" />
 
           <h1 className="text-3xl font-bold tracking-tight text-fg sm:text-4xl">
@@ -95,6 +102,23 @@ export default async function ProdutoPage({ params }: Props) {
           </a>
         </div>
       </div>
+
+      {/* Seções da mini-landing */}
+      <div className="mt-16 flex flex-col gap-16">
+        <Specs />
+        <ProductReviews />
+        <RelatedProducts products={related} />
+      </div>
+
+      <MobilePurchaseBar
+        product={{
+          productId: product.id,
+          name: product.name,
+          priceCents: product.price_cents,
+          imageUrl: cover?.url ?? null,
+          stock: product.stock,
+        }}
+      />
     </Container>
   );
 }

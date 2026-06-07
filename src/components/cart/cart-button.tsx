@@ -1,20 +1,21 @@
 "use client";
 
-import Link from "next/link";
 import { CartIcon } from "@/components/ui/icons";
 import { useCartStore, selectTotalItems } from "@/lib/cart/store";
+import { useCartUI } from "@/lib/cart/ui-store";
 import { useHydrated } from "@/lib/cart/use-hydrated";
 
-/** Botão do carrinho no header, com contador animado de itens. */
+/** Botão do carrinho no header: abre o drawer e mostra o contador de itens. */
 export function CartButton() {
   const total = useCartStore(selectTotalItems);
+  const open = useCartUI((s) => s.open);
   const hydrated = useHydrated();
   const count = hydrated ? total : 0;
 
   return (
-    <Link
-      href="/carrinho"
-      aria-label={`Carrinho com ${count} ${count === 1 ? "item" : "itens"}`}
+    <button
+      onClick={open}
+      aria-label={`Abrir carrinho com ${count} ${count === 1 ? "item" : "itens"}`}
       className="relative inline-flex size-11 items-center justify-center rounded-xl text-fg transition-colors hover:bg-white/5"
     >
       <CartIcon className="size-5" />
@@ -23,6 +24,6 @@ export function CartButton() {
           {count}
         </span>
       )}
-    </Link>
+    </button>
   );
 }

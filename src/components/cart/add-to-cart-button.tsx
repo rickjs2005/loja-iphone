@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BagIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
+import { useCartUI } from "@/lib/cart/ui-store";
 
 type Props = {
   product: Omit<CartItem, "quantity">;
@@ -21,11 +22,13 @@ export function AddToCartButton({
   fullWidth,
 }: Props) {
   const addItem = useCartStore((s) => s.addItem);
+  const openCart = useCartUI((s) => s.open);
   const [added, setAdded] = useState(false);
   const esgotado = product.stock <= 0;
 
   function handleAdd() {
     addItem(product, quantity);
+    openCart();
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1500);
   }

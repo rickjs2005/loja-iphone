@@ -15,8 +15,31 @@ export default async function AdminProdutosPage() {
   await requireUser();
   const products = await getAllProducts();
 
+  const ativos = products.filter((p) => p.is_active).length;
+  const estoqueTotal = products.reduce((acc, p) => acc + p.stock, 0);
+  const semEstoque = products.filter((p) => p.stock === 0).length;
+
+  const dashboard = [
+    { label: "Produtos ativos", value: ativos },
+    { label: "Estoque total", value: estoqueTotal },
+    { label: "Sem estoque", value: semEstoque },
+  ];
+
   return (
     <div>
+      {/* Dashboard rápido */}
+      <div className="mb-8 grid grid-cols-3 gap-4">
+        {dashboard.map((d) => (
+          <div
+            key={d.label}
+            className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+          >
+            <p className="text-3xl font-bold text-fg sm:text-4xl">{d.value}</p>
+            <p className="mt-1 text-xs text-muted sm:text-sm">{d.label}</p>
+          </div>
+        ))}
+      </div>
+
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-fg">Produtos</h1>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CartIcon, MinusIcon, PlusIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
+import { useCartUI } from "@/lib/cart/ui-store";
 
 /** Seletor de quantidade + adicionar ao carrinho (página de detalhe). */
 export function PurchasePanel({
@@ -12,6 +13,7 @@ export function PurchasePanel({
   product: Omit<CartItem, "quantity">;
 }) {
   const addItem = useCartStore((s) => s.addItem);
+  const openCart = useCartUI((s) => s.open);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const esgotado = product.stock <= 0;
@@ -19,6 +21,7 @@ export function PurchasePanel({
 
   function handleAdd() {
     addItem(product, qty);
+    openCart();
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1500);
   }

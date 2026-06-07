@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/footer";
 import { AuroraBackground } from "@/components/visual/aurora-background";
 import { MouseSpotlight } from "@/components/visual/mouse-spotlight";
 import { WhatsappFab } from "@/components/layout/whatsapp-fab";
+import { CartDrawer } from "@/components/cart/cart-drawer";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 /** Layout das rotas públicas: cabeçalho + conteúdo + rodapé. */
@@ -24,6 +25,7 @@ export default function LojaLayout({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <WhatsappFab />
+      <CartDrawer />
     </>
   );
 }
