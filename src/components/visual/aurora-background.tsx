@@ -11,22 +11,24 @@ export function AuroraBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-bg">
       <motion.div
-        className="absolute -top-40 left-1/4 size-[520px] rounded-full bg-primary/20 blur-[140px]"
-        animate={{ x: [0, 60, -20, 0], y: [0, 40, 10, 0], scale: [1, 1.15, 0.95, 1] }}
+        className="absolute -top-48 left-1/4 size-[760px] rounded-full bg-primary/25 blur-[160px]"
+        animate={{ x: [0, 80, -30, 0], y: [0, 50, 10, 0], scale: [1, 1.15, 0.95, 1] }}
         transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute top-1/3 right-0 size-[440px] rounded-full bg-accent/20 blur-[140px]"
-        animate={{ x: [0, -50, 20, 0], y: [0, 60, -10, 0], scale: [1, 1.1, 1, 1] }}
+        className="absolute top-1/4 right-0 size-[620px] rounded-full bg-accent/25 blur-[160px]"
+        animate={{ x: [0, -60, 20, 0], y: [0, 70, -10, 0], scale: [1, 1.1, 1, 1] }}
         transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute bottom-0 left-1/3 size-[400px] rounded-full bg-[#FF2D55]/12 blur-[150px]"
-        animate={{ x: [0, 40, -30, 0], y: [0, -30, 20, 0] }}
+        className="absolute bottom-0 left-1/3 size-[560px] rounded-full bg-[#FF2D55]/15 blur-[170px]"
+        animate={{ x: [0, 50, -40, 0], y: [0, -40, 20, 0] }}
         transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
       />
+      {/* Grade tecnológica sutil */}
+      <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] [background-size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,#000_30%,transparent_75%)]" />
       {/* Vinheta sutil para focar o conteúdo no centro */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.6)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(0,0,0,0.65)_100%)]" />
     </div>
   );
 }

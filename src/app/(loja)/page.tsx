@@ -1,5 +1,7 @@
 import { Hero } from "@/components/home/hero";
 import { TrustBand } from "@/components/home/trust-band";
+import { Highlight } from "@/components/home/highlight";
+import { Stats } from "@/components/home/stats";
 import { Features } from "@/components/home/features";
 import { Testimonials } from "@/components/home/testimonials";
 import { ProductGrid } from "@/components/product/product-grid";
@@ -17,15 +19,16 @@ export default async function HomePage() {
     <>
       <Hero />
       <TrustBand />
+      <Highlight />
 
-      <section id="produtos" className="scroll-mt-20 py-16 sm:py-20">
+      <section id="produtos" className="scroll-mt-20 py-16 sm:py-24">
         <Container>
           <Reveal>
-            <div className="mb-10 text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-fg sm:text-4xl">
+            <div className="mb-12 text-center">
+              <h2 className="text-3xl font-bold tracking-tight text-fg sm:text-5xl">
                 Escolha o seu iPhone
               </h2>
-              <p className="mt-3 text-lg text-muted">
+              <p className="mx-auto mt-4 max-w-2xl text-lg text-muted sm:text-xl">
                 Modelos disponíveis para entrega imediata. Finalize pelo
                 WhatsApp em segundos.
               </p>
@@ -36,6 +39,7 @@ export default async function HomePage() {
         </Container>
       </section>
 
+      <Stats />
       <Features />
       <Testimonials />
     </>

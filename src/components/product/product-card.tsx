@@ -11,10 +11,12 @@ import { formatCents, formatInstallments } from "@/lib/format";
 import { coverImage, type ProductWithImages } from "@/lib/data/types";
 
 const item = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 30, scale: 0.92, filter: "blur(6px)" },
   show: {
     opacity: 1,
     y: 0,
+    scale: 1,
+    filter: "blur(0px)",
     transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
   },
 };
@@ -50,6 +52,12 @@ export function ProductCard({
         aria-hidden
         style={{ background: spotlight }}
         className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      />
+
+      {/* Brilho percorrendo o card no hover */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-10 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full"
       />
 
       <Link href={`/produtos/${product.id}`} className="relative block">
