@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { AccessoryCard } from "@/components/product/accessory-card";
@@ -63,7 +63,7 @@ export function AccessoriesSection({
           ))}
         </div>
 
-        <motion.div
+        <m.div
           key={active}
           variants={container}
           initial="hidden"
@@ -73,7 +73,7 @@ export function AccessoriesSection({
           {list.map((a) => (
             <AccessoryCard key={a.id} product={a} />
           ))}
-        </motion.div>
+        </m.div>
       </Container>
     </section>
   );

@@ -2,7 +2,7 @@
 
 import type { ComponentType, SVGProps } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
 import { BoltIcon, CheckIcon, WhatsappIcon } from "@/components/ui/icons";
@@ -32,7 +32,7 @@ export function TradeIn() {
 
           <div className="relative grid items-center gap-10 p-8 sm:p-12 lg:grid-cols-2">
             {/* Visual: aparelho antigo → linha de energia → aparelho novo */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.94 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-100px" }}
@@ -41,7 +41,7 @@ export function TradeIn() {
             >
               {/* Arte com fundo transparente: antigo ⇄ novo, flutuando solta
                   no card (as setas da própria imagem contam a troca). */}
-              <motion.div
+              <m.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="relative w-full drop-shadow-[0_30px_50px_rgba(0,0,0,0.55)]"
@@ -54,11 +54,11 @@ export function TradeIn() {
                   sizes="(max-width: 1024px) 90vw, 560px"
                   className="h-auto w-full"
                 />
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </m.div>
 
             {/* Texto + passos + CTA */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
@@ -100,7 +100,7 @@ export function TradeIn() {
                 <WhatsappIcon className="size-5" />
                 Avaliar meu aparelho
               </a>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </Container>

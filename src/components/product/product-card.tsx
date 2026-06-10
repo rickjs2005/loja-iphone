@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
+import { m, useMotionTemplate, useMotionValue } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
 import { StockBadge } from "@/components/product/stock-badge";
 import { buttonClasses } from "@/components/ui/button";
@@ -46,7 +46,7 @@ export function ProductCard({
   }
 
   return (
-    <motion.article
+    <m.article
       variants={item}
       onMouseMove={onMove}
       whileHover={{ y: -8, scale: 1.02 }}
@@ -54,7 +54,7 @@ export function ProductCard({
       className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors duration-300 hover:border-white/30 hover:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]"
     >
       {/* Spotlight que segue o cursor */}
-      <motion.div
+      <m.div
         aria-hidden
         style={{ background: spotlight }}
         className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -168,6 +168,6 @@ export function ProductCard({
           </span>
         )}
       </div>
-    </motion.article>
+    </m.article>
   );
 }

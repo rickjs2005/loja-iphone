@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
 import { Lightbox } from "@/components/product/lightbox";
 import { IphoneRender } from "@/components/visual/iphone-render";
@@ -28,7 +28,7 @@ export function Gallery({
       <div className="relative aspect-square overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.08),transparent_60%)]" />
         <AnimatePresence mode="wait">
-          <motion.div
+          <m.div
             key={current?.id ?? "empty"}
             initial={{ opacity: 0, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -60,7 +60,7 @@ export function Gallery({
                 </div>
               </div>
             )}
-          </motion.div>
+          </m.div>
         </AnimatePresence>
       </div>
 

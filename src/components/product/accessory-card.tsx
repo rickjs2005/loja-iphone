@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { formatCents } from "@/lib/format";
@@ -22,7 +22,7 @@ export function AccessoryCard({ product }: { product: ProductWithImages }) {
   const cover = coverImage(product);
 
   return (
-    <motion.article
+    <m.article
       variants={item}
       className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-3 backdrop-blur transition-colors hover:border-white/30"
     >
@@ -66,6 +66,6 @@ export function AccessoryCard({ product }: { product: ProductWithImages }) {
           }}
         />
       </div>
-    </motion.article>
+    </m.article>
   );
 }

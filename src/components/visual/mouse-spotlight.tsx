@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion, useMotionTemplate, useMotionValue, useSpring } from "framer-motion";
+import { m, useMotionTemplate, useMotionValue, useSpring } from "framer-motion";
 
 /**
  * Glow sutil que acompanha o cursor por toda a página (sensação premium).
@@ -24,7 +24,7 @@ export function MouseSpotlight() {
   }, [x, y]);
 
   return (
-    <motion.div
+    <m.div
       aria-hidden
       style={{ background: bg }}
       className="pointer-events-none fixed inset-0 -z-[5] hidden lg:block"

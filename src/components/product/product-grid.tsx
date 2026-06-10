@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ProductCard } from "@/components/product/product-card";
 import type { ProductWithImages } from "@/lib/data/types";
 
@@ -21,7 +21,7 @@ export function ProductGrid({ products }: { products: ProductWithImages[] }) {
   }
 
   return (
-    <motion.div
+    <m.div
       variants={container}
       initial="hidden"
       whileInView="show"
@@ -31,6 +31,6 @@ export function ProductGrid({ products }: { products: ProductWithImages[] }) {
       {products.map((product, i) => (
         <ProductCard key={product.id} product={product} index={i} />
       ))}
-    </motion.div>
+    </m.div>
   );
 }

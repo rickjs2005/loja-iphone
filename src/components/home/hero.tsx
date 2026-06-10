@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
 import { PhoneIcon } from "@/components/ui/icons";
@@ -41,7 +41,7 @@ const silverBrush =
 
 function PhoneVisual() {
   return (
-    <motion.div
+    <m.div
       // Última entrada da sequência de reveal: headline → subtítulo → botões → device.
       initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -51,7 +51,7 @@ function PhoneVisual() {
       {/* Luz monocromática grande atrás do aparelho */}
       <div className="absolute left-1/2 top-1/2 -z-10 size-[640px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.16),rgba(255,255,255,0.06)_42%,transparent_70%)] blur-2xl" />
       {/* Flutuação muito sutil — presença, não distração */}
-      <motion.div
+      <m.div
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
         className="w-full max-w-[460px]"
@@ -65,12 +65,14 @@ function PhoneVisual() {
             muted
             playsInline
             preload="metadata"
+            // Primeiro frame leve enquanto o vídeo carrega (melhora o LCP).
+            poster="/hero-poster.jpg"
             aria-label="iPhone 17 Pro em destaque"
             className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }
 
@@ -80,7 +82,7 @@ export function Hero() {
       {/* Partículas flutuando */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         {PARTICLES.map((p, i) => (
-          <motion.span
+          <m.span
             key={i}
             className="absolute rounded-full bg-white/40"
             style={{ left: p.x, top: p.y, width: p.s, height: p.s }}
@@ -99,7 +101,7 @@ export function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-10">
           {/* Coluna de texto */}
           <div className="text-center lg:text-left">
-            <motion.span
+            <m.span
               custom={0}
               variants={fade}
               initial="hidden"
@@ -108,10 +110,10 @@ export function Hero() {
             >
               <span className="size-1.5 animate-pulse rounded-full bg-fg/80" />
               Pronta entrega · Garantia · Procedência
-            </motion.span>
+            </m.span>
 
             {/* Headline empilhada em 3 linhas — padrão flagship (Apple/Linear) */}
-            <motion.h1
+            <m.h1
               custom={1}
               variants={fade}
               initial="hidden"
@@ -121,9 +123,9 @@ export function Hero() {
               <span className={`block ${silverDrop}`}>Titânio.</span>
               <span className={`block ${silverDrop}`}>Performance.</span>
               <span className={`block ${silverBrush}`}>Inteligência.</span>
-            </motion.h1>
+            </m.h1>
 
-            <motion.p
+            <m.p
               custom={2}
               variants={fade}
               initial="hidden"
@@ -132,9 +134,9 @@ export function Hero() {
             >
               iPhones originais com garantia, procedência e o melhor preço da
               região.
-            </motion.p>
+            </m.p>
 
-            <motion.div
+            <m.div
               custom={3}
               variants={fade}
               initial="hidden"
@@ -162,7 +164,7 @@ export function Hero() {
                 <PhoneIcon className="size-5" />
                 Trocar meu iPhone
               </a>
-            </motion.div>
+            </m.div>
           </div>
 
           {/* Coluna do device — foto premium em moldura */}
@@ -171,7 +173,7 @@ export function Hero() {
       </Container>
 
       {/* Indicador de scroll */}
-      <motion.div
+      <m.div
         aria-hidden
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -179,13 +181,13 @@ export function Hero() {
         className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 lg:block"
       >
         <div className="flex h-10 w-6 items-start justify-center rounded-full border border-white/20 p-1.5">
-          <motion.span
+          <m.span
             className="size-1.5 rounded-full bg-white/70"
             animate={{ y: [0, 12, 0], opacity: [1, 0.2, 1] }}
             transition={{ duration: 1.6, repeat: Infinity }}
           />
         </div>
-      </motion.div>
+      </m.div>
     </section>
   );
 }
