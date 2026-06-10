@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
-import { getActiveProducts } from "@/lib/data/products";
+import { getSitemapProducts } from "@/lib/data/products";
 
 // Mesma base do metadataBase no layout raiz.
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 /** Sitemap dinâmico: home + páginas de produto ativas. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const products = await getActiveProducts();
+  const products = await getSitemapProducts();
 
   return [
     {

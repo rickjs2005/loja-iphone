@@ -78,6 +78,111 @@ export const getProductById = cache(
   },
 );
 
+/**
+ * Upsell do carrinho: só os acessórios em estoque, já limitados no banco.
+ * (Antes o layout público pagava a query do catálogo INTEIRO por request.)
+ */
+export const getUpsellAccessories = cache(
+  async (limit = 6): Promise<ProductWithImages[]> => {
+    if (!isSupabaseConfigured()) {
+      return demoProducts
+        .filter((p) => p.category === "accessory" && p.stock > 0)
+        .slice(0, limit);
+    }
+
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select(PRODUCT_WITH_IMAGES)
+      .eq("is_active", true)
+      .eq("category", "accessory")
+      .gt("stock", 0)
+      .order("sort_order", { ascending: true })
+      .limit(limit);
+
+    if (error) throw new Error(`Falha ao listar acessórios: ${error.message}`);
+    return (data ?? []).map((p) => ({ ...p, images: sortImages(p.images) }));
+  },
+);
+
+/** Sitemap: só id + data — sem pagar o join de imagens do catálogo inteiro. */
+export const getSitemapProducts = cache(
+  async (): Promise<{ id: string; created_at: string }[]> => {
+    if (!isSupabaseConfigured()) {
+      return demoProducts.map(({ id, created_at }) => ({ id, created_at }));
+    }
+
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select("id, created_at")
+      .eq("is_active", true);
+
+    if (error) throw new Error(`Falha ao montar sitemap: ${error.message}`);
+    return data ?? [];
+  },
+);
+
+/** Estado atual (preço/estoque/ativo) de itens do carrinho — revalidação. */
+export async function getProductsState(
+  ids: string[],
+): Promise<
+  { id: string; price_cents: number; stock: number; is_active: boolean }[]
+> {
+  if (ids.length === 0) return [];
+  if (!isSupabaseConfigured()) {
+    return demoProducts
+      .filter((p) => ids.includes(p.id))
+      .map(({ id, price_cents, stock, is_active }) => ({
+        id,
+        price_cents,
+        stock,
+        is_active,
+      }));
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("id, price_cents, stock, is_active")
+    .in("id", ids);
+
+  if (error) throw new Error(`Falha ao conferir itens: ${error.message}`);
+  return data ?? [];
+}
+
+/**
+ * Relacionados da PDP: mesma categoria, exceto o próprio produto, já
+ * limitados no banco (antes a página pagava o catálogo inteiro para
+ * filtrar 3 itens em memória).
+ */
+export const getRelatedProducts = cache(
+  async (
+    category: string,
+    excludeId: string,
+    limit = 3,
+  ): Promise<ProductWithImages[]> => {
+    if (!isSupabaseConfigured()) {
+      return demoProducts
+        .filter((p) => p.category === category && p.id !== excludeId)
+        .slice(0, limit);
+    }
+
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select(PRODUCT_WITH_IMAGES)
+      .eq("is_active", true)
+      .eq("category", category)
+      .neq("id", excludeId)
+      .order("sort_order", { ascending: true })
+      .limit(limit);
+
+    if (error) throw new Error(`Falha ao listar relacionados: ${error.message}`);
+    return (data ?? []).map((p) => ({ ...p, images: sortImages(p.images) }));
+  },
+);
+
 // ---------------------------------------------------------------------------
 // Admin (requer sessão autenticada — garantido por RLS + middleware)
 // ---------------------------------------------------------------------------

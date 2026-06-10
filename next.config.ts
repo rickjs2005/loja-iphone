@@ -10,6 +10,30 @@ const securityHeaders = [
   },
 ];
 
+// CSP só em produção: em dev o Next depende de eval (HMR/refresh) e o header
+// quebraria tudo. 'unsafe-inline' em script-src é necessário pelo bootstrap
+// inline do Next (sem nonce configurado) e pelo theme-injector inline; em
+// style-src, pelos estilos inline do Framer Motion/Next.
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://*.supabase.co https://store.storeimages.cdn-apple.com https://images.unsplash.com",
+  "media-src 'self'",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.supabase.co",
+  "frame-ancestors 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
+if (process.env.NODE_ENV === "production") {
+  securityHeaders.push({
+    key: "Content-Security-Policy",
+    value: contentSecurityPolicy,
+  });
+}
+
 const nextConfig: NextConfig = {
   // Não expõe a versão do Next no header (reduz fingerprinting).
   poweredByHeader: false,

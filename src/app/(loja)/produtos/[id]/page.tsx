@@ -9,7 +9,7 @@ import { MobilePurchaseBar } from "@/components/cart/mobile-purchase-bar";
 import { Specs } from "@/components/product/specs";
 import { RelatedProducts } from "@/components/product/related-products";
 import { ChevronLeftIcon, ShieldIcon, WhatsappIcon } from "@/components/ui/icons";
-import { getActiveProducts, getProductById } from "@/lib/data/products";
+import { getProductById, getRelatedProducts } from "@/lib/data/products";
 import { getStoreSettings } from "@/lib/data/site";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
@@ -24,6 +24,17 @@ type Props = { params: Promise<{ id: string }> };
 
 // Mesma base do metadataBase no layout raiz.
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+/**
+ * Validade da oferta no JSON-LD: hoje + 30 dias (recomendado pelo Google).
+ * Fora do componente para satisfazer a regra de pureza do render — roda no
+ * servidor a cada request (página é force-dynamic).
+ */
+function offerValidUntil(): string {
+  const date = new Date();
+  date.setDate(date.getDate() + 30);
+  return date.toISOString().slice(0, 10);
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -58,17 +69,15 @@ export default async function ProdutoPage({ params }: Props) {
   const { id } = await params;
   // Fetches independentes em paralelo (getProductById deduplicado com o
   // generateMetadata via React.cache).
-  const [product, settings, allProducts] = await Promise.all([
+  const [product, settings] = await Promise.all([
     getProductById(id),
     getStoreSettings(),
-    getActiveProducts(),
   ]);
   if (!product) notFound();
 
   const cover = coverImage(product);
-  const related = allProducts
-    .filter((p) => p.id !== product.id && p.category === product.category)
-    .slice(0, 3);
+  // Relacionados filtrados e limitados no banco (não mais o catálogo inteiro).
+  const related = await getRelatedProducts(product.category, product.id);
   const isAccessory = product.category === "accessory";
 
   // Dados estruturados (Product + Offer) para rich results nos buscadores.
@@ -80,10 +89,23 @@ export default async function ProdutoPage({ params }: Props) {
       product.description ??
       `${product.name} com garantia · ${storeConfig.name}`,
     image: product.images.map((img) => img.url),
+    // Acessórios podem ser de outras marcas — só iPhone leva brand Apple.
+    ...(isAccessory ? {} : { brand: { "@type": "Brand", name: "Apple" } }),
+    // Condição do aparelho: "novo" = lacrado; demais condições = seminovo.
+    ...(product.condition
+      ? {
+          itemCondition:
+            product.condition === "novo"
+              ? "https://schema.org/NewCondition"
+              : "https://schema.org/RefurbishedCondition",
+        }
+      : {}),
     offers: {
       "@type": "Offer",
       price: (product.price_cents / 100).toFixed(2),
       priceCurrency: "BRL",
+      // Oferta válida por 30 dias a partir de hoje.
+      priceValidUntil: offerValidUntil(),
       availability:
         product.stock > 0
           ? "https://schema.org/InStock"

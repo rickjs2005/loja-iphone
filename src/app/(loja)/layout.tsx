@@ -6,7 +6,7 @@ import { MouseSpotlight } from "@/components/visual/mouse-spotlight";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { MotionProvider } from "@/components/visual/motion-provider";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { getActiveProducts } from "@/lib/data/products";
+import { getUpsellAccessories } from "@/lib/data/products";
 import { coverImage } from "@/lib/data/types";
 
 /** Layout das rotas públicas: cabeçalho + conteúdo + rodapé. */
@@ -17,11 +17,9 @@ export default async function LojaLayout({
 }) {
   const demo = !isSupabaseConfigured();
 
-  // Acessórios em estoque para o upsell no carrinho.
-  const upsellAccessories = (await getActiveProducts())
-    .filter((p) => p.category === "accessory" && p.stock > 0)
-    .slice(0, 6)
-    .map((p) => ({
+  // Acessórios em estoque para o upsell no carrinho (query já filtrada e
+  // limitada no banco — antes pagávamos o catálogo inteiro em toda página).
+  const upsellAccessories = (await getUpsellAccessories()).map((p) => ({
       productId: p.id,
       name: p.name,
       priceCents: p.price_cents,
