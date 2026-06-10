@@ -126,6 +126,70 @@ export type Database = {
         };
         Relationships: [];
       };
+      units: {
+        Row: {
+          id: string;
+          name: string;
+          address: string | null;
+          hours: string | null;
+          whatsapp: string | null;
+          maps_url: string | null;
+          sort_order: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          address?: string | null;
+          hours?: string | null;
+          whatsapp?: string | null;
+          maps_url?: string | null;
+          sort_order?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          address?: string | null;
+          hours?: string | null;
+          whatsapp?: string | null;
+          maps_url?: string | null;
+          sort_order?: number | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      inventory: {
+        Row: {
+          product_id: string;
+          unit_id: string;
+          stock: number;
+        };
+        Insert: {
+          product_id: string;
+          unit_id: string;
+          stock?: number;
+        };
+        Update: {
+          product_id?: string;
+          unit_id?: string;
+          stock?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "inventory_product_id_fkey";
+            columns: ["product_id"];
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "inventory_unit_id_fkey";
+            columns: ["unit_id"];
+            referencedRelation: "units";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       product_images: {
         Row: {
           id: string;
@@ -174,3 +238,5 @@ export type StoreSettingsRow =
   Database["public"]["Tables"]["store_settings"]["Row"];
 export type SiteImageRow = Database["public"]["Tables"]["site_images"]["Row"];
 export type SiteSection = "loja" | "entrega" | "instagram";
+export type UnitRow = Database["public"]["Tables"]["units"]["Row"];
+export type InventoryRow = Database["public"]["Tables"]["inventory"]["Row"];

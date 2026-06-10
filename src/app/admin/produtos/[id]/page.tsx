@@ -5,6 +5,7 @@ import { ProductForm } from "@/components/admin/product-form";
 import { ImageManager } from "@/components/admin/image-manager";
 import { requireUser } from "@/lib/auth/user";
 import { getProductById } from "@/lib/data/products";
+import { getProductInventory, getUnits } from "@/lib/data/units";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,12 @@ export default async function EditarProdutoPage({
 }) {
   await requireUser();
   const { id } = await params;
-  const product = await getProductById(id);
+  // Com unidades cadastradas, o form mostra o estoque por unidade.
+  const [product, units, inventory] = await Promise.all([
+    getProductById(id),
+    getUnits(),
+    getProductInventory(id),
+  ]);
   if (!product) notFound();
 
   return (
@@ -35,7 +41,7 @@ export default async function EditarProdutoPage({
           <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-400">
             Dados
           </h2>
-          <ProductForm product={product} />
+          <ProductForm product={product} units={units} inventory={inventory} />
         </section>
 
         <section>

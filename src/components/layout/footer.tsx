@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/container";
 import { InstagramIcon, WhatsappIcon } from "@/components/ui/icons";
 import { storeConfig } from "@/config/theme.config";
 import { getStoreSettings } from "@/lib/data/site";
+import { getUnits } from "@/lib/data/units";
 
 // Títulos das colunas seguem o mesmo padrão tipográfico.
 const colTitle = "text-xs font-semibold uppercase tracking-[0.2em] text-muted";
@@ -24,7 +25,8 @@ const CATEGORIAS: { label: string; href: string }[] = [
 /** Rodapé corporativo em 4 colunas — última camada de confiança da página. */
 export async function Footer() {
   const { social, whatsapp, name, description } = storeConfig;
-  const settings = await getStoreSettings();
+  // Buscas independentes em paralelo (getUnits é deduplicado via React.cache).
+  const [settings, units] = await Promise.all([getStoreSettings(), getUnits()]);
   const ano = new Date().getFullYear();
 
   return (
@@ -100,8 +102,20 @@ export async function Footer() {
                 Falar no WhatsApp
               </a>
             </li>
-            {settings.address && (
-              <li className="text-sm text-muted">{settings.address}</li>
+            {/* Com unidades cadastradas, lista uma a uma; senão, endereço único. */}
+            {units.length > 0 ? (
+              units.map((unit) => (
+                <li key={unit.id}>
+                  <p className="text-sm text-fg">{unit.name}</p>
+                  {unit.address && (
+                    <p className="text-xs text-muted">{unit.address}</p>
+                  )}
+                </li>
+              ))
+            ) : (
+              settings.address && (
+                <li className="text-sm text-muted">{settings.address}</li>
+              )
             )}
             {settings.hours && (
               <li className="text-sm text-muted">{settings.hours}</li>

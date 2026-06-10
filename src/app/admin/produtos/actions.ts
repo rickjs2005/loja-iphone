@@ -20,6 +20,7 @@ import {
   removeProductImageByUrl,
   uploadProductImage,
 } from "@/lib/data/storage";
+import { setProductInventory } from "@/lib/data/units";
 
 export type ProductFormState = {
   ok?: boolean;
@@ -61,6 +62,23 @@ function parseProduct(formData: FormData) {
   });
 }
 
+/**
+ * Lê os campos `stock_unit_<uuid>` do form (estoque por unidade). Valores
+ * não numéricos são ignorados; vazio conta como 0; negativos viram 0.
+ */
+function collectUnitStockEntries(formData: FormData) {
+  const entries: { unitId: string; stock: number }[] = [];
+  for (const [key, value] of formData.entries()) {
+    if (!key.startsWith("stock_unit_") || typeof value !== "string") continue;
+    const unitId = key.slice("stock_unit_".length);
+    if (!isUuid(unitId)) continue;
+    const n = Number(value.trim() === "" ? "0" : value);
+    if (!Number.isFinite(n)) continue;
+    entries.push({ unitId, stock: Math.max(0, Math.trunc(n)) });
+  }
+  return entries;
+}
+
 /** Cria ou atualiza um produto (decide pelo campo oculto "id"). */
 export async function saveProductAction(
   _prev: ProductFormState,
@@ -81,9 +99,14 @@ export async function saveProductAction(
 
   const id = String(formData.get("id") || "");
 
+  // Estoque por unidade (presente só quando a loja tem unidades cadastradas).
+  // O trigger do banco recalcula products.stock a partir do inventory.
+  const stockEntries = collectUnitStockEntries(formData);
+
   if (id) {
     try {
       await updateProduct(id, parsed.data);
+      if (stockEntries.length > 0) await setProductInventory(id, stockEntries);
     } catch {
       return { error: "Não foi possível salvar as alterações. Tente de novo.", values };
     }
@@ -111,6 +134,20 @@ export async function saveProductAction(
     newId = await createProduct(parsed.data);
   } catch {
     return { error: "Não foi possível criar o produto. Tente de novo.", values };
+  }
+
+  // Distribui o estoque entre as unidades agora que o produto existe.
+  try {
+    if (stockEntries.length > 0) await setProductInventory(newId, stockEntries);
+  } catch {
+    // O produto existe; reenviar o form criaria um duplicado.
+    revalidatePath("/admin/produtos");
+    revalidatePath("/");
+    return {
+      error:
+        "Produto criado, mas o estoque por unidade falhou — ajuste na tela de edição.",
+      values,
+    };
   }
 
   // Sobe as imagens (se houver) agora que o produto — e seu ID — existem.

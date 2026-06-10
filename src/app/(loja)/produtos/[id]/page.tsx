@@ -16,6 +16,7 @@ import { formatCents, formatInstallments } from "@/lib/format";
 import { buildProductInquiryUrl } from "@/lib/whatsapp";
 import { storeConfig } from "@/config/theme.config";
 import { ConditionCard } from "@/components/product/condition-card";
+import { UnitAvailability } from "@/components/product/unit-availability";
 
 // Página sempre dinâmica: preço/estoque mudam com frequência.
 export const dynamic = "force-dynamic";
@@ -170,6 +171,10 @@ export default async function ProdutoPage({ params }: Props) {
               condition={product.condition}
             />
           )}
+
+          {/* Estoque por unidade — renderiza para aparelhos e acessórios;
+              o componente some sozinho com menos de duas unidades. */}
+          <UnitAvailability productId={product.id} />
 
           {product.description && (
             <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">

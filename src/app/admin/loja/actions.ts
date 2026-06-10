@@ -7,6 +7,7 @@ import {
   siteSettingsSchema,
 } from "@/lib/validation/site.schema";
 import { imageFileSchema } from "@/lib/validation/product.schema";
+import { unitSchema } from "@/lib/validation/unit.schema";
 import {
   addSiteImage,
   deleteSiteImage,
@@ -14,6 +15,13 @@ import {
   updateSiteImageCaption,
   updateStoreSettings,
 } from "@/lib/data/site";
+import {
+  createUnit,
+  deleteUnit,
+  getUnits,
+  seedInventoryForFirstUnit,
+  updateUnit,
+} from "@/lib/data/units";
 import { removeProductImageByUrl, uploadSiteImage } from "@/lib/data/storage";
 import type { SiteSection } from "@/types/database.types";
 
@@ -72,6 +80,67 @@ export async function saveSettingsAction(
   revalidatePath("/");
   revalidatePath("/admin/loja");
   return { ok: true };
+}
+
+/** Cria ou atualiza uma unidade física (decide pelo campo oculto "id"). */
+export async function saveUnitAction(
+  _prev: SiteFormState,
+  formData: FormData,
+): Promise<SiteFormState> {
+  await requireAdmin();
+
+  const values = echoValues(formData);
+
+  const parsed = unitSchema.safeParse({
+    name: formData.get("name"),
+    address: formData.get("address"),
+    hours: formData.get("hours"),
+    whatsapp: formData.get("whatsapp"),
+    maps_url: formData.get("maps_url"),
+    sort_order: formData.get("sort_order"),
+  });
+  if (!parsed.success) {
+    return {
+      error: "Confira os campos.",
+      fieldErrors: parsed.error.flatten().fieldErrors,
+      values,
+    };
+  }
+
+  const id = String(formData.get("id") || "");
+
+  try {
+    if (id) {
+      await updateUnit(id, parsed.data);
+    } else {
+      // Primeira unidade? O estoque atual de cada produto migra inteiro para
+      // ela — o total não muda, só passa a ter endereço.
+      const eraPrimeira = (await getUnits()).length === 0;
+      const newId = await createUnit(parsed.data);
+      if (eraPrimeira) await seedInventoryForFirstUnit(newId);
+    }
+  } catch {
+    return { error: "Não foi possível salvar a unidade. Tente de novo.", values };
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin/loja");
+  revalidatePath("/admin/produtos");
+  return { ok: true };
+}
+
+export async function deleteUnitAction(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const id = String(formData.get("id") || "");
+  if (!id) return;
+
+  // O inventory da unidade sai em cascata; o trigger preserva o total dos
+  // produtos (a loja volta ao modo de estoque único se era a última).
+  await deleteUnit(id);
+
+  revalidatePath("/");
+  revalidatePath("/admin/loja");
+  revalidatePath("/admin/produtos");
 }
 
 export async function uploadSiteImagesAction(

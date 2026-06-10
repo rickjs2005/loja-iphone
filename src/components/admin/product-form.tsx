@@ -22,9 +22,21 @@ import {
   type ProductCategory,
 } from "@/lib/data/types";
 import { cn } from "@/lib/cn";
-import type { ProductRow } from "@/types/database.types";
+import type {
+  InventoryRow,
+  ProductRow,
+  UnitRow,
+} from "@/types/database.types";
 
-export function ProductForm({ product }: { product?: ProductRow }) {
+export function ProductForm({
+  product,
+  units = [],
+  inventory,
+}: {
+  product?: ProductRow;
+  units?: UnitRow[];
+  inventory?: InventoryRow[];
+}) {
   const [state, formAction] = useActionState<ProductFormState, FormData>(
     saveProductAction,
     {},
@@ -36,6 +48,20 @@ export function ProductForm({ product }: { product?: ProductRow }) {
   const [category, setCategory] = useState<ProductCategory>(
     product && isProductCategory(product.category) ? product.category : "iphone",
   );
+  // Estoque por unidade (quando há unidades cadastradas): inputs controlados
+  // para somar o total ao vivo. Linha ausente no inventory = 0 na unidade.
+  const [unitStocks, setUnitStocks] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      units.map((u) => [
+        u.id,
+        String(inventory?.find((i) => i.unit_id === u.id)?.stock ?? 0),
+      ]),
+    ),
+  );
+  const totalStock = units.reduce((sum, u) => {
+    const n = parseInt(unitStocks[u.id] ?? "", 10);
+    return sum + (Number.isFinite(n) && n > 0 ? n : 0);
+  }, 0);
   // Fotos só no cadastro (na edição quem cuida é o ImageManager).
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [reselectPhotos, setReselectPhotos] = useState(false);
@@ -167,20 +193,57 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           <FieldError>{err.price_cents?.[0]}</FieldError>
         </div>
 
-        <div>
-          <Label htmlFor="stock">Estoque</Label>
-          <Input
-            id="stock"
-            name="stock"
-            type="number"
-            min={0}
-            step={1}
-            required
-            defaultValue={v?.stock ?? product?.stock ?? 0}
-          />
-          <FieldError>{err.stock?.[0]}</FieldError>
-        </div>
+        {/* Sem unidades cadastradas: estoque único (comportamento original). */}
+        {units.length === 0 && (
+          <div>
+            <Label htmlFor="stock">Estoque</Label>
+            <Input
+              id="stock"
+              name="stock"
+              type="number"
+              min={0}
+              step={1}
+              required
+              defaultValue={v?.stock ?? product?.stock ?? 0}
+            />
+            <FieldError>{err.stock?.[0]}</FieldError>
+          </div>
+        )}
       </div>
+
+      {/* Com unidades: um estoque por unidade; o total vai no campo oculto
+          "stock" (o schema continua válido) e o trigger do banco recalcula. */}
+      {units.length > 0 && (
+        <fieldset className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4">
+          <legend className="px-1 text-xs font-medium uppercase tracking-wide text-zinc-400">
+            Estoque por unidade
+          </legend>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {units.map((unit) => (
+              <div key={unit.id}>
+                <Label htmlFor={`stock_unit_${unit.id}`}>{unit.name}</Label>
+                <Input
+                  id={`stock_unit_${unit.id}`}
+                  name={`stock_unit_${unit.id}`}
+                  type="number"
+                  min={0}
+                  step={1}
+                  value={unitStocks[unit.id] ?? "0"}
+                  onChange={(e) =>
+                    setUnitStocks((prev) => ({
+                      ...prev,
+                      [unit.id]: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            ))}
+          </div>
+          <input type="hidden" name="stock" value={totalStock} />
+          <FormHelp>Total: {totalStock}</FormHelp>
+          <FieldError>{err.stock?.[0]}</FieldError>
+        </fieldset>
+      )}
 
       <div>
         <Label htmlFor="installments">Parcelas no cartão (sem juros)</Label>

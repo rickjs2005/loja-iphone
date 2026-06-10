@@ -2,9 +2,12 @@ import Link from "next/link";
 import { ChevronLeftIcon } from "@/components/ui/icons";
 import { ProductForm } from "@/components/admin/product-form";
 import { requireUser } from "@/lib/auth/user";
+import { getUnits } from "@/lib/data/units";
 
 export default async function NovoProdutoPage() {
   await requireUser();
+  // Com unidades cadastradas, o form pede o estoque por unidade.
+  const units = await getUnits();
 
   return (
     <div>
@@ -21,7 +24,7 @@ export default async function NovoProdutoPage() {
         Cadastre os dados. As fotos são adicionadas na próxima etapa.
       </p>
 
-      <ProductForm />
+      <ProductForm units={units} />
     </div>
   );
 }

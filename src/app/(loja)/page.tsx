@@ -13,6 +13,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { Container } from "@/components/ui/container";
 import { getActiveProducts } from "@/lib/data/products";
 import { getSiteImages, getStoreSettings } from "@/lib/data/site";
+import { getUnits } from "@/lib/data/units";
 import { CATEGORIES, type ProductCategory } from "@/lib/data/types";
 
 // Sempre buscar dados frescos (estoque/preço mudam no admin).
@@ -29,13 +30,14 @@ const LINE_SUBTITLES: Record<ProductCategory, string> = {
 };
 
 export default async function HomePage() {
-  const [products, settings, lojaImgs, entregaImgs, instagramImgs] =
+  const [products, settings, lojaImgs, entregaImgs, instagramImgs, units] =
     await Promise.all([
       getActiveProducts(),
       getStoreSettings(),
       getSiteImages("loja"),
       getSiteImages("entrega"),
       getSiteImages("instagram"),
+      getUnits(),
     ]);
 
   const accessories = products.filter((p) => p.category === "accessory");
@@ -96,7 +98,7 @@ export default async function HomePage() {
       <AccessoriesSection accessories={accessories} />
 
       <Features />
-      <StoreSection settings={settings} images={lojaImgs} />
+      <StoreSection settings={settings} images={lojaImgs} units={units} />
       <DeliverySection images={entregaImgs} />
       <InstagramSection images={instagramImgs} />
     </>

@@ -1,0 +1,48 @@
+import { z } from "zod";
+
+// Campos ausentes do FormData chegam como null; vazio e null = "não informado".
+const emptyToUndefined = (v: unknown) =>
+  v === null || (typeof v === "string" && v.trim() === "") ? undefined : v;
+
+/** Unidade física da loja (Centro, Shopping...). Só o nome é obrigatório. */
+export const unitSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, "Dê um nome à unidade (ex.: Centro)")
+    .max(80, "Nome muito longo"),
+  address: z.preprocess(
+    emptyToUndefined,
+    z.string().trim().max(300).optional(),
+  ),
+  hours: z.preprocess(emptyToUndefined, z.string().trim().max(300).optional()),
+  whatsapp: z.preprocess(
+    emptyToUndefined,
+    z
+      .string()
+      .trim()
+      .regex(/^\d{10,15}$/, "Só dígitos, com DDI (ex.: 5533999999999)")
+      .optional(),
+  ),
+  maps_url: z.preprocess(
+    emptyToUndefined,
+    z
+      .string()
+      .trim()
+      .url("Link do mapa inválido")
+      .max(500)
+      .refine(
+        (u) => /^https?:\/\//i.test(u),
+        "O link deve começar com http:// ou https://",
+      )
+      .optional(),
+  ),
+  sort_order: z.coerce
+    .number()
+    .int()
+    .min(0)
+    .optional()
+    .transform((v) => v ?? 0),
+});
+
+export type UnitInput = z.infer<typeof unitSchema>;
