@@ -48,14 +48,17 @@ function CaptionForm({ image }: { image: SiteImageRow }) {
   );
 }
 
-/** Gerenciador de imagens de uma seção do site (loja física / entrega). */
+/** Gerenciador de imagens de uma seção do site (loja física / entrega...). */
 export function SiteImageManager({
   section,
   title,
+  description,
   images,
 }: {
   section: SiteSection;
   title: string;
+  /** Onde a foto aparece no site — orienta o lojista leigo. */
+  description?: string;
   images: SiteImageRow[];
 }) {
   const [state, formAction] = useActionState<SiteFormState, FormData>(
@@ -85,7 +88,12 @@ export function SiteImageManager({
 
   return (
     <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-      <h3 className="mb-4 font-semibold text-zinc-100">{title}</h3>
+      <h3 className={description ? "mb-1 font-semibold text-zinc-100" : "mb-4 font-semibold text-zinc-100"}>
+        {title}
+      </h3>
+      {description && (
+        <p className="mb-4 text-xs text-zinc-500">{description}</p>
+      )}
 
       {images.length > 0 ? (
         <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">

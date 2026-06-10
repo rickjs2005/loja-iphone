@@ -102,7 +102,8 @@ export async function Footer() {
                 Falar no WhatsApp
               </a>
             </li>
-            {/* Com unidades cadastradas, lista uma a uma; senão, endereço único. */}
+            {/* Com unidades cadastradas, valem os dados delas; sem, o endereço
+                e horário únicos do settings. */}
             {units.length > 0 ? (
               units.map((unit) => (
                 <li key={unit.id}>
@@ -110,15 +111,20 @@ export async function Footer() {
                   {unit.address && (
                     <p className="text-xs text-muted">{unit.address}</p>
                   )}
+                  {unit.hours && (
+                    <p className="text-xs text-muted">{unit.hours}</p>
+                  )}
                 </li>
               ))
             ) : (
-              settings.address && (
-                <li className="text-sm text-muted">{settings.address}</li>
-              )
-            )}
-            {settings.hours && (
-              <li className="text-sm text-muted">{settings.hours}</li>
+              <>
+                {settings.address && (
+                  <li className="text-sm text-muted">{settings.address}</li>
+                )}
+                {settings.hours && (
+                  <li className="text-sm text-muted">{settings.hours}</li>
+                )}
+              </>
             )}
             {settings.warranty_text && (
               <li className="text-sm text-muted">{settings.warranty_text}</li>

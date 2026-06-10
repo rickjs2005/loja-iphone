@@ -24,15 +24,19 @@ export default async function AdminLojaPage() {
         Conteúdo da loja
       </h1>
       <p className="mb-8 text-sm text-zinc-500">
-        Endereço, horário e fotos da loja física e da entrega. Aparecem na
-        página inicial só quando você preenche.
+        Tudo o que o cliente vê sobre a sua loja: endereço, horários, garantia
+        e as fotos. O que você não preencher simplesmente não aparece no site.
       </p>
 
       <section className="mb-10">
-        <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-          Endereço, horário e garantia
+        <h2 className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+          Informações da loja
         </h2>
-        <SettingsForm settings={settings} />
+        <p className="mb-4 text-sm text-zinc-500">
+          Endereço e horário aparecem na seção &quot;Nossa loja&quot; e no
+          rodapé; pagamento e garantia, nas páginas dos produtos.
+        </p>
+        <SettingsForm settings={settings} hasUnits={units.length > 0} />
       </section>
 
       <section className="mb-10">
@@ -40,29 +44,41 @@ export default async function AdminLojaPage() {
           Unidades (lojas físicas)
         </h2>
         <p className="mb-4 text-sm text-zinc-500">
-          Cadastre quando houver mais de um endereço — cada unidade aparece no
-          site com endereço, horário e WhatsApp próprios, e o estoque passa a
-          ser informado por unidade.
+          Para quem tem mais de um endereço. Cada unidade aparece no site com
+          endereço, horário e WhatsApp próprios — e o estoque dos produtos
+          passa a ser informado por unidade.
         </p>
         <UnitsManager units={units} />
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-3">
-        <SiteImageManager
-          section="loja"
-          title="Fotos da loja física"
-          images={lojaImgs}
-        />
-        <SiteImageManager
-          section="entrega"
-          title="Fotos da entrega"
-          images={entregaImgs}
-        />
-        <SiteImageManager
-          section="instagram"
-          title="Fotos do Instagram"
-          images={instagramImgs}
-        />
+      <section>
+        <h2 className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+          Fotos do site
+        </h2>
+        <p className="mb-4 text-sm text-zinc-500">
+          Fotos reais vendem confiança. Cada galeria abastece uma seção da
+          página inicial.
+        </p>
+        <div className="grid gap-6 lg:grid-cols-3">
+          <SiteImageManager
+            section="loja"
+            title="Fotos da loja física"
+            description='Aparecem no carrossel da seção "Nossa loja".'
+            images={lojaImgs}
+          />
+          <SiteImageManager
+            section="entrega"
+            title="Fotos da entrega"
+            description='Aparecem na seção "Como entregamos" — clientes recebendo o pedido.'
+            images={entregaImgs}
+          />
+          <SiteImageManager
+            section="instagram"
+            title="Fotos do Instagram"
+            description='Aparecem na faixa "Acompanhe nosso Instagram", antes do rodapé.'
+            images={instagramImgs}
+          />
+        </div>
       </section>
     </div>
   );

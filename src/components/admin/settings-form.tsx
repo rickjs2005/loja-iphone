@@ -9,7 +9,14 @@ import {
 } from "@/app/admin/loja/actions";
 import type { StoreSettingsRow } from "@/types/database.types";
 
-export function SettingsForm({ settings }: { settings: StoreSettingsRow }) {
+export function SettingsForm({
+  settings,
+  hasUnits = false,
+}: {
+  settings: StoreSettingsRow;
+  /** Com unidades cadastradas, o endereço único abaixo sai do site. */
+  hasUnits?: boolean;
+}) {
   const [state, formAction] = useActionState<SiteFormState, FormData>(
     saveSettingsAction,
     {},
@@ -31,6 +38,13 @@ export function SettingsForm({ settings }: { settings: StoreSettingsRow }) {
 
   return (
     <form action={formAction} className="flex max-w-2xl flex-col gap-5">
+      {hasUnits && (
+        <p className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2 text-xs text-amber-300/90">
+          Você tem unidades cadastradas: no site valem os endereços e
+          horários de cada unidade. Os campos de endereço e horário abaixo
+          ficam guardados, mas não aparecem para o cliente.
+        </p>
+      )}
       <div>
         <Label htmlFor="address">Endereço</Label>
         <Input

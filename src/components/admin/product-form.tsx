@@ -240,7 +240,10 @@ export function ProductForm({
             ))}
           </div>
           <input type="hidden" name="stock" value={totalStock} />
-          <FormHelp>Total: {totalStock}</FormHelp>
+          <FormHelp>
+            Total no site: <strong className="text-zinc-200">{totalStock}</strong>
+            {" "}— somado automaticamente; informe quantos tem em cada loja.
+          </FormHelp>
           <FieldError>{err.stock?.[0]}</FieldError>
         </fieldset>
       )}

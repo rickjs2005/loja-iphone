@@ -144,14 +144,41 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
   );
 }
 
-/** Gerenciador das unidades físicas da loja (lista + form criar/editar). */
+/**
+ * Gerenciador das unidades físicas da loja.
+ * O form de criação fica COLAPSADO atrás de um botão — quem tem uma loja só
+ * não carrega um formulário aberto à toa; quem vai adicionar, abre na hora.
+ */
 export function UnitsManager({ units }: { units: UnitRow[] }) {
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
 
   return (
     <div className="max-w-2xl rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+      {units.length === 0 && !adding && (
+        /* Estado vazio: explica o benefício e convida — sem form aberto. */
+        <div className="flex flex-col items-start gap-3">
+          <p className="text-sm text-zinc-400">
+            Sua loja tem mais de um endereço? Cadastre as unidades para cada
+            uma aparecer no site com endereço, horário e WhatsApp próprios —
+            e o estoque dos produtos passa a ser informado por unidade.
+          </p>
+          <p className="text-xs text-zinc-500">
+            Tem um endereço só? Não precisa cadastrar nada: o endereço da
+            seção acima já aparece no site.
+          </p>
+          <button
+            type="button"
+            onClick={() => setAdding(true)}
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition-all hover:brightness-110"
+          >
+            + Adicionar unidade
+          </button>
+        </div>
+      )}
+
       {units.length > 0 && (
-        <ul className="mb-6 flex flex-col divide-y divide-zinc-800">
+        <ul className="flex flex-col divide-y divide-zinc-800">
           {units.map((unit) =>
             editingId === unit.id ? (
               <li key={unit.id} className="py-4 first:pt-0 last:pb-0">
@@ -181,7 +208,7 @@ export function UnitsManager({ units }: { units: UnitRow[] }) {
                   <button
                     type="button"
                     onClick={() => setEditingId(unit.id)}
-                    className="text-sm text-zinc-400 transition-colors hover:text-zinc-100"
+                    className="rounded-lg border border-zinc-800 px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
                   >
                     Editar
                   </button>
@@ -201,10 +228,25 @@ export function UnitsManager({ units }: { units: UnitRow[] }) {
         </ul>
       )}
 
-      <h3 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-        {units.length > 0 ? "Nova unidade" : "Primeira unidade"}
-      </h3>
-      <UnitForm />
+      {/* Criação: colapsada atrás do botão; aberta, ganha título e Cancelar. */}
+      {adding ? (
+        <div className={units.length > 0 ? "mt-6 border-t border-zinc-800 pt-5" : ""}>
+          <h3 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+            Nova unidade
+          </h3>
+          <UnitForm onDone={() => setAdding(false)} />
+        </div>
+      ) : (
+        units.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setAdding(true)}
+            className="mt-5 rounded-lg border border-zinc-800 px-4 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+          >
+            + Adicionar unidade
+          </button>
+        )
+      )}
     </div>
   );
 }
