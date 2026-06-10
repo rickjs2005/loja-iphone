@@ -12,7 +12,7 @@ export function MouseSpotlight() {
   const y = useMotionValue(-1000);
   const sx = useSpring(x, { stiffness: 60, damping: 20 });
   const sy = useSpring(y, { stiffness: 60, damping: 20 });
-  const bg = useMotionTemplate`radial-gradient(600px circle at ${sx}px ${sy}px, rgba(10,132,255,0.10), rgba(110,92,246,0.06) 40%, transparent 70%)`;
+  const bg = useMotionTemplate`radial-gradient(600px circle at ${sx}px ${sy}px, rgba(255,255,255,0.06), rgba(255,255,255,0.025) 40%, transparent 70%)`;
 
   useEffect(() => {
     function onMove(e: MouseEvent) {

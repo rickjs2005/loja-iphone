@@ -11,9 +11,9 @@ export function Highlight() {
     <section className="py-20 sm:py-28">
       <Container>
         <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.02] backdrop-blur-xl">
-          {/* Luz de fundo */}
-          <div className="absolute -left-20 top-1/2 size-[420px] -translate-y-1/2 rounded-full bg-primary/20 blur-[120px]" />
-          <div className="absolute -right-20 top-0 size-[360px] rounded-full bg-accent/20 blur-[120px]" />
+          {/* Luz de fundo discreta */}
+          <div className="absolute -left-20 top-1/2 size-[420px] -translate-y-1/2 rounded-full bg-white/[0.06] blur-[120px]" />
+          <div className="absolute -right-20 top-0 size-[360px] rounded-full bg-primary/10 blur-[120px]" />
 
           <div className="relative grid items-center gap-8 p-8 sm:p-12 lg:grid-cols-2 lg:gap-4">
             {/* Aparelho grande */}
@@ -41,13 +41,13 @@ export function Highlight() {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="order-1 text-center lg:order-2 lg:text-left"
             >
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted">
                 Destaque
               </p>
               <h2 className="mt-3 text-4xl font-bold leading-tight tracking-tight text-fg sm:text-5xl">
                 Titânio. Performance.
                 <br />
-                <span className="bg-gradient-to-r from-[#0A84FF] via-[#6E5CF6] to-[#FF2D55] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-white/40 via-white/75 to-white/40 bg-clip-text text-transparent">
                   Inteligência.
                 </span>
               </h2>

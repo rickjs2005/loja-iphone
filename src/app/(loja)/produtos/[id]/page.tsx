@@ -130,7 +130,7 @@ export default async function ProdutoPage({ params }: Props) {
             sem juros
           </p>
           <div className="mt-3 flex items-center gap-2 text-sm text-muted">
-            <ShieldIcon className="size-4 text-emerald-400" />
+            <ShieldIcon className="size-4 text-fg/60" />
             {settings.warranty_text?.trim() || "Garantia inclusa"} · aparelho
             testado e com procedência
           </div>

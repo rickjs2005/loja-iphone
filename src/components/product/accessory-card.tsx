@@ -24,7 +24,7 @@ export function AccessoryCard({ product }: { product: ProductWithImages }) {
   return (
     <motion.article
       variants={item}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-3 backdrop-blur transition-colors hover:border-primary/40"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-3 backdrop-blur transition-colors hover:border-white/30"
     >
       <Link
         href={`/produtos/${product.id}`}

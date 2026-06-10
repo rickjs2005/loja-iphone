@@ -21,6 +21,7 @@ export function StoreSection({
       <Container>
         <Reveal>
           <SectionHeading
+            eyebrow="Visite"
             title="Nossa loja"
             subtitle="Loja física de verdade, para você comprar com confiança."
           />

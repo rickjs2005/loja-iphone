@@ -10,12 +10,13 @@ import { cn } from "@/lib/cn";
 
 export type Colorway = "natural" | "blue" | "purple" | "pink" | "graphite";
 
+/* Paleta "dark luxury": tons profundos e dessaturados, sem neon. */
 const wallpapers: Record<Colorway, [string, string, string]> = {
-  natural: ["#1d2b4d", "#3a2358", "#4d1d3a"],
-  blue: ["#082a5e", "#0a84ff", "#4aa8ff"],
-  purple: ["#2e1a63", "#6e5cf6", "#a78bff"],
-  pink: ["#5e1430", "#ff2d55", "#ff86a6"],
-  graphite: ["#15151a", "#2a2a33", "#3c3c46"],
+  natural: ["#26242a", "#45414b", "#1a181d"],
+  blue: ["#0b1322", "#1e2c47", "#0a0e18"],
+  purple: ["#171420", "#2d2740", "#100e16"],
+  pink: ["#221a15", "#453629", "#171210"],
+  graphite: ["#101013", "#26262c", "#0a0a0c"],
 };
 
 export const colorwayByIndex = (i: number): Colorway =>

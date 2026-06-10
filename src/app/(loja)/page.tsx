@@ -62,6 +62,7 @@ export default async function HomePage() {
             <Container>
               <Reveal>
                 <SectionHeading
+                  eyebrow="Catálogo"
                   title={line.plural}
                   subtitle={LINE_SUBTITLES[line.value]}
                 />

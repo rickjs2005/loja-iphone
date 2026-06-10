@@ -36,7 +36,7 @@ export function ProductCard({
   const cover = coverImage(product);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const spotlight = useMotionTemplate`radial-gradient(240px circle at ${mx}px ${my}px, rgba(110,92,246,0.18), transparent 70%)`;
+  const spotlight = useMotionTemplate`radial-gradient(240px circle at ${mx}px ${my}px, rgba(255,255,255,0.08), transparent 70%)`;
 
   function onMove(e: React.MouseEvent<HTMLDivElement>) {
     const r = e.currentTarget.getBoundingClientRect();
@@ -50,7 +50,7 @@ export function ProductCard({
       onMouseMove={onMove}
       whileHover={{ y: -10 }}
       transition={{ type: "spring", stiffness: 280, damping: 22 }}
-      className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors duration-300 hover:border-primary/50 hover:shadow-[0_24px_60px_-20px_rgba(10,132,255,0.45)]"
+      className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors duration-300 hover:border-white/30 hover:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]"
     >
       {/* Spotlight que segue o cursor */}
       <motion.div
@@ -67,8 +67,8 @@ export function ProductCard({
 
       <Link href={`/produtos/${product.id}`} className="relative block">
         <div className="relative aspect-[4/5] overflow-hidden">
-          {/* Glow de fundo combinando com o gradiente do logo */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(110,92,246,0.18),transparent_60%)]" />
+          {/* Luz de vitrine atrás do aparelho */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.08),transparent_60%)]" />
 
           {cover ? (
             <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
@@ -130,7 +130,7 @@ export function ProductCard({
         </div>
 
         <div className="flex items-center gap-1.5 text-xs text-muted">
-          <ShieldIcon className="size-3.5 text-emerald-400" />
+          <ShieldIcon className="size-3.5 text-fg/60" />
           Garantia inclusa
           {product.battery_health ? ` · Bateria ${product.battery_health}%` : ""}
         </div>

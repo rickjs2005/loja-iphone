@@ -36,7 +36,7 @@ export default async function LojaLayout({
       <AuroraBackground />
       <MouseSpotlight />
       {demo && (
-        <div className="bg-gradient-to-r from-primary/15 via-accent/15 to-[#FF2D55]/15 px-4 py-2 text-center text-xs text-fg/85">
+        <div className="border-b border-white/10 bg-white/[0.04] px-4 py-2 text-center text-xs text-fg/85">
           ✨ Demonstração — esta loja pode ser <strong>a sua</strong>: sua marca,
           suas cores, seus produtos e suas fotos.
         </div>

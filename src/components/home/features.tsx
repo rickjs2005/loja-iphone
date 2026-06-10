@@ -40,6 +40,7 @@ export function Features() {
       <Container>
         <Reveal>
           <SectionHeading
+            eyebrow="A loja"
             title={`Por que comprar na ${storeConfig.name}`}
             subtitle="Confiança não se promete, se entrega."
           />
@@ -49,7 +50,7 @@ export function Features() {
           {FEATURES.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.08}>
               <div className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl transition-colors hover:border-white/20">
-                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
+                <div className="mb-4 inline-flex size-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-fg">
                   {f.icon}
                 </div>
                 <h3 className="font-semibold text-fg">{f.title}</h3>

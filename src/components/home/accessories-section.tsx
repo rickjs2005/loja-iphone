@@ -38,6 +38,7 @@ export function AccessoriesSection({
     <section id="acessorios" className="scroll-mt-20 py-16 sm:py-24">
       <Container>
         <SectionHeading
+          eyebrow="Acessórios"
           title="Complete seu ecossistema"
           subtitle="Capas, películas, carregadores e áudio para o seu iPhone."
         />

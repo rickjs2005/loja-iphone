@@ -24,7 +24,7 @@ export function Gallery({
   return (
     <div className="flex flex-col gap-4">
       <div className="relative aspect-square overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(110,92,246,0.18),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.08),transparent_60%)]" />
         <AnimatePresence mode="wait">
           <motion.div
             key={current?.id ?? "empty"}

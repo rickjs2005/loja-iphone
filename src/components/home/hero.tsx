@@ -41,8 +41,8 @@ function PhoneVisual() {
       transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
       className="relative flex items-center justify-center"
     >
-      {/* Orbe de luz grande atrás do aparelho */}
-      <div className="absolute left-1/2 top-1/2 -z-10 size-[640px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(110,92,246,0.5),rgba(10,132,255,0.28)_38%,transparent_70%)] blur-2xl" />
+      {/* Luz monocromática grande atrás do aparelho */}
+      <div className="absolute left-1/2 top-1/2 -z-10 size-[640px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.16),rgba(255,255,255,0.06)_42%,transparent_70%)] blur-2xl" />
       <motion.div
         animate={{ y: [0, -16, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
@@ -97,7 +97,7 @@ export function Hero() {
               animate="show"
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-muted backdrop-blur sm:text-sm"
             >
-              <span className="size-1.5 animate-pulse rounded-full bg-emerald-400" />
+              <span className="size-1.5 animate-pulse rounded-full bg-fg/80" />
               Pronta entrega · Garantia · Procedência
             </motion.span>
 
@@ -112,7 +112,8 @@ export function Hero() {
                 Tecnologia premium.
               </span>
               <br />
-              <span className="bg-gradient-to-r from-[#0A84FF] via-[#6E5CF6] to-[#FF2D55] bg-clip-text text-transparent">
+              {/* Prata escovada: o luxo é monocromático; cor só nos CTAs. */}
+              <span className="bg-gradient-to-r from-white/40 via-white/75 to-white/40 bg-clip-text text-transparent">
                 Preço justo.
               </span>
             </motion.h1>

@@ -47,7 +47,7 @@ export function Specs({ warrantyText }: { warrantyText?: string | null }) {
             key={it.title}
             className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-xl"
           >
-            <div className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
+            <div className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-fg">
               {it.icon}
             </div>
             <div>

@@ -15,7 +15,7 @@ export function TrustBand() {
       <Container className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 py-4">
         {ITEMS.map((item) => (
           <span key={item} className="flex items-center gap-2 text-sm text-muted">
-            <CheckIcon className="size-4 text-emerald-400" />
+            <CheckIcon className="size-4 text-fg/60" />
             {item}
           </span>
         ))}
