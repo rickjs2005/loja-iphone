@@ -7,10 +7,11 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminLojaPage() {
   await requireUser();
-  const [settings, lojaImgs, entregaImgs] = await Promise.all([
+  const [settings, lojaImgs, entregaImgs, instagramImgs] = await Promise.all([
     getStoreSettings(),
     getSiteImages("loja"),
     getSiteImages("entrega"),
+    getSiteImages("instagram"),
   ]);
 
   return (
@@ -30,7 +31,7 @@ export default async function AdminLojaPage() {
         <SettingsForm settings={settings} />
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
+      <section className="grid gap-6 lg:grid-cols-3">
         <SiteImageManager
           section="loja"
           title="Fotos da loja física"
@@ -40,6 +41,11 @@ export default async function AdminLojaPage() {
           section="entrega"
           title="Fotos da entrega"
           images={entregaImgs}
+        />
+        <SiteImageManager
+          section="instagram"
+          title="Fotos do Instagram"
+          images={instagramImgs}
         />
       </section>
     </div>

@@ -12,7 +12,7 @@ import {
   saveSiteImageCaptionAction,
   type SiteFormState,
 } from "@/app/admin/loja/actions";
-import type { SiteImageRow } from "@/types/database.types";
+import type { SiteImageRow, SiteSection } from "@/types/database.types";
 
 /** Legenda opcional da foto — salva ao enviar (Enter ou botão). */
 function CaptionForm({ image }: { image: SiteImageRow }) {
@@ -54,7 +54,7 @@ export function SiteImageManager({
   title,
   images,
 }: {
-  section: "loja" | "entrega";
+  section: SiteSection;
   title: string;
   images: SiteImageRow[];
 }) {

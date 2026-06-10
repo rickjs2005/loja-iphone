@@ -29,7 +29,7 @@ export type SiteFormState = {
 };
 
 const isSection = (v: string): v is SiteSection =>
-  v === "loja" || v === "entrega";
+  v === "loja" || v === "entrega" || v === "instagram";
 
 /** Campos de texto do FormData (nunca Files) pro form repreencher após erro. */
 function echoValues(formData: FormData): Record<string, string> {

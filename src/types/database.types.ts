@@ -173,4 +173,4 @@ export type ProductImageInsert =
 export type StoreSettingsRow =
   Database["public"]["Tables"]["store_settings"]["Row"];
 export type SiteImageRow = Database["public"]["Tables"]["site_images"]["Row"];
-export type SiteSection = "loja" | "entrega";
+export type SiteSection = "loja" | "entrega" | "instagram";
