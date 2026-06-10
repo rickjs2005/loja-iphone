@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
+import { Lightbox } from "@/components/product/lightbox";
 import { IphoneRender } from "@/components/visual/iphone-render";
 import { cn } from "@/lib/cn";
 import type { ProductImageRow } from "@/types/database.types";
@@ -19,6 +20,7 @@ export function Gallery({
   accessory?: boolean;
 }) {
   const [active, setActive] = useState(0);
+  const [zoomOpen, setZoomOpen] = useState(false);
   const current = images[active] ?? null;
 
   return (
@@ -35,12 +37,20 @@ export function Gallery({
             className="absolute inset-0"
           >
             {current ? (
-              <ProductImage
-                url={current.url}
-                alt={productName}
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
+              /* Clique abre o zoom em tela cheia (Lightbox). */
+              <button
+                type="button"
+                onClick={() => setZoomOpen(true)}
+                aria-label="Ampliar foto"
+                className="absolute inset-0 cursor-zoom-in"
+              >
+                <ProductImage
+                  url={current.url}
+                  alt={productName}
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </button>
             ) : accessory ? (
               <ProductImage url={null} alt={productName} variant="accessory" />
             ) : (
@@ -74,6 +84,17 @@ export function Gallery({
           ))}
         </div>
       )}
+
+      <AnimatePresence>
+        {zoomOpen && (
+          <Lightbox
+            images={images}
+            startIndex={active}
+            productName={productName}
+            onClose={() => setZoomOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
