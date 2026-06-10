@@ -7,6 +7,7 @@ import {
   HeadsetIcon,
   ShieldIcon,
 } from "@/components/ui/icons";
+import { storeConfig } from "@/config/theme.config";
 import type { ReactNode } from "react";
 
 const FEATURES: { icon: ReactNode; title: string; text: string }[] = [
@@ -39,7 +40,7 @@ export function Features() {
       <Container>
         <Reveal>
           <SectionHeading
-            title="Por que comprar na iDemo"
+            title={`Por que comprar na ${storeConfig.name}`}
             subtitle="Confiança não se promete, se entrega."
           />
         </Reveal>

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeInjector } from "@/components/theme/theme-injector";
 import { storeConfig } from "@/config/theme.config";
@@ -15,6 +15,12 @@ const geistMono = Geist_Mono({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+// viewport-fit=cover libera as safe areas do iOS (env(safe-area-inset-*)).
+export const viewport: Viewport = {
+  themeColor: storeConfig.colors.bg,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

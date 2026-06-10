@@ -24,7 +24,7 @@ export function Header() {
         <nav className="flex items-center gap-1">
           <Link
             href="/"
-            className="hidden rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-fg sm:block"
+            className="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:text-fg"
           >
             Produtos
           </Link>

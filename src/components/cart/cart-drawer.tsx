@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
-import { buttonClasses } from "@/components/ui/button";
+import { buttonClasses, focusRing } from "@/components/ui/button";
 import {
   MinusIcon,
   PlusIcon,
@@ -38,21 +38,29 @@ export function CartDrawer({
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const hydrated = useHydrated();
+  const panelRef = useRef<HTMLElement>(null);
 
   // Upsell: acessórios ainda não adicionados (até 3), só se há iPhone no carrinho.
   const upsell = accessories
     .filter((a) => !items.some((i) => i.productId === a.productId))
     .slice(0, 3);
 
-  // Fecha com ESC e trava o scroll do body quando aberto.
+  // Fecha com ESC, trava o scroll do body e gerencia o foco (move pro painel
+  // ao abrir, devolve a quem abriu ao fechar).
   useEffect(() => {
     if (!isOpen) return;
+    const opener =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    panelRef.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      opener?.focus();
     };
   }, [isOpen, close]);
 
@@ -67,7 +75,7 @@ export function CartDrawer({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={close}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 touch-none bg-black/60 backdrop-blur-sm"
           />
 
           <motion.aside
@@ -75,8 +83,11 @@ export function CartDrawer({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 320, damping: 34 }}
-            className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-surface/95 backdrop-blur-xl"
+            ref={panelRef}
+            tabIndex={-1}
+            className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col overscroll-contain border-l border-white/10 bg-surface/95 outline-none backdrop-blur-xl"
             role="dialog"
+            aria-modal="true"
             aria-label="Carrinho"
           >
             <div className="flex items-center justify-between border-b border-white/10 p-5">
@@ -89,7 +100,7 @@ export function CartDrawer({
               <button
                 onClick={close}
                 aria-label="Fechar"
-                className="inline-flex size-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-white/5 hover:text-fg"
+                className={`inline-flex size-11 items-center justify-center rounded-lg text-muted transition-colors hover:bg-white/5 hover:text-fg ${focusRing}`}
               >
                 ✕
               </button>
@@ -104,7 +115,7 @@ export function CartDrawer({
               </div>
             ) : (
               <>
-                <ul className="flex-1 space-y-3 overflow-y-auto p-5">
+                <ul className="flex-1 space-y-3 overflow-y-auto overscroll-contain p-5">
                   {items.map((it) => (
                     <li
                       key={it.productId}
@@ -129,7 +140,7 @@ export function CartDrawer({
                           <button
                             onClick={() => removeItem(it.productId)}
                             aria-label={`Remover ${it.name}`}
-                            className="text-muted transition-colors hover:text-red-400"
+                            className={`-m-3 inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:text-red-400 ${focusRing}`}
                           >
                             <TrashIcon className="size-4" />
                           </button>
@@ -142,7 +153,7 @@ export function CartDrawer({
                               }
                               disabled={it.quantity <= 1}
                               aria-label="Diminuir"
-                              className="inline-flex size-7 items-center justify-center rounded-md text-fg hover:bg-white/5 disabled:opacity-40"
+                              className={`inline-flex size-11 items-center justify-center rounded-md text-fg hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
                             >
                               <MinusIcon className="size-3.5" />
                             </button>
@@ -155,7 +166,7 @@ export function CartDrawer({
                               }
                               disabled={it.quantity >= it.stock}
                               aria-label="Aumentar"
-                              className="inline-flex size-7 items-center justify-center rounded-md text-fg hover:bg-white/5 disabled:opacity-40"
+                              className={`inline-flex size-11 items-center justify-center rounded-md text-fg hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
                             >
                               <PlusIcon className="size-3.5" />
                             </button>
@@ -198,7 +209,7 @@ export function CartDrawer({
                             type="button"
                             onClick={() => addItem(a, 1)}
                             disabled={a.stock <= 0}
-                            className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white transition-all hover:brightness-110 active:scale-95 disabled:opacity-50"
+                            className={`shrink-0 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-white transition-all hover:brightness-110 active:scale-95 disabled:opacity-50 ${focusRing}`}
                           >
                             + Adicionar
                           </button>

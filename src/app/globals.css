@@ -39,7 +39,8 @@ html {
 }
 
 body {
-  min-height: 100vh;
+  min-height: 100vh; /* fallback p/ navegadores sem dvh */
+  min-height: 100dvh; /* iOS: acompanha a barra dinâmica do Safari */
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
 }

@@ -17,7 +17,7 @@ export function MobilePurchaseBar({
   const esgotado = product.stock <= 0;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-white/10 bg-surface/95 p-3 pr-20 backdrop-blur-xl lg:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-white/10 bg-surface/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pr-20 backdrop-blur-xl lg:hidden">
       <div className="leading-tight">
         <p className="text-[11px] text-muted">à vista</p>
         <p className="text-lg font-bold text-fg">

@@ -21,7 +21,7 @@ export function WhatsappFab() {
       transition={{ delay: 0.6, type: "spring", stiffness: 260, damping: 18 }}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.95 }}
-      className="fixed bottom-5 right-5 z-50 inline-flex size-14 items-center justify-center rounded-full bg-[#25D366] text-black shadow-lg shadow-[#25D366]/30"
+      className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-50 inline-flex size-14 items-center justify-center rounded-full bg-[#25D366] text-black shadow-lg shadow-[#25D366]/30"
     >
       <span className="absolute inset-0 animate-ping rounded-full bg-[#25D366]/40" />
       <WhatsappIcon className="relative size-7" />

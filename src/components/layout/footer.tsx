@@ -8,7 +8,7 @@ import { getStoreSettings } from "@/lib/data/site";
 export async function Footer() {
   const { social, whatsapp, name } = storeConfig;
   const settings = await getStoreSettings();
-  const ano = 2026;
+  const ano = new Date().getFullYear();
 
   return (
     <footer className="mt-auto border-t border-white/10 bg-surface/40">

@@ -3,8 +3,9 @@ import { cn } from "@/lib/cn";
 
 // Inputs do Admin: base "terminal" (zinc) com borda fina que acende no accent
 // do tenant ao focar.
+// text-base no mobile evita o zoom automático do iOS Safari (fonte < 16px).
 const fieldBase =
-  "w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-600 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/40";
+  "w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-base sm:text-sm text-zinc-100 placeholder:text-zinc-500 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/40";
 
 export function Label({
   htmlFor,
@@ -45,5 +46,5 @@ export function FieldError({ children }: { children?: ReactNode }) {
 }
 
 export function FormHelp({ children }: { children: ReactNode }) {
-  return <p className="mt-1.5 text-xs text-zinc-500">{children}</p>;
+  return <p className="mt-1.5 text-xs text-zinc-400">{children}</p>;
 }

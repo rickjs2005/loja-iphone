@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, focusRing } from "@/components/ui/button";
 import { CartIcon, MinusIcon, PlusIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
 import { useCartUI } from "@/lib/cart/ui-store";
@@ -42,7 +42,7 @@ export function PurchasePanel({
           onClick={() => setQty((q) => Math.max(1, q - 1))}
           disabled={qty <= 1}
           aria-label="Diminuir"
-          className="inline-flex size-9 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40"
+          className={`inline-flex size-11 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
         >
           <MinusIcon className="size-4" />
         </button>
@@ -54,7 +54,7 @@ export function PurchasePanel({
           onClick={() => setQty((q) => Math.min(max, q + 1))}
           disabled={qty >= max}
           aria-label="Aumentar"
-          className="inline-flex size-9 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40"
+          className={`inline-flex size-11 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
         >
           <PlusIcon className="size-4" />
         </button>

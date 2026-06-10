@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Container } from "@/components/ui/container";
-import { buttonClasses } from "@/components/ui/button";
+import { buttonClasses, focusRing } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ProductImage } from "@/components/product/product-image";
 import {
   ChevronLeftIcon,
@@ -29,6 +31,7 @@ export default function CarrinhoPage() {
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const clear = useCartStore((s) => s.clear);
+  const [confirmClear, setConfirmClear] = useState(false);
 
   if (!hydrated) {
     return (
@@ -98,7 +101,7 @@ export default function CarrinhoPage() {
                       type="button"
                       onClick={() => removeItem(it.productId)}
                       aria-label={`Remover ${it.name}`}
-                      className="text-muted transition-colors hover:text-red-400"
+                      className={`-m-3 inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:text-red-400 ${focusRing}`}
                     >
                       <TrashIcon className="size-4" />
                     </button>
@@ -117,7 +120,7 @@ export default function CarrinhoPage() {
                         }
                         disabled={it.quantity <= 1}
                         aria-label="Diminuir"
-                        className="inline-flex size-8 items-center justify-center rounded-md text-fg hover:bg-white/5 disabled:opacity-40"
+                        className={`inline-flex size-11 items-center justify-center rounded-md text-fg hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
                       >
                         <MinusIcon className="size-3.5" />
                       </button>
@@ -131,7 +134,7 @@ export default function CarrinhoPage() {
                         }
                         disabled={it.quantity >= it.stock}
                         aria-label="Aumentar"
-                        className="inline-flex size-8 items-center justify-center rounded-md text-fg hover:bg-white/5 disabled:opacity-40"
+                        className={`inline-flex size-11 items-center justify-center rounded-md text-fg hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
                       >
                         <PlusIcon className="size-3.5" />
                       </button>
@@ -148,12 +151,24 @@ export default function CarrinhoPage() {
 
           <button
             type="button"
-            onClick={clear}
-            className="mt-1 self-start text-sm text-muted transition-colors hover:text-red-400"
+            onClick={() => setConfirmClear(true)}
+            className={`mt-1 self-start rounded-lg px-2 py-2 text-sm text-muted transition-colors hover:text-red-400 ${focusRing}`}
           >
             Esvaziar carrinho
           </button>
         </ul>
+
+        <ConfirmDialog
+          open={confirmClear}
+          title="Esvaziar carrinho?"
+          description="Todos os itens serão removidos do carrinho. Essa ação não pode ser desfeita."
+          confirmLabel="Esvaziar"
+          onConfirm={() => {
+            clear();
+            setConfirmClear(false);
+          }}
+          onCancel={() => setConfirmClear(false)}
+        />
 
         {/* Resumo */}
         <aside className="h-fit rounded-2xl border border-white/10 bg-surface/60 p-5 lg:sticky lg:top-20">

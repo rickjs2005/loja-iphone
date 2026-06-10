@@ -4,8 +4,11 @@ import { cn } from "@/lib/cn";
 type Variant = "primary" | "accent" | "outline" | "ghost" | "whatsapp";
 type Size = "sm" | "md" | "lg";
 
-const base =
-  "inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]";
+/** Anel de foco visível compartilhado — use em botões "crus" fora do <Button>. */
+export const focusRing =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60";
+
+const base = `inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 ${focusRing} disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]`;
 
 const variants: Record<Variant, string> = {
   primary:
