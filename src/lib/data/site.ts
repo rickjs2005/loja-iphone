@@ -2,11 +2,15 @@ import "server-only";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
-import type { SiteSettingsInput } from "@/lib/validation/site.schema";
+import type {
+  SiteSettingsInput,
+  TestimonialInput,
+} from "@/lib/validation/site.schema";
 import type {
   SiteImageRow,
   SiteSection,
   StoreSettingsRow,
+  TestimonialRow,
 } from "@/types/database.types";
 
 /**
@@ -21,8 +25,30 @@ const DEMO_SETTINGS: StoreSettingsRow = {
   hours: "Seg a Sex, 9h às 18h · Sáb, 9h às 13h",
   maps_url: "",
   payment_methods: "Pix, cartão em até 12x e dinheiro",
+  warranty_text: "Garantia de 90 dias",
+  stat_sold: 3000,
+  stat_rating: 4.9,
+  stat_reviews: 312,
+  stat_satisfaction: 98,
   updated_at: "2026-01-01T00:00:00.000Z",
 };
+
+const DEMO_TESTIMONIALS: TestimonialRow[] = [
+  {
+    id: "demo-1",
+    name: "Carlos M.",
+    text: "Aparelho impecável, exatamente como descrito. Bateria em 100%. Recomendo!",
+    sort_order: 0,
+    created_at: "2026-01-01T00:00:00.000Z",
+  },
+  {
+    id: "demo-2",
+    name: "Beatriz L.",
+    text: "Chegou rápido e bem embalado. Atendimento no WhatsApp foi super atencioso.",
+    sort_order: 1,
+    created_at: "2026-01-01T00:00:00.000Z",
+  },
+];
 
 // React.cache deduplica por request: várias seções/layout podem pedir as
 // mesmas configurações sem repetir a query no Supabase.
@@ -44,9 +70,30 @@ export const getStoreSettings = cache(async (): Promise<StoreSettingsRow> => {
       hours: null,
       maps_url: null,
       payment_methods: null,
+      warranty_text: null,
+      stat_sold: null,
+      stat_rating: null,
+      stat_reviews: null,
+      stat_satisfaction: null,
       updated_at: "",
     }
   );
+});
+
+// Depoimentos de clientes (cadastrados no admin, exibidos na página do
+// produto). Vazio = a seção de avaliações some da loja.
+export const getTestimonials = cache(async (): Promise<TestimonialRow[]> => {
+  if (!isSupabaseConfigured()) return DEMO_TESTIMONIALS;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("testimonials")
+    .select("*")
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (error) throw new Error(`Falha ao carregar depoimentos: ${error.message}`);
+  return data ?? [];
 });
 
 export const getSiteImages = cache(
@@ -81,10 +128,31 @@ export async function updateStoreSettings(
     hours: input.hours ?? null,
     maps_url: input.maps_url ?? null,
     payment_methods: input.payment_methods ?? null,
+    warranty_text: input.warranty_text ?? null,
+    stat_sold: input.stat_sold ?? null,
+    stat_rating: input.stat_rating ?? null,
+    stat_reviews: input.stat_reviews ?? null,
+    stat_satisfaction: input.stat_satisfaction ?? null,
     updated_at: new Date().toISOString(),
   });
 
   if (error) throw new Error(`Falha ao salvar config: ${error.message}`);
+}
+
+export async function addTestimonial(input: TestimonialInput): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("testimonials")
+    .insert({ name: input.name, text: input.text });
+
+  if (error) throw new Error(`Falha ao salvar depoimento: ${error.message}`);
+}
+
+export async function deleteTestimonial(id: string): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("testimonials").delete().eq("id", id);
+
+  if (error) throw new Error(`Falha ao remover depoimento: ${error.message}`);
 }
 
 export async function addSiteImage(

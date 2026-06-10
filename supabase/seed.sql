@@ -11,3 +11,18 @@ values
   ('iPhone 14 128GB',         'Excelente custo-benefício. Chip A15 Bionic e ótima bateria.',                     489900, 0, true, 3),
   ('iPhone 13 128GB',         'Clássico que não decepciona. Tela OLED e câmera dupla.',                          399900, 8, true, 4),
   ('iPhone SE (3ª geração)',  'Compacto e potente, com Touch ID e chip A15 Bionic.',                            269900, 4, true, 5);
+
+-- Prova social de EXEMPLO (troque pelos números/depoimentos reais da loja
+-- no admin — Conteúdo da loja). Campos vazios somem do site.
+update public.store_settings
+set warranty_text     = 'Garantia de 90 dias',
+    stat_sold         = 3000,
+    stat_rating       = 4.9,
+    stat_reviews      = 312,
+    stat_satisfaction = 98
+where id = 1;
+
+insert into public.testimonials (name, text, sort_order)
+values
+  ('Carlos M.',  'Aparelho impecável, exatamente como descrito. Bateria em 100%. Recomendo!', 0),
+  ('Beatriz L.', 'Chegou rápido e bem embalado. Atendimento no WhatsApp foi super atencioso.', 1);

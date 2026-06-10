@@ -76,6 +76,11 @@ export type Database = {
           hours: string | null;
           maps_url: string | null;
           payment_methods: string | null;
+          warranty_text: string | null;
+          stat_sold: number | null;
+          stat_rating: number | null;
+          stat_reviews: number | null;
+          stat_satisfaction: number | null;
           updated_at: string;
         };
         Insert: {
@@ -84,6 +89,11 @@ export type Database = {
           hours?: string | null;
           maps_url?: string | null;
           payment_methods?: string | null;
+          warranty_text?: string | null;
+          stat_sold?: number | null;
+          stat_rating?: number | null;
+          stat_reviews?: number | null;
+          stat_satisfaction?: number | null;
           updated_at?: string;
         };
         Update: {
@@ -92,7 +102,36 @@ export type Database = {
           hours?: string | null;
           maps_url?: string | null;
           payment_methods?: string | null;
+          warranty_text?: string | null;
+          stat_sold?: number | null;
+          stat_rating?: number | null;
+          stat_reviews?: number | null;
+          stat_satisfaction?: number | null;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      testimonials: {
+        Row: {
+          id: string;
+          name: string;
+          text: string;
+          sort_order: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          text: string;
+          sort_order?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          text?: string;
+          sort_order?: number | null;
+          created_at?: string;
         };
         Relationships: [];
       };
@@ -167,4 +206,6 @@ export type ProductImageInsert =
 export type StoreSettingsRow =
   Database["public"]["Tables"]["store_settings"]["Row"];
 export type SiteImageRow = Database["public"]["Tables"]["site_images"]["Row"];
+export type TestimonialRow =
+  Database["public"]["Tables"]["testimonials"]["Row"];
 export type SiteSection = "loja" | "entrega";

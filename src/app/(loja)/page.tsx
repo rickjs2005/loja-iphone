@@ -29,7 +29,9 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero />
+      <Hero
+        proof={{ sold: settings.stat_sold, rating: settings.stat_rating }}
+      />
       <TrustBand />
       <Highlight />
 

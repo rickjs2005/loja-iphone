@@ -11,7 +11,7 @@ import { ProductReviews } from "@/components/product/product-reviews";
 import { RelatedProducts } from "@/components/product/related-products";
 import { ChevronLeftIcon, ShieldIcon, WhatsappIcon } from "@/components/ui/icons";
 import { getActiveProducts, getProductById } from "@/lib/data/products";
-import { getStoreSettings } from "@/lib/data/site";
+import { getStoreSettings, getTestimonials } from "@/lib/data/site";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
 import { buildProductInquiryUrl } from "@/lib/whatsapp";
@@ -59,10 +59,11 @@ export default async function ProdutoPage({ params }: Props) {
   const { id } = await params;
   // Fetches independentes em paralelo (getProductById deduplicado com o
   // generateMetadata via React.cache).
-  const [product, settings, allProducts] = await Promise.all([
+  const [product, settings, allProducts, testimonials] = await Promise.all([
     getProductById(id),
     getStoreSettings(),
     getActiveProducts(),
+    getTestimonials(),
   ]);
   if (!product) notFound();
 
@@ -132,7 +133,8 @@ export default async function ProdutoPage({ params }: Props) {
           </p>
           <div className="mt-3 flex items-center gap-2 text-sm text-muted">
             <ShieldIcon className="size-4 text-emerald-400" />
-            Garantia inclusa · aparelho testado e com procedência
+            {settings.warranty_text?.trim() || "Garantia inclusa"} · aparelho
+            testado e com procedência
           </div>
           {settings.payment_methods && (
             <p className="mt-2 text-sm text-muted">
@@ -183,8 +185,12 @@ export default async function ProdutoPage({ params }: Props) {
 
       {/* Seções da mini-landing */}
       <div className="mt-16 flex flex-col gap-16">
-        <Specs />
-        <ProductReviews />
+        <Specs warrantyText={settings.warranty_text} />
+        <ProductReviews
+          rating={settings.stat_rating}
+          reviewCount={settings.stat_reviews}
+          testimonials={testimonials}
+        />
         <RelatedProducts products={related} />
       </div>
 

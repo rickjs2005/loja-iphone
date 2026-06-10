@@ -8,11 +8,6 @@ import type { ReactNode } from "react";
 
 const ITEMS: { icon: ReactNode; title: string; text: string }[] = [
   {
-    icon: <ShieldIcon className="size-5" />,
-    title: "Garantia de 90 dias",
-    text: "Cobertura contra defeitos. Deu problema, a gente resolve.",
-  },
-  {
     icon: <BoltIcon className="size-5" />,
     title: "Bateria testada",
     text: "Saúde da bateria verificada e informada antes da compra.",
@@ -29,13 +24,25 @@ const ITEMS: { icon: ReactNode; title: string; text: string }[] = [
   },
 ];
 
-/** Bloco de garantias/benefícios na página de produto. */
-export function Specs() {
+/**
+ * Bloco de garantias/benefícios na página de produto.
+ * O texto da garantia vem do admin (Conteúdo da loja); vazio usa o genérico.
+ */
+export function Specs({ warrantyText }: { warrantyText?: string | null }) {
+  const items = [
+    {
+      icon: <ShieldIcon className="size-5" />,
+      title: warrantyText?.trim() || "Garantia da loja",
+      text: "Cobertura contra defeitos. Deu problema, a gente resolve.",
+    },
+    ...ITEMS,
+  ];
+
   return (
     <div>
       <h2 className="mb-5 text-xl font-bold text-fg">Garantias e benefícios</h2>
       <div className="grid gap-4 sm:grid-cols-2">
-        {ITEMS.map((it) => (
+        {items.map((it) => (
           <div
             key={it.title}
             className="flex gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-xl"
