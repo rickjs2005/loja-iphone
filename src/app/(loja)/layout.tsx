@@ -3,7 +3,6 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { AuroraBackground } from "@/components/visual/aurora-background";
 import { MouseSpotlight } from "@/components/visual/mouse-spotlight";
-import { WhatsappFab } from "@/components/layout/whatsapp-fab";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { MotionProvider } from "@/components/visual/motion-provider";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -44,7 +43,6 @@ export default async function LojaLayout({
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
-      <WhatsappFab />
       <CartDrawer accessories={upsellAccessories} />
     </MotionProvider>
   );
