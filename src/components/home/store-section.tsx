@@ -1,13 +1,25 @@
+import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Carousel } from "@/components/ui/carousel";
 import { buttonClasses } from "@/components/ui/button";
+import { ClockIcon, MapPinIcon, WhatsappIcon } from "@/components/ui/icons";
+import { storeConfig } from "@/config/theme.config";
 import type {
   SiteImageRow,
   StoreSettingsRow,
   UnitRow,
 } from "@/types/database.types";
+
+/** Chip monocromático de ícone — mesmo vocabulário visual das features. */
+function InfoChip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.05] text-fg">
+      {children}
+    </span>
+  );
+}
 
 /**
  * "Nossa(s) loja(s)": carrossel de fotos da loja física + endereço/horário.
@@ -57,16 +69,37 @@ export function StoreSection({
               {units.map((unit) => (
                 <div
                   key={unit.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur"
+                  className="flex flex-col gap-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur"
                 >
+                  {/* Foto da fachada desta unidade (quando cadastrada) */}
+                  {unit.photo_url && (
+                    <div className="relative aspect-[4/3] w-full">
+                      <Image
+                        src={unit.photo_url}
+                        alt={`Fachada da loja ${unit.name}`}
+                        fill
+                        sizes="(max-width: 1024px) 90vw, 30vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className={`flex flex-1 flex-col gap-3 p-5 ${unit.photo_url ? "pt-2" : ""}`}>
                   <p className="font-semibold text-fg">{unit.name}</p>
-                  {(unit.address || unit.hours) && (
-                    <div className="space-y-1">
+                  {(unit.address || unit.hours || settings.hours) && (
+                    <div className="space-y-1.5">
                       {unit.address && (
-                        <p className="text-sm text-muted">{unit.address}</p>
+                        <p className="flex items-start gap-2 text-sm text-muted">
+                          <MapPinIcon className="mt-0.5 size-3.5 shrink-0" />
+                          {unit.address}
+                        </p>
                       )}
-                      {unit.hours && (
-                        <p className="text-sm text-muted">{unit.hours}</p>
+                      {/* Horário próprio ou, na falta, o horário geral da loja
+                          (redes costumam ter o mesmo horário em toda parte). */}
+                      {(unit.hours ?? settings.hours) && (
+                        <p className="flex items-start gap-2 text-sm text-muted">
+                          <ClockIcon className="mt-0.5 size-3.5 shrink-0" />
+                          {unit.hours ?? settings.hours}
+                        </p>
                       )}
                     </div>
                   )}
@@ -95,6 +128,7 @@ export function StoreSection({
                       )}
                     </div>
                   )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -102,35 +136,62 @@ export function StoreSection({
         ) : (
           hasInfo && (
             <Reveal>
-              <div className="mt-8 flex flex-col gap-5 rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex flex-wrap gap-x-12 gap-y-4">
+              {/* Cartão de visita da loja: ícones, hierarquia clara e os dois
+                  caminhos que importam — chegar até a loja ou chamar agora. */}
+              <div className="mt-8 flex flex-col gap-6 rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-8">
+                <div className="flex flex-col gap-5 sm:flex-row sm:gap-12">
                   {settings.address && (
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-                        Endereço
-                      </p>
-                      <p className="mt-1 text-fg">{settings.address}</p>
+                    <div className="flex items-start gap-3">
+                      <InfoChip>
+                        <MapPinIcon className="size-4" />
+                      </InfoChip>
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">
+                          Endereço
+                        </p>
+                        <p className="mt-1 max-w-xs text-fg">
+                          {settings.address}
+                        </p>
+                      </div>
                     </div>
                   )}
                   {settings.hours && (
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-                        Horário
-                      </p>
-                      <p className="mt-1 text-fg">{settings.hours}</p>
+                    <div className="flex items-start gap-3">
+                      <InfoChip>
+                        <ClockIcon className="size-4" />
+                      </InfoChip>
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">
+                          Horário
+                        </p>
+                        <p className="mt-1 max-w-xs text-fg">{settings.hours}</p>
+                      </div>
                     </div>
                   )}
                 </div>
-                {settings.maps_url && (
+
+                <div className="flex flex-wrap gap-2 lg:shrink-0">
+                  {settings.maps_url && (
+                    <a
+                      href={settings.maps_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={buttonClasses("outline", "md")}
+                    >
+                      <MapPinIcon className="size-4" />
+                      Como chegar
+                    </a>
+                  )}
                   <a
-                    href={settings.maps_url}
+                    href={`https://wa.me/${storeConfig.whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={buttonClasses("outline", "md", "shrink-0")}
+                    className={buttonClasses("whatsapp", "md")}
                   >
-                    Ver no mapa
+                    <WhatsappIcon className="size-4" />
+                    Falar com a loja
                   </a>
-                )}
+                </div>
               </div>
             </Reveal>
           )

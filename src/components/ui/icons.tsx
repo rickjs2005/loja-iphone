@@ -88,6 +88,24 @@ export function XIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function MapPinIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  );
+}
+
+export function ClockIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <polyline points="12 7 12 12 15.5 13.5" />
+    </svg>
+  );
+}
+
 export function InstagramIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...base} {...props}>

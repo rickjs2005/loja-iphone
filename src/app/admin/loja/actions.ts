@@ -109,14 +109,32 @@ export async function saveUnitAction(
 
   const id = String(formData.get("id") || "");
 
+  // Foto da fachada (opcional). Valida ANTES de salvar qualquer coisa.
+  const photoFile = formData.get("photo");
+  let photoUrl: string | undefined;
+  if (photoFile instanceof File && photoFile.size > 0) {
+    const valid = imageFileSchema.safeParse(photoFile);
+    if (!valid.success) {
+      return {
+        error: valid.error.issues[0]?.message ?? "Foto inválida.",
+        values,
+      };
+    }
+    try {
+      photoUrl = await uploadSiteImage("unidades", photoFile);
+    } catch {
+      return { error: "Falha ao enviar a foto. Tente de novo.", values };
+    }
+  }
+
   try {
     if (id) {
-      await updateUnit(id, parsed.data);
+      await updateUnit(id, parsed.data, photoUrl);
     } else {
       // Primeira unidade? O estoque atual de cada produto migra inteiro para
       // ela — o total não muda, só passa a ter endereço.
       const eraPrimeira = (await getUnits()).length === 0;
-      const newId = await createUnit(parsed.data);
+      const newId = await createUnit(parsed.data, photoUrl);
       if (eraPrimeira) await seedInventoryForFirstUnit(newId);
     }
   } catch {

@@ -46,7 +46,10 @@ export const getProductInventory = cache(
 // Escrita (admin autenticado; RLS exige is_admin)
 // --------------------------------------------------------------------------
 
-export async function createUnit(input: UnitInput): Promise<string> {
+export async function createUnit(
+  input: UnitInput,
+  photoUrl?: string,
+): Promise<string> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("units")
@@ -56,6 +59,7 @@ export async function createUnit(input: UnitInput): Promise<string> {
       hours: input.hours ?? null,
       whatsapp: input.whatsapp ?? null,
       maps_url: input.maps_url ?? null,
+      photo_url: photoUrl ?? null,
       sort_order: input.sort_order,
     })
     .select("id")
@@ -65,7 +69,12 @@ export async function createUnit(input: UnitInput): Promise<string> {
   return data.id;
 }
 
-export async function updateUnit(id: string, input: UnitInput): Promise<void> {
+export async function updateUnit(
+  id: string,
+  input: UnitInput,
+  /** undefined = não mexer na foto atual; string = substituir. */
+  photoUrl?: string,
+): Promise<void> {
   const supabase = await createClient();
   const { error } = await supabase
     .from("units")
@@ -76,6 +85,7 @@ export async function updateUnit(id: string, input: UnitInput): Promise<void> {
       whatsapp: input.whatsapp ?? null,
       maps_url: input.maps_url ?? null,
       sort_order: input.sort_order,
+      ...(photoUrl !== undefined ? { photo_url: photoUrl } : {}),
     })
     .eq("id", id);
 

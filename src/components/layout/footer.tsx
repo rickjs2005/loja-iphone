@@ -102,20 +102,23 @@ export async function Footer() {
                 Falar no WhatsApp
               </a>
             </li>
-            {/* Com unidades cadastradas, valem os dados delas; sem, o endereço
-                e horário únicos do settings. */}
+            {/* Com unidades cadastradas, lista os endereços delas e o horário
+                geral uma vez só (redes têm o mesmo horário em toda parte;
+                exceções aparecem no card da unidade na home). */}
             {units.length > 0 ? (
-              units.map((unit) => (
-                <li key={unit.id}>
-                  <p className="text-sm text-fg">{unit.name}</p>
-                  {unit.address && (
-                    <p className="text-xs text-muted">{unit.address}</p>
-                  )}
-                  {unit.hours && (
-                    <p className="text-xs text-muted">{unit.hours}</p>
-                  )}
-                </li>
-              ))
+              <>
+                {units.map((unit) => (
+                  <li key={unit.id}>
+                    <p className="text-sm text-fg">{unit.name}</p>
+                    {unit.address && (
+                      <p className="text-xs text-muted">{unit.address}</p>
+                    )}
+                  </li>
+                ))}
+                {settings.hours && (
+                  <li className="text-sm text-muted">{settings.hours}</li>
+                )}
+              </>
             ) : (
               <>
                 {settings.address && (

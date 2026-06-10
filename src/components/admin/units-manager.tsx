@@ -46,14 +46,17 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <Label htmlFor={`unit-name-${unit?.id ?? "nova"}`}>Nome</Label>
+          <Label htmlFor={`unit-name-${unit?.id ?? "nova"}`}>
+            Cidade ou nome da unidade
+          </Label>
           <Input
             id={`unit-name-${unit?.id ?? "nova"}`}
             name="name"
             required
             defaultValue={v?.name ?? unit?.name ?? ""}
-            placeholder="Centro"
+            placeholder="Manhuaçu"
           />
+          <FormHelp>É o título do card no site (ex.: Manhuaçu, Centro).</FormHelp>
           <FieldError>{err.name?.[0]}</FieldError>
         </div>
 
@@ -84,13 +87,19 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <Label htmlFor={`unit-hours-${unit?.id ?? "nova"}`}>Horário</Label>
+          <Label htmlFor={`unit-hours-${unit?.id ?? "nova"}`}>
+            Horário (opcional)
+          </Label>
           <Input
             id={`unit-hours-${unit?.id ?? "nova"}`}
             name="hours"
             defaultValue={v?.hours ?? unit?.hours ?? ""}
-            placeholder="Seg a Sex, 9h às 18h · Sáb, 9h às 13h"
+            placeholder="Vazio = horário geral da loja"
           />
+          <FormHelp>
+            Deixe vazio para usar o horário geral — preencha só se esta
+            unidade abre em horário diferente.
+          </FormHelp>
           <FieldError>{err.hours?.[0]}</FieldError>
         </div>
 
@@ -119,6 +128,31 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
           placeholder="https://maps.google.com/..."
         />
         <FieldError>{err.maps_url?.[0]}</FieldError>
+      </div>
+
+      <div>
+        <Label htmlFor={`unit-photo-${unit?.id ?? "nova"}`}>
+          Foto da fachada (opcional)
+        </Label>
+        {unit?.photo_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={unit.photo_url}
+            alt={`Foto atual de ${unit.name}`}
+            className="mb-2 aspect-[4/3] w-40 rounded-md border border-zinc-800 object-cover"
+          />
+        )}
+        <input
+          id={`unit-photo-${unit?.id ?? "nova"}`}
+          type="file"
+          name="photo"
+          accept="image/jpeg,image/png,image/webp"
+          className="block w-full text-sm text-zinc-400 file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white hover:file:brightness-110"
+        />
+        <FormHelp>
+          Aparece no card desta unidade no site.
+          {unit?.photo_url ? " Enviar outra substitui a atual." : ""}
+        </FormHelp>
       </div>
 
       {state.error && <FieldError>{state.error}</FieldError>}

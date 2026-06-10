@@ -134,6 +134,7 @@ export type Database = {
           hours: string | null;
           whatsapp: string | null;
           maps_url: string | null;
+          photo_url: string | null;
           sort_order: number | null;
           created_at: string;
         };
@@ -144,6 +145,7 @@ export type Database = {
           hours?: string | null;
           whatsapp?: string | null;
           maps_url?: string | null;
+          photo_url?: string | null;
           sort_order?: number | null;
           created_at?: string;
         };
@@ -154,6 +156,7 @@ export type Database = {
           hours?: string | null;
           whatsapp?: string | null;
           maps_url?: string | null;
+          photo_url?: string | null;
           sort_order?: number | null;
           created_at?: string;
         };
