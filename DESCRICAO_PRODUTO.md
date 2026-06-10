@@ -43,21 +43,26 @@ demonstração comercial sem custo.
 1. **Hero** com vídeo de iPhone, headline e CTAs
 2. Faixa de confiança (garantia, procedência, parcelamento)
 3. Destaque visual do aparelho
-4. **"Escolha o seu iPhone"** — grade de produtos com foto, preço, parcelamento
-   (ex.: "12x de R$ 291,59"), saúde da bateria e condição no card
-5. **Acessórios** — seção própria com filtro por categoria (capas,
+4. **Cards de linha Apple** (iPhone, MacBook, iPad, Apple Watch, AirPods,
+   Acessórios) — cada card só aparece quando a linha tem produto ativo, e
+   leva à seção correspondente
+5. **Uma seção de catálogo por linha** — grade de produtos com foto, preço,
+   parcelamento (ex.: "12x de R$ 291,59"), saúde da bateria e condição no
+   card; aparelho lacrado ganha badge **"Novo"** monocromático
+6. **Acessórios** — seção própria com filtro por categoria (capas,
    carregadores, áudio, outros)
-6. Números da loja (contadores animados) e "Por que comprar na {loja}"
-7. **"Nossa loja"** — endereço, horário, link do Google Maps e carrossel de
-   fotos reais do ponto físico (tudo editável no admin)
-8. **"Como entregamos"** — carrossel de fotos de entregas/clientes (editável
+7. "Por que comprar na {loja}"
+8. **"Nossa loja"** — endereço, horário, link do Google Maps e carrossel de
+   fotos reais do ponto físico, com legenda opcional por foto (tudo editável
    no admin)
+9. **"Como entregamos"** — carrossel de fotos de entregas/clientes, com
+   legenda opcional (editável no admin)
 
 **Página de produto** (`/produtos/[id]`) — cada aparelho tem URL própria com:
 - Galeria de fotos com miniaturas
 - Preço grande + parcelamento sem juros (nº de parcelas configurável por produto)
 - **Estado real do aparelho**: saúde da bateria (com barra de %) e condição
-  estética (Vitrine / Excelente / Bom) — preenchidos no admin
+  (Novo lacrado / Vitrine / Excelente / Bom) — preenchidos no admin
 - Badge de estoque honesto: "Disponível", **"Últimas N unidades"** (estoque ≤ 3)
   ou "Esgotado" (esgotado desabilita compra)
 - Formas de pagamento aceitas (texto editável no admin)
@@ -94,19 +99,23 @@ força bruta). Funciona bem em celular (campos sem zoom forçado no iOS).
 
 **Produtos** (`/admin/produtos`):
 - Dashboard rápido: produtos ativos, estoque total, itens sem estoque
-- Lista com abas iPhone/Acessório, toggle ativo/inativo (otimista),
+- Lista com abas por linha (Todos / iPhones / MacBooks / iPads / Apple Watch /
+  AirPods / Acessórios — só as com produto), toggle ativo/inativo (otimista),
   edição e exclusão com confirmação
-- **Criar produto**: nome, descrição, **preço com máscara de moeda** (digita e
-  vê "R$ 2.000,00"), estoque, parcelas, e por categoria: saúde da bateria +
-  condição (iPhone) ou categoria do acessório. **Upload de fotos na própria
+- **Criar produto**: linha Apple (iPhone, MacBook, iPad, Watch, AirPods ou
+  acessório), nome, descrição, **preço com máscara de moeda** (digita e
+  vê "R$ 2.000,00"), estoque, parcelas, e por tipo: saúde da bateria +
+  condição (aparelhos) ou categoria do acessório. **Upload de fotos na própria
   criação**, com pré-visualização
 - **Editar produto**: mesmos campos + gerenciador de fotos (adicionar várias,
   excluir com confirmação)
 - Produto inativo ou sem estoque some/trava na loja na hora (sem cache velho)
 
 **Conteúdo da loja** (`/admin/loja`):
-- Endereço, horário de funcionamento, formas de pagamento, link do Google Maps
-- Upload das fotos das seções "Nossa loja" e "Como entregamos"
+- Endereço, horário de funcionamento, formas de pagamento, link do Google
+  Maps, texto da garantia
+- Upload das fotos das seções "Nossa loja" e "Como entregamos", com legenda
+  opcional por foto
 
 **Robustez** (trabalhada recentemente): formulários não perdem o que foi
 digitado em caso de erro, mensagens de erro amigáveis em português, telas de
@@ -133,15 +142,17 @@ erro/404 tematizadas, validação de imagem (formato/tamanho) antes do upload.
 ## Estado honesto: pronto × parcial × inexistente
 
 **Pronto e funcionando:**
-- Catálogo completo (iPhones + acessórios) com preço, parcelas, bateria, condição
+- Catálogo completo por linha Apple (iPhones, MacBooks, iPads, Apple Watch,
+  AirPods e acessórios) com preço, parcelas, bateria, condição (incl. "Novo"
+  lacrado com badge) e cards de navegação por linha na home
 - Página por produto com galeria, SEO e compra via WhatsApp com mensagem pronta
 - Carrinho multi-item com checkout WhatsApp
 - Admin CRUD completo de produtos com upload de fotos (criação e edição)
 - Conteúdo institucional editável (endereço/horário/pagamentos/maps/fotos)
-- **Prova social editável**: números da loja (vendidos, satisfação, avaliação
-  média, nº de avaliações) configurados no admin + fotos reais de entrega
-  ("Como entregamos"); campo vazio = a seção some da loja (nenhum dado
-  fictício em loja real). Sem seção de depoimentos, por decisão de produto
+- **Prova social = fotos reais**: galerias da loja física e de entregas com
+  legenda opcional por foto, editáveis no admin. Sem contadores de "números
+  da loja" e sem depoimentos, por decisão de design (nada que pareça
+  fabricado)
 
 - **Garantia configurável** por loja (texto no admin, aparece na página do
   produto; vazio mostra texto genérico)
@@ -191,16 +202,17 @@ sabendo o valor — quem chama é quem quer comprar.
 **Dor 2 — Catálogo enterrado no feed.**
 O iPhone 13 postado há 3 semanas está 40 posts pra baixo; o cliente não acha,
 e estoque vendido continua aparecendo no feed.
-→ *Feature:* **grade organizada por iPhones e acessórios**, cada aparelho com
+→ *Feature:* **grade organizada por linha (iPhones, MacBooks, iPads, Watch,
+AirPods, acessórios)**, cada aparelho com
 página própria (todas as fotos, bateria %, condição, estoque). Vendeu? O dono
 desativa no admin pelo celular e o aparelho **some do site na hora** — sem
 apagar post, sem repostar.
 
 **Dor 3 — O cliente pergunta sempre as mesmas coisas (bateria? estado? parcela?).**
 → *Feature:* a página do aparelho mostra **saúde da bateria com barrinha de
-porcentagem, condição estética (Vitrine/Excelente/Bom), parcelamento e formas
-de pagamento**. As 4 perguntas padrão já chegam respondidas; o WhatsApp vira
-fechamento, não triagem.
+porcentagem, condição (Novo lacrado/Vitrine/Excelente/Bom), parcelamento e
+formas de pagamento**. As 4 perguntas padrão já chegam respondidas; o
+WhatsApp vira fechamento, não triagem.
 
 **Dor 4 — Fricção entre o interesse e a mensagem.**
 Hoje o caminho é: ver post → ir na bio → abrir WhatsApp → escrever "oi, vi o
@@ -283,10 +295,10 @@ conversa menos pra vender o mesmo tanto."
 
 Em ordem de prioridade para este público:
 
-1. ~~Prova social fake~~ **RESOLVIDO**: números da loja são editáveis no
-   admin, as seções somem quando vazias e a prova "visual" são as fotos
-   reais de entrega (sem seção de depoimentos). Resta orientar o
-   lojista a preencher só com dados reais (e idealmente uma página curta de
+1. ~~Prova social fake~~ **RESOLVIDO**: a prova social é 100% visual — fotos
+   reais da loja e das entregas, com legenda, editáveis no admin (números
+   da loja e depoimentos foram removidos do produto). Resta orientar o
+   lojista a manter as galerias vivas (e idealmente uma página curta de
    garantia/trocas + CNPJ no rodapé — confiança para ticket de R$ 3–8 mil).
 2. ~~Garantia fixa~~ **RESOLVIDO**: texto da garantia configurável no admin.
 3. **Sem analytics = sem prova de resultado.** O pitch promete "vendas que
