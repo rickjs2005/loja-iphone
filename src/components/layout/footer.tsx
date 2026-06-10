@@ -113,8 +113,7 @@ export async function Footer() {
         </div>
       </Container>
 
-      {/* pb extra no mobile: as barras fixas (WhatsApp/compra) cobrem o fim da página. */}
-      <div className="border-t border-white/10 pb-24 lg:pb-0">
+      <div className="border-t border-white/10">
         <Container className="py-6">
           <p className="text-center text-sm text-muted">
             © {ano} {name}. Todos os direitos reservados.

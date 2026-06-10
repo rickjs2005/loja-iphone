@@ -7,7 +7,6 @@ import { DeliverySection } from "@/components/home/delivery-section";
 import { AccessoriesSection } from "@/components/home/accessories-section";
 import { InstagramSection } from "@/components/home/instagram-section";
 import { CategoryNav } from "@/components/home/category-nav";
-import { MobileWhatsappBar } from "@/components/layout/mobile-whatsapp-bar";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -100,9 +99,6 @@ export default async function HomePage() {
       <StoreSection settings={settings} images={lojaImgs} />
       <DeliverySection images={entregaImgs} />
       <InstagramSection images={instagramImgs} />
-
-      {/* Conversão sempre à mão no mobile (o FAB assume no desktop). */}
-      <MobileWhatsappBar />
     </>
   );
 }
