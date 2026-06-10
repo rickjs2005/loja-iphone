@@ -9,9 +9,44 @@ import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
 import {
   uploadSiteImagesAction,
   deleteSiteImageAction,
+  saveSiteImageCaptionAction,
   type SiteFormState,
 } from "@/app/admin/loja/actions";
 import type { SiteImageRow } from "@/types/database.types";
+
+/** Legenda opcional da foto — salva ao enviar (Enter ou botão). */
+function CaptionForm({ image }: { image: SiteImageRow }) {
+  const [state, formAction] = useActionState<SiteFormState, FormData>(
+    saveSiteImageCaptionAction,
+    {},
+  );
+
+  return (
+    <form action={formAction} className="mt-1.5">
+      <div className="flex gap-1.5">
+        <input type="hidden" name="id" value={image.id} />
+        <input
+          type="text"
+          name="caption"
+          maxLength={120}
+          defaultValue={image.caption ?? ""}
+          placeholder="Legenda (opcional)"
+          aria-label="Legenda da foto"
+          className="min-w-0 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-2 py-1 text-xs text-zinc-100 outline-none transition-colors placeholder:text-zinc-600 focus:border-primary"
+        />
+        <SubmitButton
+          variant="outline"
+          size="sm"
+          className="h-7 shrink-0 rounded-md px-2 text-xs"
+          pendingLabel="..."
+        >
+          Salvar
+        </SubmitButton>
+      </div>
+      {state.error && <FieldError>{state.error}</FieldError>}
+    </form>
+  );
+}
 
 /** Gerenciador de imagens de uma seção do site (loja física / entrega). */
 export function SiteImageManager({
@@ -53,27 +88,27 @@ export function SiteImageManager({
       <h3 className="mb-4 font-semibold text-zinc-100">{title}</h3>
 
       {images.length > 0 ? (
-        <div className="mb-4 grid grid-cols-3 gap-3 sm:grid-cols-4">
+        <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {images.map((img) => (
-            <div
-              key={img.id}
-              className="group relative aspect-square overflow-hidden rounded-md border border-zinc-800 bg-zinc-950"
-            >
-              <Image src={img.url} alt="" fill sizes="120px" className="object-cover" />
-              <div className="pointer-events-none absolute inset-0 hidden bg-black/45 opacity-0 transition-opacity group-hover:opacity-100 sm:block" />
-              <div className="absolute inset-0 flex items-center justify-center transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
-                <ConfirmDeleteButton
-                  action={deleteSiteImageAction}
-                  fields={{ id: img.id, url: img.url }}
-                  title="Remover imagem?"
-                  description="A foto será excluída desta seção."
-                  confirmLabel="Remover"
-                  triggerLabel="Remover imagem"
-                  triggerClassName="inline-flex size-10 items-center justify-center rounded-full bg-red-500/90 text-white shadow-lg transition-colors hover:bg-red-500"
-                >
-                  <TrashIcon className="size-5" />
-                </ConfirmDeleteButton>
+            <div key={img.id}>
+              <div className="group relative aspect-square overflow-hidden rounded-md border border-zinc-800 bg-zinc-950">
+                <Image src={img.url} alt="" fill sizes="160px" className="object-cover" />
+                <div className="pointer-events-none absolute inset-0 hidden bg-black/45 opacity-0 transition-opacity group-hover:opacity-100 sm:block" />
+                <div className="absolute inset-0 flex items-center justify-center transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+                  <ConfirmDeleteButton
+                    action={deleteSiteImageAction}
+                    fields={{ id: img.id, url: img.url }}
+                    title="Remover imagem?"
+                    description="A foto será excluída desta seção."
+                    confirmLabel="Remover"
+                    triggerLabel="Remover imagem"
+                    triggerClassName="inline-flex size-10 items-center justify-center rounded-full bg-red-500/90 text-white shadow-lg transition-colors hover:bg-red-500"
+                  >
+                    <TrashIcon className="size-5" />
+                  </ConfirmDeleteButton>
+                </div>
               </div>
+              <CaptionForm image={img} />
             </div>
           ))}
         </div>

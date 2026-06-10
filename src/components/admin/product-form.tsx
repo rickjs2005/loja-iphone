@@ -14,7 +14,13 @@ import {
   type ProductFormState,
 } from "@/app/admin/produtos/actions";
 import { centsPorExtenso, formatCentsInput } from "@/lib/format";
-import { ACCESSORY_CATEGORIES, CONDITIONS } from "@/lib/data/types";
+import {
+  ACCESSORY_CATEGORIES,
+  CATEGORIES,
+  CONDITIONS,
+  isProductCategory,
+  type ProductCategory,
+} from "@/lib/data/types";
 import { cn } from "@/lib/cn";
 import type { ProductRow } from "@/types/database.types";
 
@@ -27,8 +33,8 @@ export function ProductForm({ product }: { product?: ProductRow }) {
   const [priceCents, setPriceCents] = useState<number | null>(
     product ? product.price_cents : null,
   );
-  const [category, setCategory] = useState<"iphone" | "accessory">(
-    (product?.category as "iphone" | "accessory") ?? "iphone",
+  const [category, setCategory] = useState<ProductCategory>(
+    product && isProductCategory(product.category) ? product.category : "iphone",
   );
   // Fotos só no cadastro (na edição quem cuida é o ImageManager).
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
@@ -39,7 +45,8 @@ export function ProductForm({ product }: { product?: ProductRow }) {
   // Após erro, a action ecoa o que foi digitado: o reset do React 19 aplica
   // o defaultValue ATUAL, então usar o eco evita perder o preenchido.
   const v = state.values;
-  const isIphone = category === "iphone";
+  // Aparelho (qualquer linha Apple) × acessório: muda os campos específicos.
+  const isDevice = category !== "accessory";
 
   // Libera as URLs de pré-visualização ao trocar a seleção / desmontar.
   useEffect(() => {
@@ -92,23 +99,23 @@ export function ProductForm({ product }: { product?: ProductRow }) {
       {product && <input type="hidden" name="id" value={product.id} />}
       <input type="hidden" name="category" value={category} />
 
-      {/* Seletor de tipo */}
+      {/* Seletor de linha (iPhone, MacBook, iPad...) */}
       <div>
         <Label>Tipo de produto</Label>
-        <div className="grid grid-cols-2 gap-2 rounded-xl border border-zinc-800 bg-zinc-950 p-1">
-          {(["iphone", "accessory"] as const).map((c) => (
+        <div className="grid grid-cols-3 gap-2 rounded-xl border border-zinc-800 bg-zinc-950 p-1">
+          {CATEGORIES.map((c) => (
             <button
-              key={c}
+              key={c.value}
               type="button"
-              onClick={() => setCategory(c)}
+              onClick={() => setCategory(c.value)}
               className={cn(
                 "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                category === c
+                category === c.value
                   ? "bg-primary text-white"
                   : "text-zinc-400 hover:text-zinc-100",
               )}
             >
-              {c === "iphone" ? "iPhone" : "Acessório"}
+              {c.label}
             </button>
           ))}
         </div>
@@ -121,7 +128,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           name="name"
           required
           defaultValue={v?.name ?? product?.name}
-          placeholder={isIphone ? "iPhone 15 Pro 256GB" : "Capa MagSafe transparente"}
+          placeholder={isDevice ? "iPhone 15 Pro 256GB" : "Capa MagSafe transparente"}
         />
         <FieldError>{err.name?.[0]}</FieldError>
       </div>
@@ -189,8 +196,8 @@ export function ProductForm({ product }: { product?: ProductRow }) {
         <FieldError>{err.installments?.[0]}</FieldError>
       </div>
 
-      {/* Campos específicos de iPhone */}
-      {isIphone && (
+      {/* Campos específicos de aparelho */}
+      {isDevice && (
         <div className="grid gap-5 rounded-xl border border-zinc-800 bg-zinc-950/50 p-4 sm:grid-cols-2">
           <div>
             <Label htmlFor="battery_health">Saúde da bateria (%)</Label>
@@ -207,7 +214,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
             <FieldError>{err.battery_health?.[0]}</FieldError>
           </div>
           <div>
-            <Label htmlFor="condition">Condição estética</Label>
+            <Label htmlFor="condition">Condição</Label>
             <select
               id="condition"
               name="condition"
@@ -226,7 +233,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
       )}
 
       {/* Campos específicos de Acessório */}
-      {!isIphone && (
+      {!isDevice && (
         <div>
           <Label htmlFor="accessory_category">Categoria do acessório</Label>
           <select

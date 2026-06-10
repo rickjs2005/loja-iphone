@@ -15,7 +15,7 @@ export function Carousel({
   alt = "",
   label,
 }: {
-  images: { id: string; url: string }[];
+  images: { id: string; url: string; caption?: string | null }[];
   alt?: string;
   /** Nome acessível da região (default: alt ou "Galeria de fotos"). */
   label?: string;
@@ -81,11 +81,16 @@ export function Carousel({
           >
             <Image
               src={img.url}
-              alt={`${alt} ${i + 1} de ${images.length}`.trim()}
+              alt={img.caption ?? `${alt} ${i + 1} de ${images.length}`.trim()}
               fill
               sizes="(max-width: 768px) 82vw, 42vw"
               className="object-cover"
             />
+            {img.caption && (
+              <p className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-4 pb-3 pt-12 text-sm text-white">
+                {img.caption}
+              </p>
+            )}
           </div>
         ))}
       </div>

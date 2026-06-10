@@ -2,12 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { requireUser } from "@/lib/auth/user";
-import { siteSettingsSchema } from "@/lib/validation/site.schema";
+import {
+  siteImageCaptionSchema,
+  siteSettingsSchema,
+} from "@/lib/validation/site.schema";
 import { imageFileSchema } from "@/lib/validation/product.schema";
 import {
   addSiteImage,
   deleteSiteImage,
   getNextSiteImageOrder,
+  updateSiteImageCaption,
   updateStoreSettings,
 } from "@/lib/data/site";
 import { removeProductImageByUrl, uploadSiteImage } from "@/lib/data/storage";
@@ -50,10 +54,6 @@ export async function saveSettingsAction(
     maps_url: formData.get("maps_url"),
     payment_methods: formData.get("payment_methods"),
     warranty_text: formData.get("warranty_text"),
-    stat_sold: formData.get("stat_sold"),
-    stat_rating: formData.get("stat_rating"),
-    stat_reviews: formData.get("stat_reviews"),
-    stat_satisfaction: formData.get("stat_satisfaction"),
   });
   if (!parsed.success) {
     return {
@@ -106,6 +106,31 @@ export async function uploadSiteImagesAction(
     }
   } catch {
     return { error: "Falha ao enviar as imagens. Tente de novo." };
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin/loja");
+  return { ok: true };
+}
+
+export async function saveSiteImageCaptionAction(
+  _prev: SiteFormState,
+  formData: FormData,
+): Promise<SiteFormState> {
+  await requireUser();
+
+  const id = String(formData.get("id") || "");
+  if (!id) return { error: "Imagem inválida." };
+
+  const parsed = siteImageCaptionSchema.safeParse(formData.get("caption"));
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Legenda inválida." };
+  }
+
+  try {
+    await updateSiteImageCaption(id, parsed.data ?? null);
+  } catch {
+    return { error: "Não foi possível salvar a legenda." };
   }
 
   revalidatePath("/");

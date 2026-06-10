@@ -11,6 +11,7 @@ import { formatCents, formatInstallments } from "@/lib/format";
 import {
   coverImage,
   conditionLabel,
+  isNew,
   type ProductWithImages,
 } from "@/lib/data/types";
 
@@ -73,7 +74,7 @@ export function ProductCard({
             <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
               <ProductImage url={cover.url} alt={product.name} />
             </div>
-          ) : product.category === "accessory" ? (
+          ) : product.category !== "iphone" ? (
             <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
               <ProductImage url={null} alt={product.name} variant="accessory" />
             </div>
@@ -91,10 +92,17 @@ export function ProductCard({
           <div className="absolute left-3 top-3 z-20">
             <StockBadge stock={product.stock} />
           </div>
-          {conditionLabel(product.condition) && (
-            <div className="absolute right-3 top-3 z-20 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-zinc-100 backdrop-blur">
-              {conditionLabel(product.condition)}
+          {isNew(product) ? (
+            /* Lacrado: badge monocromático, destaque máximo sem cor extra. */
+            <div className="absolute right-3 top-3 z-20 rounded-full bg-white px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-black">
+              Novo
             </div>
+          ) : (
+            conditionLabel(product.condition) && (
+              <div className="absolute right-3 top-3 z-20 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-zinc-100 backdrop-blur">
+                {conditionLabel(product.condition)}
+              </div>
+            )
           )}
         </div>
       </Link>

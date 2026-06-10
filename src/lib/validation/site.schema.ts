@@ -32,42 +32,12 @@ export const siteSettingsSchema = z.object({
     emptyToUndefined,
     z.string().trim().max(120, "Texto da garantia muito longo").optional(),
   ),
-  // Números da loja (prova social). Vazio = a seção some da loja pública.
-  stat_sold: z.preprocess(
-    emptyToUndefined,
-    z.coerce
-      .number({ message: "Número inválido" })
-      .int("Use um número inteiro")
-      .min(0)
-      .max(1_000_000)
-      .optional(),
-  ),
-  stat_rating: z.preprocess(
-    emptyToUndefined,
-    z.coerce
-      .number({ message: "Nota inválida" })
-      .min(0, "A nota vai de 0 a 5")
-      .max(5, "A nota vai de 0 a 5")
-      .optional(),
-  ),
-  stat_reviews: z.preprocess(
-    emptyToUndefined,
-    z.coerce
-      .number({ message: "Número inválido" })
-      .int("Use um número inteiro")
-      .min(0)
-      .max(1_000_000)
-      .optional(),
-  ),
-  stat_satisfaction: z.preprocess(
-    emptyToUndefined,
-    z.coerce
-      .number({ message: "Porcentagem inválida" })
-      .int("Use um número inteiro")
-      .min(0, "De 0 a 100")
-      .max(100, "De 0 a 100")
-      .optional(),
-  ),
 });
 
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
+
+/** Legenda opcional de uma foto da loja/entrega. Vazio = sem legenda. */
+export const siteImageCaptionSchema = z.preprocess(
+  emptyToUndefined,
+  z.string().trim().max(120, "Legenda muito longa (máx. 120)").optional(),
+);

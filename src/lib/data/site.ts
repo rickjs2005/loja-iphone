@@ -22,10 +22,6 @@ const DEMO_SETTINGS: StoreSettingsRow = {
   maps_url: "",
   payment_methods: "Pix, cartão em até 12x e dinheiro",
   warranty_text: "Garantia de 90 dias",
-  stat_sold: 3000,
-  stat_rating: 4.9,
-  stat_reviews: 312,
-  stat_satisfaction: 98,
   updated_at: "2026-01-01T00:00:00.000Z",
 };
 
@@ -50,10 +46,6 @@ export const getStoreSettings = cache(async (): Promise<StoreSettingsRow> => {
       maps_url: null,
       payment_methods: null,
       warranty_text: null,
-      stat_sold: null,
-      stat_rating: null,
-      stat_reviews: null,
-      stat_satisfaction: null,
       updated_at: "",
     }
   );
@@ -92,10 +84,6 @@ export async function updateStoreSettings(
     maps_url: input.maps_url ?? null,
     payment_methods: input.payment_methods ?? null,
     warranty_text: input.warranty_text ?? null,
-    stat_sold: input.stat_sold ?? null,
-    stat_rating: input.stat_rating ?? null,
-    stat_reviews: input.stat_reviews ?? null,
-    stat_satisfaction: input.stat_satisfaction ?? null,
     updated_at: new Date().toISOString(),
   });
 
@@ -113,6 +101,19 @@ export async function addSiteImage(
     .insert({ section, url, sort_order: sortOrder });
 
   if (error) throw new Error(`Falha ao salvar imagem: ${error.message}`);
+}
+
+export async function updateSiteImageCaption(
+  id: string,
+  caption: string | null,
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("site_images")
+    .update({ caption })
+    .eq("id", id);
+
+  if (error) throw new Error(`Falha ao salvar legenda: ${error.message}`);
 }
 
 export async function deleteSiteImage(id: string): Promise<void> {

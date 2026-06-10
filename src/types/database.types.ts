@@ -77,10 +77,6 @@ export type Database = {
           maps_url: string | null;
           payment_methods: string | null;
           warranty_text: string | null;
-          stat_sold: number | null;
-          stat_rating: number | null;
-          stat_reviews: number | null;
-          stat_satisfaction: number | null;
           updated_at: string;
         };
         Insert: {
@@ -90,10 +86,6 @@ export type Database = {
           maps_url?: string | null;
           payment_methods?: string | null;
           warranty_text?: string | null;
-          stat_sold?: number | null;
-          stat_rating?: number | null;
-          stat_reviews?: number | null;
-          stat_satisfaction?: number | null;
           updated_at?: string;
         };
         Update: {
@@ -103,10 +95,6 @@ export type Database = {
           maps_url?: string | null;
           payment_methods?: string | null;
           warranty_text?: string | null;
-          stat_sold?: number | null;
-          stat_rating?: number | null;
-          stat_reviews?: number | null;
-          stat_satisfaction?: number | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -116,6 +104,7 @@ export type Database = {
           id: string;
           section: string;
           url: string;
+          caption: string | null;
           sort_order: number | null;
           created_at: string;
         };
@@ -123,6 +112,7 @@ export type Database = {
           id?: string;
           section: string;
           url: string;
+          caption?: string | null;
           sort_order?: number | null;
           created_at?: string;
         };
@@ -130,6 +120,7 @@ export type Database = {
           id?: string;
           section?: string;
           url?: string;
+          caption?: string | null;
           sort_order?: number | null;
           created_at?: string;
         };

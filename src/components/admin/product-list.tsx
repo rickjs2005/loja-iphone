@@ -6,11 +6,17 @@ import { ProductImage } from "@/components/product/product-image";
 import { ActiveToggle } from "@/components/admin/active-toggle";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
 import { TrashIcon } from "@/components/ui/icons";
-import { coverImage, type ProductWithImages } from "@/lib/data/types";
+import {
+  CATEGORIES,
+  categoryLabel,
+  coverImage,
+  type ProductCategory,
+  type ProductWithImages,
+} from "@/lib/data/types";
 import { formatCents } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
-type Tab = "iphone" | "accessory";
+type Tab = "todos" | ProductCategory;
 
 export function ProductList({
   products,
@@ -19,21 +25,25 @@ export function ProductList({
   products: ProductWithImages[];
   deleteAction: (formData: FormData) => Promise<void>;
 }) {
-  const [tab, setTab] = useState<Tab>("iphone");
+  const [tab, setTab] = useState<Tab>("todos");
 
-  const iphones = products.filter((p) => p.category !== "accessory");
-  const accessories = products.filter((p) => p.category === "accessory");
-  const list = tab === "iphone" ? iphones : accessories;
+  const list =
+    tab === "todos" ? products : products.filter((p) => p.category === tab);
 
+  // "Todos" + uma aba por linha que tem produto cadastrado.
   const tabs: { key: Tab; label: string; count: number }[] = [
-    { key: "iphone", label: "iPhones", count: iphones.length },
-    { key: "accessory", label: "Acessórios", count: accessories.length },
+    { key: "todos", label: "Todos", count: products.length },
+    ...CATEGORIES.map((c) => ({
+      key: c.value as Tab,
+      label: c.plural,
+      count: products.filter((p) => p.category === c.value).length,
+    })).filter((t) => t.count > 0),
   ];
 
   return (
     <div>
       {/* Abas */}
-      <div className="mb-4 inline-flex rounded-lg border border-zinc-800 bg-zinc-900 p-1">
+      <div className="mb-4 inline-flex flex-wrap rounded-lg border border-zinc-800 bg-zinc-900 p-1">
         {tabs.map((t) => (
           <button
             key={t.key}
@@ -54,7 +64,8 @@ export function ProductList({
 
       {list.length === 0 ? (
         <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-900/50 p-12 text-center text-zinc-500">
-          Nenhum {tab === "iphone" ? "iPhone" : "acessório"} cadastrado.
+          Nenhum produto cadastrado
+          {tab === "todos" ? "" : ` em ${categoryLabel(tab)}`}.
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
@@ -89,7 +100,7 @@ export function ProductList({
                             : "bg-zinc-800 text-zinc-400",
                         )}
                       >
-                        {acc ? "Acessório" : "iPhone"}
+                        {categoryLabel(product.category)}
                       </span>
                     </div>
                     <p className="text-sm">

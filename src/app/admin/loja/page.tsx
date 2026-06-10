@@ -25,7 +25,7 @@ export default async function AdminLojaPage() {
 
       <section className="mb-10">
         <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-          Endereço, horário e números
+          Endereço, horário e garantia
         </h2>
         <SettingsForm settings={settings} />
       </section>

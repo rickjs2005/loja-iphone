@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
-import { StarIcon, WhatsappIcon } from "@/components/ui/icons";
+import { WhatsappIcon } from "@/components/ui/icons";
 import { storeConfig } from "@/config/theme.config";
 
 // Posições fixas das partículas (determinístico → sem mismatch de hidratação).
@@ -65,16 +65,7 @@ function PhoneVisual() {
   );
 }
 
-export type HeroProof = {
-  sold: number | null;
-  rating: number | null;
-};
-
-export function Hero({ proof }: { proof?: HeroProof }) {
-  const sold = proof?.sold ?? null;
-  const rating = proof?.rating ?? null;
-  const hasProof = sold != null || rating != null;
-
+export function Hero() {
   return (
     <section className="relative flex min-h-[92vh] items-center overflow-hidden py-16 lg:py-0">
       {/* Partículas flutuando */}
@@ -168,47 +159,6 @@ export function Hero({ proof }: { proof?: HeroProof }) {
                 Falar no WhatsApp
               </a>
             </motion.div>
-
-            {/* Prova social — números reais do admin; sem dados, some. */}
-            {hasProof && (
-              <motion.div
-                custom={4}
-                variants={fade}
-                initial="hidden"
-                animate="show"
-                className="mt-8 flex items-center justify-center gap-3 lg:justify-start"
-              >
-                {rating != null && (
-                  <div className="flex text-amber-400">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <StarIcon key={i} className="size-5" />
-                    ))}
-                  </div>
-                )}
-                <span className="text-sm text-muted sm:text-base">
-                  {sold != null && (
-                    <>
-                      <strong className="text-fg">
-                        +{sold.toLocaleString("pt-BR")}
-                      </strong>{" "}
-                      aparelhos vendidos
-                    </>
-                  )}
-                  {sold != null && rating != null && <> · </>}
-                  {rating != null && (
-                    <>
-                      <strong className="text-fg">
-                        {Number(rating).toLocaleString("pt-BR", {
-                          minimumFractionDigits: 1,
-                          maximumFractionDigits: 1,
-                        })}
-                      </strong>{" "}
-                      de avaliação
-                    </>
-                  )}
-                </span>
-              </motion.div>
-            )}
           </div>
 
           {/* Coluna do mockup 3D */}

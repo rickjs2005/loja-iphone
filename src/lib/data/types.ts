@@ -5,9 +5,37 @@ export type ProductWithImages = ProductRow & {
   images: ProductImageRow[];
 };
 
-export type ProductCategory = "iphone" | "accessory";
+export type ProductCategory =
+  | "iphone"
+  | "macbook"
+  | "ipad"
+  | "watch"
+  | "airpods"
+  | "accessory";
 export type AccessoryCategory = "carregadores" | "capas" | "audio" | "outros";
-export type Condition = "vitrine" | "excelente" | "bom";
+export type Condition = "novo" | "vitrine" | "excelente" | "bom";
+
+/** Linhas de produto Apple (valor no banco + rótulos na UI). */
+export const CATEGORIES: {
+  value: ProductCategory;
+  label: string;
+  plural: string;
+}[] = [
+  { value: "iphone", label: "iPhone", plural: "iPhones" },
+  { value: "macbook", label: "MacBook", plural: "MacBooks" },
+  { value: "ipad", label: "iPad", plural: "iPads" },
+  { value: "watch", label: "Apple Watch", plural: "Apple Watch" },
+  { value: "airpods", label: "AirPods", plural: "AirPods" },
+  { value: "accessory", label: "Acessório", plural: "Acessórios" },
+];
+
+export function categoryLabel(value: string | null): string {
+  return CATEGORIES.find((c) => c.value === value)?.label ?? "Produto";
+}
+
+export function isProductCategory(v: string): v is ProductCategory {
+  return CATEGORIES.some((c) => c.value === v);
+}
 
 /** Subcategorias de acessório (valor no banco + rótulo na UI). */
 export const ACCESSORY_CATEGORIES: { value: AccessoryCategory; label: string }[] =
@@ -18,12 +46,17 @@ export const ACCESSORY_CATEGORIES: { value: AccessoryCategory; label: string }[]
     { value: "outros", label: "Outros" },
   ];
 
-/** Condição estética do iPhone seminovo. */
+/** Condição do aparelho ('novo' = lacrado; o resto é estado de seminovo). */
 export const CONDITIONS: { value: Condition; label: string }[] = [
+  { value: "novo", label: "Novo (lacrado)" },
   { value: "vitrine", label: "Vitrine (impecável)" },
   { value: "excelente", label: "Excelente" },
   { value: "bom", label: "Bom" },
 ];
+
+export function isNew(p: Pick<ProductRow, "condition">): boolean {
+  return p.condition === "novo";
+}
 
 export function accessoryCategoryLabel(value: string | null): string {
   return ACCESSORY_CATEGORIES.find((c) => c.value === value)?.label ?? "Acessório";

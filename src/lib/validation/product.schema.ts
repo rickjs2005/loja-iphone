@@ -39,7 +39,9 @@ export const productSchema = z.object({
     .max(24, "Máximo de 24 parcelas")
     .optional()
     .transform((v) => v ?? 12),
-  category: z.enum(["iphone", "accessory"]).default("iphone"),
+  category: z
+    .enum(["iphone", "macbook", "ipad", "watch", "airpods", "accessory"])
+    .default("iphone"),
   accessory_category: z.preprocess(
     emptyToUndefined,
     z.enum(["carregadores", "capas", "audio", "outros"]).optional(),
@@ -50,7 +52,7 @@ export const productSchema = z.object({
   ),
   condition: z.preprocess(
     emptyToUndefined,
-    z.enum(["vitrine", "excelente", "bom"]).optional(),
+    z.enum(["novo", "vitrine", "excelente", "bom"]).optional(),
   ),
   is_active: z.coerce.boolean().default(true),
   sort_order: z.coerce

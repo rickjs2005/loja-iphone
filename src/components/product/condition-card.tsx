@@ -45,7 +45,7 @@ export function ConditionCard({
 
       {condLabel && (
         <div className="flex items-baseline justify-between text-sm">
-          <span className="text-muted">Condição estética</span>
+          <span className="text-muted">Condição</span>
           <span className="font-semibold text-fg">{condLabel}</span>
         </div>
       )}
