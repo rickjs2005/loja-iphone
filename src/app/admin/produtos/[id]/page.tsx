@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ChevronLeftIcon } from "@/components/ui/icons";
 import { ProductForm } from "@/components/admin/product-form";
 import { ImageManager } from "@/components/admin/image-manager";
-import { requireUser } from "@/lib/auth/user";
+import { requireAdmin } from "@/lib/auth/user";
 import { getProductById } from "@/lib/data/products";
 import { getProductInventory, getUnits } from "@/lib/data/units";
 
@@ -14,7 +14,7 @@ export default async function EditarProdutoPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireUser();
+  await requireAdmin();
   const { id } = await params;
   // Com unidades cadastradas, o form mostra o estoque por unidade.
   const [product, units, inventory] = await Promise.all([

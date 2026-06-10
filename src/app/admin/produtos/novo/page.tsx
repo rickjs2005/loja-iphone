@@ -1,11 +1,11 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { ChevronLeftIcon } from "@/components/ui/icons";
 import { ProductForm } from "@/components/admin/product-form";
-import { requireUser } from "@/lib/auth/user";
+import { requireAdmin } from "@/lib/auth/user";
 import { getUnits } from "@/lib/data/units";
 
 export default async function NovoProdutoPage() {
-  await requireUser();
+  await requireAdmin();
   // Com unidades cadastradas, o form pede o estoque por unidade.
   const units = await getUnits();
 

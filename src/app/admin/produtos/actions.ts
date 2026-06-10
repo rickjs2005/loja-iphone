@@ -20,7 +20,7 @@ import {
   removeProductImageByUrl,
   uploadProductImage,
 } from "@/lib/data/storage";
-import { setProductInventory } from "@/lib/data/units";
+import { getUnits, setProductInventory } from "@/lib/data/units";
 
 export type ProductFormState = {
   ok?: boolean;
@@ -101,7 +101,13 @@ export async function saveProductAction(
 
   // Estoque por unidade (presente só quando a loja tem unidades cadastradas).
   // O trigger do banco recalcula products.stock a partir do inventory.
-  const stockEntries = collectUnitStockEntries(formData);
+  // Filtra unidades que deixaram de existir entre abrir o form e salvar
+  // (outro admin excluiu): sem isso o upsert quebraria na FK.
+  let stockEntries = collectUnitStockEntries(formData);
+  if (stockEntries.length > 0) {
+    const validUnitIds = new Set((await getUnits()).map((u) => u.id));
+    stockEntries = stockEntries.filter((e) => validUnitIds.has(e.unitId));
+  }
 
   if (id) {
     try {

@@ -58,6 +58,21 @@ export function ProductForm({
       ]),
     ),
   );
+  // Pós-salvar, a página revalida com inventory novo: re-sincroniza os inputs
+  // (sem isso, um segundo salvar reenviaria valores antigos — ex.: mudados
+  // por outro admin). Em erro de validação não há revalidate, então o que
+  // foi digitado permanece intacto.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setUnitStocks(
+      Object.fromEntries(
+        units.map((u) => [
+          u.id,
+          String(inventory?.find((i) => i.unit_id === u.id)?.stock ?? 0),
+        ]),
+      ),
+    );
+  }, [units, inventory]);
   const totalStock = units.reduce((sum, u) => {
     const n = parseInt(unitStocks[u.id] ?? "", 10);
     return sum + (Number.isFinite(n) && n > 0 ? n : 0);

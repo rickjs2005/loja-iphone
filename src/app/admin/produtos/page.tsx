@@ -1,8 +1,8 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { ProductList } from "@/components/admin/product-list";
 import { SuccessBanner } from "@/components/admin/success-banner";
 import { PlusIcon } from "@/components/ui/icons";
-import { requireUser } from "@/lib/auth/user";
+import { requireAdmin } from "@/lib/auth/user";
 import { getAllProducts } from "@/lib/data/products";
 import { deleteProductAction } from "./actions";
 
@@ -13,7 +13,7 @@ export default async function AdminProdutosPage({
 }: {
   searchParams: Promise<{ criado?: string }>;
 }) {
-  await requireUser();
+  await requireAdmin();
   const { criado } = await searchParams;
   const products = await getAllProducts();
 

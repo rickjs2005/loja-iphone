@@ -57,7 +57,9 @@ export async function loginAction(
   });
   if (!parsed.success) {
     await registerFailedAttempt(ip);
-    return { error: "E-mail ou senha inválidos." };
+    // Mesma mensagem do erro de credencial: a resposta não pode revelar em
+    // qual etapa a tentativa falhou.
+    return { error: "E-mail ou senha incorretos." };
   }
 
   const supabase = await createClient();
@@ -161,11 +163,6 @@ export async function resetPasswordAction(
     };
   }
 
-  const code = String(formData.get("code") || "");
-  if (!code) {
-    return { expired: true, error: "Link inválido ou expirado." };
-  }
-
   const parsed = resetPasswordSchema.safeParse({
     password: formData.get("password"),
     confirm: formData.get("confirm"),
@@ -176,14 +173,28 @@ export async function resetPasswordAction(
 
   const supabase = await createClient();
 
-  const { error: exchangeError } =
-    await supabase.auth.exchangeCodeForSession(code);
-  if (exchangeError) {
-    return {
-      expired: true,
-      error:
-        "Este link expirou ou já foi usado. Peça um novo para continuar.",
-    };
+  // O code é de uso único: se uma tentativa anterior já o trocou por sessão
+  // (ex.: updateUser falhou por senha igual à atual), seguimos com a sessão
+  // existente em vez de exigir um code novo — sem isso o usuário ficaria
+  // num beco ("link expirado") mesmo tendo acabado de clicar no e-mail.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    const code = String(formData.get("code") || "");
+    if (!code) {
+      return { expired: true, error: "Link inválido ou expirado." };
+    }
+    const { error: exchangeError } =
+      await supabase.auth.exchangeCodeForSession(code);
+    if (exchangeError) {
+      return {
+        expired: true,
+        error:
+          "Este link expirou ou já foi usado. Peça um novo para continuar.",
+      };
+    }
   }
 
   const { error: updateError } = await supabase.auth.updateUser({

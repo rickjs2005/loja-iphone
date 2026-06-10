@@ -118,6 +118,16 @@ export async function setProductInventory(
  */
 export async function seedInventoryForFirstUnit(unitId: string): Promise<void> {
   const supabase = await createClient();
+
+  // Guarda contra corrida (dois admins criando a "primeira" unidade ao mesmo
+  // tempo): só semeia se a unidade recém-criada é de fato a ÚNICA — senão o
+  // estoque total dobraria (cada seed soma tudo de novo via trigger).
+  const { count, error: countError } = await supabase
+    .from("units")
+    .select("id", { count: "exact", head: true });
+  if (countError) throw new Error(`Falha ao semear estoque: ${countError.message}`);
+  if ((count ?? 0) !== 1) return;
+
   const { data: products, error } = await supabase
     .from("products")
     .select("id, stock");

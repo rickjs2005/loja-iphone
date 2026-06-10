@@ -1,14 +1,14 @@
 import { SettingsForm } from "@/components/admin/settings-form";
 import { SiteImageManager } from "@/components/admin/site-image-manager";
 import { UnitsManager } from "@/components/admin/units-manager";
-import { requireUser } from "@/lib/auth/user";
+import { requireAdmin } from "@/lib/auth/user";
 import { getSiteImages, getStoreSettings } from "@/lib/data/site";
 import { getUnits } from "@/lib/data/units";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminLojaPage() {
-  await requireUser();
+  await requireAdmin();
   const [settings, units, lojaImgs, entregaImgs, instagramImgs] =
     await Promise.all([
       getStoreSettings(),
