@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
@@ -58,13 +57,15 @@ function PhoneVisual() {
         className="w-full max-w-[460px]"
       >
         <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.7)]">
-          <Image
-            src="https://images.unsplash.com/photo-1759588071781-2c3ba9128497?w=1600&q=80"
-            alt="iPhone em destaque"
-            fill
-            priority
-            sizes="(max-width: 1024px) 90vw, 460px"
-            className="object-cover"
+          <video
+            src="/hero.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            aria-label="iPhone 17 Pro em destaque"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
       </motion.div>

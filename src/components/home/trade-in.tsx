@@ -1,16 +1,11 @@
 "use client";
 
 import type { ComponentType, SVGProps } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
-import {
-  BoltIcon,
-  CheckIcon,
-  ChevronLeftIcon,
-  WhatsappIcon,
-} from "@/components/ui/icons";
-import { IphoneRender } from "@/components/visual/iphone-render";
+import { BoltIcon, CheckIcon, WhatsappIcon } from "@/components/ui/icons";
 import { buildTradeInUrl } from "@/lib/whatsapp";
 
 const STEPS: {
@@ -24,22 +19,21 @@ const STEPS: {
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
-/** Linha de energia entre o aparelho antigo e o novo: pulso de luz em loop. */
-function EnergyLine() {
+/**
+ * Pulso de luz viajando por cima do feixe da foto (antigo → novo), em loop.
+ * A foto dá o clima; o movimento dá a vida.
+ */
+function EnergyPulse() {
   return (
-    <div aria-hidden className="relative flex flex-1 items-center px-2">
-      {/* Track */}
-      <div className="h-px w-full bg-white/10" />
-      {/* Pulso viajando da esquerda (antigo) para a direita (novo) */}
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-x-[12%] top-1/2 -translate-y-1/2"
+    >
       <motion.span
-        className="absolute top-1/2 h-[2px] w-12 -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_12px_2px_var(--store-primary)] blur-[0.5px]"
-        animate={{ left: ["0%", "100%"] }}
+        className="absolute h-[3px] w-16 rounded-full bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_14px_3px_var(--store-primary)] blur-[0.5px]"
+        animate={{ left: ["0%", "92%"], opacity: [0, 1, 1, 0] }}
         transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
       />
-      {/* Seta no meio: sensação de upgrade */}
-      <span className="absolute left-1/2 top-1/2 flex size-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-bg text-muted">
-        <ChevronLeftIcon className="size-4 rotate-180" />
-      </span>
     </div>
   );
 }
@@ -63,16 +57,17 @@ export function TradeIn() {
               transition={{ duration: 0.9, ease: easeOut }}
               className="flex items-center justify-center"
             >
-              <div className="flex w-full max-w-md items-center">
-                {/* O antigo: menor e apagado (wrapper dimensiona o SVG h-full) */}
-                <div className="aspect-[7/15] h-44 shrink-0 opacity-60">
-                  <IphoneRender uid="tradein-old" colorway="graphite" />
-                </div>
-                <EnergyLine />
-                {/* O novo: maior e em destaque */}
-                <div className="aspect-[7/15] h-60 shrink-0 drop-shadow-[0_30px_50px_rgba(0,0,0,0.6)]">
-                  <IphoneRender uid="tradein-new" colorway="natural" />
-                </div>
+              {/* Foto: aparelho antigo → feixe de energia → aparelho novo */}
+              <div className="relative w-full overflow-hidden rounded-2xl">
+                <Image
+                  src="/tradein.webp"
+                  alt="iPhone antigo transferindo energia para um iPhone novo"
+                  width={1600}
+                  height={893}
+                  sizes="(max-width: 1024px) 90vw, 560px"
+                  className="h-auto w-full"
+                />
+                <EnergyPulse />
               </div>
             </motion.div>
 
