@@ -6,8 +6,10 @@ import { z } from "zod";
  * usamos coerção onde necessário.
  */
 
+// Campos condicionais do form chegam como null (ausentes do FormData) ou ""
+// (select/input vazio): ambos significam "não informado".
 const emptyToUndefined = (v: unknown) =>
-  typeof v === "string" && v.trim() === "" ? undefined : v;
+  v === null || (typeof v === "string" && v.trim() === "") ? undefined : v;
 
 export const productSchema = z.object({
   name: z
