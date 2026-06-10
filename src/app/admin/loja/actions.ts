@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireUser } from "@/lib/auth/user";
+import { requireAdmin } from "@/lib/auth/user";
 import {
   siteImageCaptionSchema,
   siteSettingsSchema,
@@ -44,7 +44,7 @@ export async function saveSettingsAction(
   _prev: SiteFormState,
   formData: FormData,
 ): Promise<SiteFormState> {
-  await requireUser();
+  await requireAdmin();
 
   const values = echoValues(formData);
 
@@ -78,7 +78,7 @@ export async function uploadSiteImagesAction(
   _prev: SiteFormState,
   formData: FormData,
 ): Promise<SiteFormState> {
-  await requireUser();
+  await requireAdmin();
 
   const section = String(formData.get("section") || "");
   if (!isSection(section)) return { error: "Seção inválida." };
@@ -117,7 +117,7 @@ export async function saveSiteImageCaptionAction(
   _prev: SiteFormState,
   formData: FormData,
 ): Promise<SiteFormState> {
-  await requireUser();
+  await requireAdmin();
 
   const id = String(formData.get("id") || "");
   if (!id) return { error: "Imagem inválida." };
@@ -139,7 +139,7 @@ export async function saveSiteImageCaptionAction(
 }
 
 export async function deleteSiteImageAction(formData: FormData): Promise<void> {
-  await requireUser();
+  await requireAdmin();
   const id = String(formData.get("id") || "");
   const url = String(formData.get("url") || "");
   if (!id) return;

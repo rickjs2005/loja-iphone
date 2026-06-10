@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ProductImage } from "@/components/product/product-image";
 import { ActiveToggle } from "@/components/admin/active-toggle";
 import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
+import { Input } from "@/components/ui/field";
 import { TrashIcon } from "@/components/ui/icons";
 import {
   CATEGORIES,
@@ -18,6 +19,16 @@ import { cn } from "@/lib/cn";
 
 type Tab = "todos" | ProductCategory;
 
+const PAGE_SIZE = 50;
+
+/** Normaliza para busca: minúsculas e sem acentos ("Indução" → "inducao"). */
+function normalize(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
 export function ProductList({
   products,
   deleteAction,
@@ -26,9 +37,22 @@ export function ProductList({
   deleteAction: (formData: FormData) => Promise<void>;
 }) {
   const [tab, setTab] = useState<Tab>("todos");
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
 
-  const list =
+  const byTab =
     tab === "todos" ? products : products.filter((p) => p.category === tab);
+
+  const term = normalize(query.trim());
+  const filtered = term
+    ? byTab.filter((p) => normalize(p.name).includes(term))
+    : byTab;
+
+  // Paginação client-side; o clamp protege contra páginas órfãs (ex.: itens
+  // excluídos enquanto a última página estava aberta).
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const current = Math.min(page, totalPages);
+  const list = filtered.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE);
 
   // "Todos" + uma aba por linha que tem produto cadastrado.
   const tabs: { key: Tab; label: string; count: number }[] = [
@@ -42,13 +66,30 @@ export function ProductList({
 
   return (
     <div>
+      {/* Busca por nome (filtro local, case/acento-insensível) */}
+      <div className="mb-4 max-w-sm">
+        <Input
+          type="search"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setPage(1);
+          }}
+          placeholder="Buscar produto pelo nome…"
+          aria-label="Buscar produto pelo nome"
+        />
+      </div>
+
       {/* Abas */}
       <div className="mb-4 inline-flex flex-wrap rounded-lg border border-zinc-800 bg-zinc-900 p-1">
         {tabs.map((t) => (
           <button
             key={t.key}
             type="button"
-            onClick={() => setTab(t.key)}
+            onClick={() => {
+              setTab(t.key);
+              setPage(1);
+            }}
             className={cn(
               "rounded-md px-4 py-1.5 text-sm font-medium transition-colors",
               tab === t.key
@@ -64,8 +105,11 @@ export function ProductList({
 
       {list.length === 0 ? (
         <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-900/50 p-12 text-center text-zinc-500">
-          Nenhum produto cadastrado
-          {tab === "todos" ? "" : ` em ${categoryLabel(tab)}`}.
+          {term
+            ? `Nenhum produto encontrado para "${query.trim()}".`
+            : `Nenhum produto cadastrado${
+                tab === "todos" ? "" : ` em ${categoryLabel(tab)}`
+              }.`}
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
@@ -142,6 +186,38 @@ export function ProductList({
               );
             })}
           </ul>
+        </div>
+      )}
+
+      {/* Paginação client-side (50 por página) */}
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={() => setPage(current - 1)}
+            disabled={current <= 1}
+            className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-zinc-900"
+          >
+            Anterior
+          </button>
+          <span className="text-sm text-zinc-400">
+            página{" "}
+            <span className="font-mono tabular-nums text-zinc-200">
+              {current}
+            </span>{" "}
+            de{" "}
+            <span className="font-mono tabular-nums text-zinc-200">
+              {totalPages}
+            </span>
+          </span>
+          <button
+            type="button"
+            onClick={() => setPage(current + 1)}
+            disabled={current >= totalPages}
+            className="rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-zinc-900"
+          >
+            Próxima
+          </button>
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireUser } from "@/lib/auth/user";
+import { requireAdmin } from "@/lib/auth/user";
 import { productSchema } from "@/lib/validation/product.schema";
 import { imageFileSchema } from "@/lib/validation/product.schema";
 import {
@@ -66,7 +66,7 @@ export async function saveProductAction(
   _prev: ProductFormState,
   formData: FormData,
 ): Promise<ProductFormState> {
-  await requireUser();
+  await requireAdmin();
 
   const values = echoValues(formData);
 
@@ -140,7 +140,7 @@ export async function saveProductAction(
 }
 
 export async function deleteProductAction(formData: FormData): Promise<void> {
-  await requireUser();
+  await requireAdmin();
   const id = String(formData.get("id") || "");
   if (!id) return;
 
@@ -163,7 +163,7 @@ export async function deleteProductAction(formData: FormData): Promise<void> {
 }
 
 export async function toggleActiveAction(formData: FormData): Promise<void> {
-  await requireUser();
+  await requireAdmin();
   const id = String(formData.get("id") || "");
   const next = formData.get("next") === "true";
   if (!id) return;
@@ -178,7 +178,7 @@ export async function uploadImagesAction(
   _prev: ProductFormState,
   formData: FormData,
 ): Promise<ProductFormState> {
-  await requireUser();
+  await requireAdmin();
 
   const productId = String(formData.get("productId") || "");
   if (!isUuid(productId)) return { error: "Produto inválido." };
@@ -215,7 +215,7 @@ export async function uploadImagesAction(
 }
 
 export async function deleteImageAction(formData: FormData): Promise<void> {
-  await requireUser();
+  await requireAdmin();
   const imageId = String(formData.get("imageId") || "");
   const url = String(formData.get("url") || "");
   const productId = String(formData.get("productId") || "");

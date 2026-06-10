@@ -47,9 +47,13 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAdmin = pathname.startsWith("/admin");
   const isLogin = pathname === "/admin/login";
+  // Rotas de autenticação acessíveis SEM sessão: login e o fluxo de
+  // recuperação de senha (o link do e-mail chega anônimo, com ?code=...).
+  const isAuthRoute =
+    isLogin || pathname === "/admin/recuperar" || pathname === "/admin/redefinir";
 
   // Sem sessão tentando acessar área administrativa → manda pro login.
-  if (isAdmin && !isLogin && !user) {
+  if (isAdmin && !isAuthRoute && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     url.searchParams.set("redirect", pathname);

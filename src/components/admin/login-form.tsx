@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Input, Label, FieldError } from "@/components/ui/field";
 import { loginAction, type LoginState } from "@/lib/auth/actions";
@@ -94,6 +95,13 @@ export function LoginForm() {
       <FieldError>{state.error}</FieldError>
 
       <SubmitButton lockedMs={lockedMs} />
+
+      <Link
+        href="/admin/recuperar"
+        className="text-center text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+      >
+        Esqueci minha senha
+      </Link>
 
       {lockedMs > 0 && (
         <p className="text-center text-xs text-zinc-500">
