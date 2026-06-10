@@ -57,8 +57,9 @@ function PhoneVisual() {
         className="w-full max-w-[460px]"
       >
         <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.7)]">
+          {/* Nome versionado: trocar o vídeo = trocar o nome (evita cache). */}
           <video
-            src="/hero.mp4"
+            src="/hero-v2.mp4"
             autoPlay
             loop
             muted
