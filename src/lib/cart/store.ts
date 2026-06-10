@@ -18,12 +18,23 @@ export type CartItem = {
   quantity: number;
 };
 
+/** Estado fresco de um produto, como retornado pela camada de dados. */
+export type ServerProductState = {
+  id: string;
+  price_cents: number;
+  stock: number;
+  is_active: boolean;
+};
+
 type CartState = {
   items: CartItem[];
+  /** Se a última sync com o servidor alterou algo (não persiste). */
+  lastSyncChanged: boolean;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   removeItem: (productId: string) => void;
   setQuantity: (productId: string, quantity: number) => void;
   clear: () => void;
+  syncWithServer: (state: ServerProductState[]) => void;
 };
 
 const clamp = (qty: number, stock: number) =>
@@ -33,6 +44,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       items: [],
+      lastSyncChanged: false,
 
       addItem: (item, quantity = 1) =>
         set((state) => {
@@ -71,10 +83,54 @@ export const useCartStore = create<CartState>()(
         })),
 
       clear: () => set({ items: [] }),
+
+      /**
+       * Reconcilia o carrinho com o estado fresco do banco: remove o que
+       * sumiu/foi desativado/zerou o estoque e atualiza preço/estoque dos
+       * demais (clampando a quantidade). Registra em `lastSyncChanged` se a
+       * sync alterou algo, para a UI avisar o cliente.
+       */
+      syncWithServer: (server) =>
+        set((state) => {
+          const byId = new Map(server.map((p) => [p.id, p]));
+          let changed = false;
+          const items: CartItem[] = [];
+
+          for (const item of state.items) {
+            const fresh = byId.get(item.productId);
+            // Produto removido, desativado ou esgotado: sai do carrinho.
+            if (!fresh || !fresh.is_active || fresh.stock <= 0) {
+              changed = true;
+              continue;
+            }
+            const quantity = clamp(item.quantity, fresh.stock);
+            if (
+              fresh.price_cents !== item.priceCents ||
+              fresh.stock !== item.stock ||
+              quantity !== item.quantity
+            ) {
+              changed = true;
+              items.push({
+                ...item,
+                priceCents: fresh.price_cents,
+                stock: fresh.stock,
+                quantity,
+              });
+            } else {
+              items.push(item);
+            }
+          }
+
+          return changed
+            ? { items, lastSyncChanged: true }
+            : { lastSyncChanged: false };
+        }),
     }),
     {
       name: "loja-iphone-cart",
       storage: createJSONStorage(() => localStorage),
+      // Só os itens vão pro localStorage; flags transitórias ficam de fora.
+      partialize: (state) => ({ items: state.items }),
     },
   ),
 );
@@ -86,5 +142,6 @@ export const selectTotalItems = (s: CartState) =>
 export const selectTotalCents = (s: CartState) =>
   s.items.reduce((acc, i) => acc + i.priceCents * i.quantity, 0);
 
-export const selectHasIphone = (s: CartState) =>
-  s.items.some((i) => i.category === "iphone");
+/** Há algum aparelho (não-acessório) no carrinho? Dispara o upsell. */
+export const selectHasDevice = (s: CartState) =>
+  s.items.some((i) => i.category !== "accessory");

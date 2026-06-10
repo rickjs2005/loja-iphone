@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
 import { buttonClasses, focusRing } from "@/components/ui/button";
 import {
@@ -15,10 +15,11 @@ import {
   useCartStore,
   selectTotalCents,
   selectTotalItems,
-  selectHasIphone,
+  selectHasDevice,
   type CartItem,
 } from "@/lib/cart/store";
 import { useCartUI } from "@/lib/cart/ui-store";
+import { useCartSync } from "@/components/cart/use-cart-sync";
 import { useHydrated } from "@/lib/cart/use-hydrated";
 import { formatCents } from "@/lib/format";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
@@ -34,11 +35,13 @@ export function CartDrawer({
   const addItem = useCartStore((s) => s.addItem);
   const totalCents = useCartStore(selectTotalCents);
   const totalItems = useCartStore(selectTotalItems);
-  const hasIphone = useCartStore(selectHasIphone);
+  const hasDevice = useCartStore(selectHasDevice);
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const hydrated = useHydrated();
   const panelRef = useRef<HTMLElement>(null);
+  // Revalida preço/estoque no servidor sempre que o drawer abre (com debounce).
+  const syncNotice = useCartSync(isOpen);
 
   // Upsell: acessórios ainda não adicionados (até 3), só se há iPhone no carrinho.
   const upsell = accessories
@@ -70,7 +73,7 @@ export function CartDrawer({
     <AnimatePresence>
       {isOpen && (
         <>
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -78,7 +81,7 @@ export function CartDrawer({
             className="fixed inset-0 z-50 touch-none bg-black/60 backdrop-blur-sm"
           />
 
-          <motion.aside
+          <m.aside
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -109,6 +112,12 @@ export function CartDrawer({
             {empty ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
                 <p className="text-muted">Seu carrinho está vazio.</p>
+                {/* A sync pode ter removido itens esgotados/desativados. */}
+                {syncNotice && (
+                  <p className="text-xs text-muted">
+                    Preços e estoque atualizados agora.
+                  </p>
+                )}
                 <button onClick={close} className={buttonClasses("primary")}>
                   Ver produtos
                 </button>
@@ -180,7 +189,7 @@ export function CartDrawer({
                   ))}
                 </ul>
 
-                {hasIphone && upsell.length > 0 && (
+                {hasDevice && upsell.length > 0 && (
                   <div className="border-t border-white/10 p-5">
                     <p className="mb-3 text-sm font-semibold text-fg">
                       Proteja seu novo iPhone 🛡️
@@ -220,6 +229,11 @@ export function CartDrawer({
                 )}
 
                 <div className="space-y-3 border-t border-white/10 p-5">
+                  {syncNotice && (
+                    <p className="text-xs text-muted">
+                      Preços e estoque atualizados agora.
+                    </p>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="text-muted">Total</span>
                     <span className="text-2xl font-bold text-fg">
@@ -245,7 +259,7 @@ export function CartDrawer({
                 </div>
               </>
             )}
-          </motion.aside>
+          </m.aside>
         </>
       )}
     </AnimatePresence>

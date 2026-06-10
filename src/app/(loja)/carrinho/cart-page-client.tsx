@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses, focusRing } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -19,6 +19,7 @@ import {
   selectTotalCents,
   selectTotalItems,
 } from "@/lib/cart/store";
+import { useCartSync } from "@/components/cart/use-cart-sync";
 import { useHydrated } from "@/lib/cart/use-hydrated";
 import { formatCents } from "@/lib/format";
 import { buildWhatsappUrl } from "@/lib/whatsapp";
@@ -33,6 +34,8 @@ export function CartPageClient() {
   const removeItem = useCartStore((s) => s.removeItem);
   const clear = useCartStore((s) => s.clear);
   const [confirmClear, setConfirmClear] = useState(false);
+  // Revalida preço/estoque no servidor após hidratar (com debounce de 15s).
+  const syncNotice = useCartSync(hydrated);
 
   if (!hydrated) {
     return (
@@ -49,6 +52,12 @@ export function CartPageClient() {
         <p className="mt-2 text-muted">
           Adicione alguns iPhones e finalize pelo WhatsApp.
         </p>
+        {/* A sync pode ter esvaziado o carrinho (itens esgotados/desativados). */}
+        {syncNotice && (
+          <p className="mt-2 text-xs text-muted">
+            Preços e estoque atualizados agora.
+          </p>
+        )}
         <Link href="/" className={buttonClasses("primary", "md", "mt-6")}>
           Ver produtos
         </Link>
@@ -75,7 +84,7 @@ export function CartPageClient() {
         <ul className="flex flex-col gap-3">
           <AnimatePresence initial={false}>
             {items.map((it) => (
-              <motion.li
+              <m.li
                 key={it.productId}
                 layout
                 initial={{ opacity: 0, y: 8 }}
@@ -146,7 +155,7 @@ export function CartPageClient() {
                     </p>
                   </div>
                 </div>
-              </motion.li>
+              </m.li>
             ))}
           </AnimatePresence>
 
@@ -181,6 +190,12 @@ export function CartPageClient() {
             </span>
             <span>{formatCents(totalCents)}</span>
           </div>
+
+          {syncNotice && (
+            <p className="mt-2 text-xs text-muted">
+              Preços e estoque atualizados agora.
+            </p>
+          )}
 
           <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-4">
             <span className="font-medium text-fg">Total</span>
