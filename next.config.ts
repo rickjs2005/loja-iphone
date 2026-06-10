@@ -13,6 +13,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // Não expõe a versão do Next no header (reduz fingerprinting).
   poweredByHeader: false,
+  // Sem o badge "N" flutuante do modo dev (confunde na demonstração).
+  devIndicators: false,
   experimental: {
     // Uploads de fotos passam pela Server Action; o padrão (1 MB) estoura com
     // múltiplas imagens (cada uma até 5 MB pela validação do produto).
