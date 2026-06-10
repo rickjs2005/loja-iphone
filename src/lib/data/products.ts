@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { ProductInput } from "@/lib/validation/product.schema";
@@ -39,56 +40,62 @@ function sortImages(images: ProductImageRow[] | null): ProductImageRow[] {
 // Leitura pública (loja)
 // ---------------------------------------------------------------------------
 
-export async function getActiveProducts(): Promise<ProductWithImages[]> {
-  if (!isSupabaseConfigured()) return demoProducts;
+// React.cache deduplica por request: layout e página chamam a mesma função
+// sem disparar duas queries idênticas (idem generateMetadata + página).
+export const getActiveProducts = cache(
+  async (): Promise<ProductWithImages[]> => {
+    if (!isSupabaseConfigured()) return demoProducts;
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("products")
-    .select(PRODUCT_WITH_IMAGES)
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true })
-    .order("created_at", { ascending: false });
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select(PRODUCT_WITH_IMAGES)
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
 
-  if (error) throw new Error(`Falha ao listar produtos: ${error.message}`);
+    if (error) throw new Error(`Falha ao listar produtos: ${error.message}`);
 
-  return (data ?? []).map((p) => ({ ...p, images: sortImages(p.images) }));
-}
+    return (data ?? []).map((p) => ({ ...p, images: sortImages(p.images) }));
+  },
+);
 
-export async function getProductById(
-  id: string,
-): Promise<ProductWithImages | null> {
-  if (!isSupabaseConfigured()) return findDemoProduct(id);
+export const getProductById = cache(
+  async (id: string): Promise<ProductWithImages | null> => {
+    if (!isSupabaseConfigured()) return findDemoProduct(id);
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("products")
-    .select(PRODUCT_WITH_IMAGES)
-    .eq("id", id)
-    .maybeSingle();
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select(PRODUCT_WITH_IMAGES)
+      .eq("id", id)
+      .maybeSingle();
 
-  if (error) throw new Error(`Falha ao buscar produto: ${error.message}`);
-  if (!data) return null;
+    if (error) throw new Error(`Falha ao buscar produto: ${error.message}`);
+    if (!data) return null;
 
-  return { ...data, images: sortImages(data.images) };
-}
+    return { ...data, images: sortImages(data.images) };
+  },
+);
 
 // ---------------------------------------------------------------------------
 // Admin (requer sessão autenticada — garantido por RLS + middleware)
 // ---------------------------------------------------------------------------
 
-export async function getAllProducts(): Promise<ProductWithImages[]> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("products")
-    .select(PRODUCT_WITH_IMAGES)
-    .order("sort_order", { ascending: true })
-    .order("created_at", { ascending: false });
+export const getAllProducts = cache(
+  async (): Promise<ProductWithImages[]> => {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select(PRODUCT_WITH_IMAGES)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
 
-  if (error) throw new Error(`Falha ao listar produtos: ${error.message}`);
+    if (error) throw new Error(`Falha ao listar produtos: ${error.message}`);
 
-  return (data ?? []).map((p) => ({ ...p, images: sortImages(p.images) }));
-}
+    return (data ?? []).map((p) => ({ ...p, images: sortImages(p.images) }));
+  },
+);
 
 export async function createProduct(input: ProductInput): Promise<string> {
   const supabase = await createClient();
@@ -184,6 +191,9 @@ export async function deleteProductImage(imageId: string): Promise<void> {
 /**
  * Próxima posição na galeria: max(sort_order) + 1. Contar linhas não serve —
  * após uma deleção o count colide com posições já ocupadas.
+ *
+ * NÃO usar React.cache aqui: roda dentro de mutações (upload de várias
+ * imagens no mesmo request precisa de valores frescos a cada chamada).
  */
 export async function getNextImageOrder(productId: string): Promise<number> {
   const supabase = await createClient();

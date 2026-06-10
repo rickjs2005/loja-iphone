@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { SiteSettingsInput } from "@/lib/validation/site.schema";
@@ -23,7 +24,9 @@ const DEMO_SETTINGS: StoreSettingsRow = {
   updated_at: "2026-01-01T00:00:00.000Z",
 };
 
-export async function getStoreSettings(): Promise<StoreSettingsRow> {
+// React.cache deduplica por request: várias seções/layout podem pedir as
+// mesmas configurações sem repetir a query no Supabase.
+export const getStoreSettings = cache(async (): Promise<StoreSettingsRow> => {
   if (!isSupabaseConfigured()) return DEMO_SETTINGS;
 
   const supabase = await createClient();
@@ -44,23 +47,23 @@ export async function getStoreSettings(): Promise<StoreSettingsRow> {
       updated_at: "",
     }
   );
-}
+});
 
-export async function getSiteImages(
-  section: SiteSection,
-): Promise<SiteImageRow[]> {
-  if (!isSupabaseConfigured()) return [];
+export const getSiteImages = cache(
+  async (section: SiteSection): Promise<SiteImageRow[]> => {
+    if (!isSupabaseConfigured()) return [];
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("site_images")
-    .select("*")
-    .eq("section", section)
-    .order("sort_order", { ascending: true });
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("site_images")
+      .select("*")
+      .eq("section", section)
+      .order("sort_order", { ascending: true });
 
-  if (error) throw new Error(`Falha ao carregar imagens: ${error.message}`);
-  return data ?? [];
-}
+    if (error) throw new Error(`Falha ao carregar imagens: ${error.message}`);
+    return data ?? [];
+  },
+);
 
 // --------------------------------------------------------------------------
 // Escrita (admin autenticado)
@@ -107,6 +110,9 @@ export async function deleteSiteImage(id: string): Promise<void> {
 /**
  * Próxima posição da galeria da seção: max(sort_order) + 1 (contar linhas
  * colide com posições ocupadas após uma deleção).
+ *
+ * NÃO usar React.cache aqui: roda dentro de mutações (upload de várias
+ * imagens no mesmo request precisa de valores frescos a cada chamada).
  */
 export async function getNextSiteImageOrder(
   section: SiteSection,

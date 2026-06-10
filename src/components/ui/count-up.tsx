@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { animate, useInView } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { animate, useInView, useReducedMotion } from "framer-motion";
 
 /**
  * Número que conta de 0 até o valor quando entra na viewport.
  * Ex.: <CountUp value={3000} prefix="+" /> → "+3.000"
+ *
+ * A animação escreve direto em textContent (sem setState): evita ~100
+ * re-renders do React por contador. O "0" inicial é renderizado no SSR.
  */
 export function CountUp({
   value,
@@ -20,19 +23,35 @@ export function CountUp({
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-  const [display, setDisplay] = useState(0);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!inView) return;
+    const node = ref.current;
+    if (!inView || !node) return;
+
+    const format = (v: number) =>
+      `${prefix}${v.toLocaleString("pt-BR", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })}${suffix}`;
+
+    // prefers-reduced-motion: mostra o valor final direto, sem animar.
+    if (reducedMotion) {
+      node.textContent = format(value);
+      return;
+    }
+
     const controls = animate(0, value, {
       duration: 1.6,
       ease: [0.22, 1, 0.36, 1],
-      onUpdate: (v) => setDisplay(v),
+      onUpdate: (v) => {
+        node.textContent = format(v);
+      },
     });
     return () => controls.stop();
-  }, [inView, value]);
+  }, [inView, value, prefix, suffix, decimals, reducedMotion]);
 
-  const formatted = display.toLocaleString("pt-BR", {
+  const initial = (0).toLocaleString("pt-BR", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   });
@@ -40,7 +59,7 @@ export function CountUp({
   return (
     <span ref={ref}>
       {prefix}
-      {formatted}
+      {initial}
       {suffix}
     </span>
   );

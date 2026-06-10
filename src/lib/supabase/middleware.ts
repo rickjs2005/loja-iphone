@@ -4,7 +4,9 @@ import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { Database } from "@/types/database.types";
 
 /**
- * Renova a sessão do Supabase a cada request e protege as rotas /admin/*.
+ * Renova a sessão do Supabase e protege as rotas /admin/*. Chamado pelo
+ * middleware SOMENTE em /admin/* — a loja pública não usa sessão e não
+ * deve pagar o round-trip do getUser().
  *
  * IMPORTANTE (segurança): usamos getUser(), que revalida o token no servidor
  * do Supabase — diferente de getSession(), que apenas lê o cookie e pode ser
