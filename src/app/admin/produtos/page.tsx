@@ -7,8 +7,13 @@ import { deleteProductAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminProdutosPage() {
+export default async function AdminProdutosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ criado?: string }>;
+}) {
   await requireUser();
+  const { criado } = await searchParams;
   const products = await getAllProducts();
 
   const metrics = [
@@ -19,6 +24,12 @@ export default async function AdminProdutosPage() {
 
   return (
     <div>
+      {criado && (
+        <p className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
+          Produto criado com sucesso.
+        </p>
+      )}
+
       {/* Dashboard rápido */}
       <div className="mb-8 grid grid-cols-3 gap-3 sm:gap-4">
         {metrics.map((m) => (
