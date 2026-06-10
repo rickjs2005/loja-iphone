@@ -6,7 +6,11 @@ import { getCurrentUser } from "@/lib/auth/user";
 import { logoutAction } from "@/lib/auth/actions";
 import { tenant } from "@/config/tenant";
 
-export const metadata: Metadata = { title: "Admin" };
+// Área administrativa não deve aparecer em buscadores.
+export const metadata: Metadata = {
+  title: "Admin",
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminLayout({
   children,

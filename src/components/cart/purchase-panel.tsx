@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Button, focusRing } from "@/components/ui/button";
-import { CartIcon, MinusIcon, PlusIcon } from "@/components/ui/icons";
+import { Button, buttonClasses, focusRing } from "@/components/ui/button";
+import { CartIcon, MinusIcon, PlusIcon, WhatsappIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
 import { useCartUI } from "@/lib/cart/ui-store";
+import { buildBuyNowUrl } from "@/lib/whatsapp";
 
-/** Seletor de quantidade + adicionar ao carrinho (página de detalhe). */
+/** Seletor de quantidade + comprar no WhatsApp + adicionar ao carrinho (PDP). */
 export function PurchasePanel({
   product,
 }: {
@@ -35,35 +36,54 @@ export function PurchasePanel({
   }
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row">
-      <div className="flex h-13 items-center justify-between rounded-xl border border-white/15 bg-surface/60 px-2 sm:w-36">
-        <button
-          type="button"
-          onClick={() => setQty((q) => Math.max(1, q - 1))}
-          disabled={qty <= 1}
-          aria-label="Diminuir"
-          className={`inline-flex size-11 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex h-13 items-center justify-between rounded-xl border border-white/15 bg-surface/60 px-2 sm:w-36">
+          <button
+            type="button"
+            onClick={() => setQty((q) => Math.max(1, q - 1))}
+            disabled={qty <= 1}
+            aria-label="Diminuir"
+            className={`inline-flex size-11 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
+          >
+            <MinusIcon className="size-4" />
+          </button>
+          <span className="min-w-8 text-center font-semibold tabular-nums">
+            {qty}
+          </span>
+          <button
+            type="button"
+            onClick={() => setQty((q) => Math.min(max, q + 1))}
+            disabled={qty >= max}
+            aria-label="Aumentar"
+            className={`inline-flex size-11 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
+          >
+            <PlusIcon className="size-4" />
+          </button>
+        </div>
+
+        {/* CTA primário: fecha direto no WhatsApp, sem passar pelo carrinho. */}
+        <a
+          href={buildBuyNowUrl({
+            id: product.productId,
+            name: product.name,
+            priceCents: product.priceCents,
+            quantity: qty,
+          })}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonClasses("whatsapp", "lg", "flex-1")}
         >
-          <MinusIcon className="size-4" />
-        </button>
-        <span className="min-w-8 text-center font-semibold tabular-nums">
-          {qty}
-        </span>
-        <button
-          type="button"
-          onClick={() => setQty((q) => Math.min(max, q + 1))}
-          disabled={qty >= max}
-          aria-label="Aumentar"
-          className={`inline-flex size-11 items-center justify-center rounded-lg text-fg transition-colors hover:bg-white/5 disabled:opacity-40 ${focusRing}`}
-        >
-          <PlusIcon className="size-4" />
-        </button>
+          <WhatsappIcon className="size-5" />
+          Comprar pelo WhatsApp
+        </a>
       </div>
 
       <Button
+        variant="outline"
         size="lg"
         onClick={handleAdd}
-        className="flex-1"
+        className="w-full"
         aria-live="polite"
       >
         <CartIcon className="size-5" />

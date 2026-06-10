@@ -30,3 +30,29 @@ export function buildProductInquiryUrl(productName: string): string {
   const mensagem = `Olá, ${storeConfig.name}! Tenho interesse no ${productName}. Está disponível?`;
   return `https://wa.me/${storeConfig.whatsapp}?text=${encodeURIComponent(mensagem)}`;
 }
+
+// Mesma base do metadataBase no layout raiz (NEXT_PUBLIC_* é inlinado no client).
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+/**
+ * "Comprar agora": mensagem completa com nome, preço e link do produto —
+ * a loja identifica o aparelho na hora, sem ida obrigatória ao carrinho.
+ */
+export function buildBuyNowUrl(product: {
+  id: string;
+  name: string;
+  priceCents: number;
+  quantity?: number;
+}): string {
+  const qty = product.quantity ?? 1;
+  const mensagem = [
+    `Olá, ${storeConfig.name}! Quero comprar:`,
+    "",
+    `• ${qty}x ${product.name} — ${formatCents(product.priceCents * qty)}`,
+    `${siteUrl}/produtos/${product.id}`,
+    "",
+    "Pode me ajudar a finalizar?",
+  ].join("\n");
+
+  return `https://wa.me/${storeConfig.whatsapp}?text=${encodeURIComponent(mensagem)}`;
+}

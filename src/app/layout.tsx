@@ -24,6 +24,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  alternates: { canonical: "/" },
   title: {
     default: `${storeConfig.name} · iPhones com garantia`,
     template: `%s · ${storeConfig.name}`,
@@ -43,6 +44,18 @@ export const metadata: Metadata = {
   },
 };
 
+// Dados estruturados da loja (Organization) para buscadores.
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: storeConfig.name,
+  url: siteUrl,
+  // logoUrl pode ser caminho em /public ou URL externa (white-label).
+  logo: storeConfig.logoUrl.startsWith("http")
+    ? storeConfig.logoUrl
+    : `${siteUrl}${storeConfig.logoUrl}`,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,6 +68,12 @@ export default function RootLayout({
     >
       <head>
         <ThemeInjector />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
       </head>
       <body className="min-h-full bg-bg text-fg flex flex-col">{children}</body>
     </html>

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
-import { buttonClasses } from "@/components/ui/button";
 import { Gallery } from "@/components/product/gallery";
 import { StockBadge } from "@/components/product/stock-badge";
 import { PurchasePanel } from "@/components/cart/purchase-panel";
@@ -16,32 +15,90 @@ import { getStoreSettings } from "@/lib/data/site";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
 import { buildProductInquiryUrl } from "@/lib/whatsapp";
+import { storeConfig } from "@/config/theme.config";
+import { ConditionCard } from "@/components/product/condition-card";
 
+// Página sempre dinâmica: preço/estoque mudam com frequência.
 export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
+
+// Mesma base do metadataBase no layout raiz.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const product = await getProductById(id);
   if (!product) return { title: "Produto não encontrado" };
-  return { title: product.name, description: product.description ?? undefined };
+
+  const description =
+    product.description ??
+    `${product.name} com garantia por ${formatCents(product.price_cents)} · ${storeConfig.name}`;
+  const cover = coverImage(product);
+
+  return {
+    title: product.name,
+    description,
+    alternates: { canonical: `/produtos/${product.id}` },
+    openGraph: {
+      title: product.name,
+      description,
+      type: "website",
+      url: `/produtos/${product.id}`,
+      ...(cover ? { images: [cover.url] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description,
+    },
+  };
 }
 
 export default async function ProdutoPage({ params }: Props) {
   const { id } = await params;
-  const product = await getProductById(id);
+  // Fetches independentes em paralelo (getProductById deduplicado com o
+  // generateMetadata via React.cache).
+  const [product, settings, allProducts] = await Promise.all([
+    getProductById(id),
+    getStoreSettings(),
+    getActiveProducts(),
+  ]);
   if (!product) notFound();
 
   const cover = coverImage(product);
-  const settings = await getStoreSettings();
-  const related = (await getActiveProducts())
+  const related = allProducts
     .filter((p) => p.id !== product.id && p.category === product.category)
     .slice(0, 3);
   const isAccessory = product.category === "accessory";
 
+  // Dados estruturados (Product + Offer) para rich results nos buscadores.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description:
+      product.description ??
+      `${product.name} com garantia · ${storeConfig.name}`,
+    image: product.images.map((img) => img.url),
+    offers: {
+      "@type": "Offer",
+      price: (product.price_cents / 100).toFixed(2),
+      priceCurrency: "BRL",
+      availability:
+        product.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      url: `${siteUrl}/produtos/${product.id}`,
+    },
+  };
+
   return (
     <Container className="py-8 pb-28 sm:py-12 lg:pb-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Link
         href="/"
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-fg"
@@ -84,6 +141,14 @@ export default async function ProdutoPage({ params }: Props) {
             </p>
           )}
 
+          {/* Estado real do aparelho (cadastrado no admin) — só para iPhones. */}
+          {!isAccessory && (
+            <ConditionCard
+              batteryHealth={product.battery_health}
+              condition={product.condition}
+            />
+          )}
+
           {product.description && (
             <p className="mt-6 whitespace-pre-line leading-relaxed text-muted">
               {product.description}
@@ -103,14 +168,15 @@ export default async function ProdutoPage({ params }: Props) {
             />
           </div>
 
+          {/* Secundário: o CTA verde de compra agora vive no PurchasePanel. */}
           <a
             href={buildProductInquiryUrl(product.name)}
             target="_blank"
             rel="noopener noreferrer"
-            className={buttonClasses("whatsapp", "lg", "mt-3 w-full")}
+            className="mt-4 inline-flex items-center justify-center gap-2 self-center text-sm text-muted transition-colors hover:text-fg"
           >
-            <WhatsappIcon className="size-5" />
-            Tirar dúvida no WhatsApp
+            <WhatsappIcon className="size-4" />
+            Ficou com dúvida? Fale com a gente no WhatsApp
           </a>
         </div>
       </div>

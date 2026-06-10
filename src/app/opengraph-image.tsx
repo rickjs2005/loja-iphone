@@ -74,7 +74,7 @@ export default function OpengraphImage() {
             textAlign: "center",
           }}
         >
-          iPhones seminovos e lacrados, com garantia e procedencia.
+          {storeConfig.description}
         </div>
         <div style={{ display: "flex", gap: 16, marginTop: 44 }}>
           {["Pronta entrega", "Garantia", "Envio Brasil"].map((t) => (

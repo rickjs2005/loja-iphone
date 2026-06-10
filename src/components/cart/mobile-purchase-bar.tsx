@@ -1,10 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { BagIcon } from "@/components/ui/icons";
+import { Button, buttonClasses, focusRing } from "@/components/ui/button";
+import { CartIcon, WhatsappIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
 import { useCartUI } from "@/lib/cart/ui-store";
 import { formatCents } from "@/lib/format";
+import { buildBuyNowUrl } from "@/lib/whatsapp";
 
 /** Barra fixa de compra no rodapé — só no mobile (experiência de app). */
 export function MobilePurchaseBar({
@@ -24,19 +25,42 @@ export function MobilePurchaseBar({
           {formatCents(product.priceCents)}
         </p>
       </div>
-      <Button
-        size="lg"
-        onClick={() => {
-          if (esgotado) return;
-          addItem(product, 1);
-          openCart();
-        }}
-        disabled={esgotado}
-        className="flex-1"
-      >
-        <BagIcon className="size-5" />
-        {esgotado ? "Esgotado" : "Adicionar"}
-      </Button>
+
+      {esgotado ? (
+        <Button size="lg" disabled className="flex-1">
+          Esgotado
+        </Button>
+      ) : (
+        <>
+          {/* Secundário: adiciona ao carrinho sem sair da página. */}
+          <button
+            type="button"
+            onClick={() => {
+              addItem(product, 1);
+              openCart();
+            }}
+            aria-label="Adicionar ao carrinho"
+            className={`inline-flex size-13 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-surface/60 text-fg transition-colors hover:bg-surface ${focusRing}`}
+          >
+            <CartIcon className="size-5" />
+          </button>
+
+          {/* Primário: compra direto no WhatsApp. */}
+          <a
+            href={buildBuyNowUrl({
+              id: product.productId,
+              name: product.name,
+              priceCents: product.priceCents,
+            })}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonClasses("whatsapp", "lg", "flex-1")}
+          >
+            <WhatsappIcon className="size-5" />
+            Comprar
+          </a>
+        </>
+      )}
     </div>
   );
 }
