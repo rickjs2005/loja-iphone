@@ -139,8 +139,10 @@ erro/404 tematizadas, validação de imagem (formato/tamanho) antes do upload.
 - Admin CRUD completo de produtos com upload de fotos (criação e edição)
 - Conteúdo institucional editável (endereço/horário/pagamentos/maps/fotos)
 - **Prova social editável**: números da loja (vendidos, satisfação, avaliação
-  média, nº de avaliações) e depoimentos de clientes cadastrados no admin;
-  campo vazio = a seção some da loja (nenhum dado fictício em loja real)
+  média, nº de avaliações) configurados no admin + fotos reais de entrega
+  ("Como entregamos"); campo vazio = a seção some da loja (nenhum dado
+  fictício em loja real). Sem seção de depoimentos, por decisão de produto
+
 - **Garantia configurável** por loja (texto no admin, aparece na página do
   produto; vazio mostra texto genérico)
 - White-label por env vars + modo demo sem backend
@@ -281,8 +283,9 @@ conversa menos pra vender o mesmo tanto."
 
 Em ordem de prioridade para este público:
 
-1. ~~Prova social fake~~ **RESOLVIDO**: números e depoimentos agora são
-   editáveis no admin e as seções somem quando vazias. Resta orientar o
+1. ~~Prova social fake~~ **RESOLVIDO**: números da loja são editáveis no
+   admin, as seções somem quando vazias e a prova "visual" são as fotos
+   reais de entrega (sem seção de depoimentos). Resta orientar o
    lojista a preencher só com dados reais (e idealmente uma página curta de
    garantia/trocas + CNPJ no rodapé — confiança para ticket de R$ 3–8 mil).
 2. ~~Garantia fixa~~ **RESOLVIDO**: texto da garantia configurável no admin.
