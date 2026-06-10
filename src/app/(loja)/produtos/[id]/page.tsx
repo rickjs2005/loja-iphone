@@ -7,11 +7,10 @@ import { StockBadge } from "@/components/product/stock-badge";
 import { PurchasePanel } from "@/components/cart/purchase-panel";
 import { MobilePurchaseBar } from "@/components/cart/mobile-purchase-bar";
 import { Specs } from "@/components/product/specs";
-import { ProductReviews } from "@/components/product/product-reviews";
 import { RelatedProducts } from "@/components/product/related-products";
 import { ChevronLeftIcon, ShieldIcon, WhatsappIcon } from "@/components/ui/icons";
 import { getActiveProducts, getProductById } from "@/lib/data/products";
-import { getStoreSettings, getTestimonials } from "@/lib/data/site";
+import { getStoreSettings } from "@/lib/data/site";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
 import { buildProductInquiryUrl } from "@/lib/whatsapp";
@@ -59,11 +58,10 @@ export default async function ProdutoPage({ params }: Props) {
   const { id } = await params;
   // Fetches independentes em paralelo (getProductById deduplicado com o
   // generateMetadata via React.cache).
-  const [product, settings, allProducts, testimonials] = await Promise.all([
+  const [product, settings, allProducts] = await Promise.all([
     getProductById(id),
     getStoreSettings(),
     getActiveProducts(),
-    getTestimonials(),
   ]);
   if (!product) notFound();
 
@@ -186,11 +184,6 @@ export default async function ProdutoPage({ params }: Props) {
       {/* Seções da mini-landing */}
       <div className="mt-16 flex flex-col gap-16">
         <Specs warrantyText={settings.warranty_text} />
-        <ProductReviews
-          rating={settings.stat_rating}
-          reviewCount={settings.stat_reviews}
-          testimonials={testimonials}
-        />
         <RelatedProducts products={related} />
       </div>
 

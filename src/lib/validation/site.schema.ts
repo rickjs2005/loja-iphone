@@ -71,19 +71,3 @@ export const siteSettingsSchema = z.object({
 });
 
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
-
-/** Depoimento de cliente (cadastrado no admin, exibido na página do produto). */
-export const testimonialSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "Informe o nome do cliente")
-    .max(60, "Nome muito longo"),
-  text: z
-    .string()
-    .trim()
-    .min(1, "Escreva o depoimento")
-    .max(300, "Depoimento muito longo (máx. 300 caracteres)"),
-});
-
-export type TestimonialInput = z.infer<typeof testimonialSchema>;

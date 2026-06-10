@@ -2,16 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { requireUser } from "@/lib/auth/user";
-import {
-  siteSettingsSchema,
-  testimonialSchema,
-} from "@/lib/validation/site.schema";
+import { siteSettingsSchema } from "@/lib/validation/site.schema";
 import { imageFileSchema } from "@/lib/validation/product.schema";
 import {
   addSiteImage,
-  addTestimonial,
   deleteSiteImage,
-  deleteTestimonial,
   getNextSiteImageOrder,
   updateStoreSettings,
 } from "@/lib/data/site";
@@ -116,50 +111,6 @@ export async function uploadSiteImagesAction(
   revalidatePath("/");
   revalidatePath("/admin/loja");
   return { ok: true };
-}
-
-/** Cadastra um depoimento de cliente (exibido na página do produto). */
-export async function addTestimonialAction(
-  _prev: SiteFormState,
-  formData: FormData,
-): Promise<SiteFormState> {
-  await requireUser();
-
-  const values = echoValues(formData);
-
-  const parsed = testimonialSchema.safeParse({
-    name: formData.get("name"),
-    text: formData.get("text"),
-  });
-  if (!parsed.success) {
-    return {
-      error: "Confira os campos.",
-      fieldErrors: parsed.error.flatten().fieldErrors,
-      values,
-    };
-  }
-
-  try {
-    await addTestimonial(parsed.data);
-  } catch {
-    return { error: "Não foi possível salvar o depoimento. Tente de novo.", values };
-  }
-
-  revalidatePath("/");
-  revalidatePath("/admin/loja");
-  return { ok: true };
-}
-
-export async function deleteTestimonialAction(
-  formData: FormData,
-): Promise<void> {
-  await requireUser();
-  const id = String(formData.get("id") || "");
-  if (!id) return;
-
-  await deleteTestimonial(id);
-  revalidatePath("/");
-  revalidatePath("/admin/loja");
 }
 
 export async function deleteSiteImageAction(formData: FormData): Promise<void> {

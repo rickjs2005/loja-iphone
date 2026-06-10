@@ -111,30 +111,6 @@ export type Database = {
         };
         Relationships: [];
       };
-      testimonials: {
-        Row: {
-          id: string;
-          name: string;
-          text: string;
-          sort_order: number | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          text: string;
-          sort_order?: number | null;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          name?: string;
-          text?: string;
-          sort_order?: number | null;
-          created_at?: string;
-        };
-        Relationships: [];
-      };
       site_images: {
         Row: {
           id: string;
@@ -206,6 +182,4 @@ export type ProductImageInsert =
 export type StoreSettingsRow =
   Database["public"]["Tables"]["store_settings"]["Row"];
 export type SiteImageRow = Database["public"]["Tables"]["site_images"]["Row"];
-export type TestimonialRow =
-  Database["public"]["Tables"]["testimonials"]["Row"];
 export type SiteSection = "loja" | "entrega";
