@@ -19,8 +19,8 @@ export function StockBadge({
     : ultimas
       ? stock === 1
         ? "Última unidade"
-        : `Últimas ${stock} unidades`
-      : "Disponível";
+        : `Últimas ${stock}`
+      : "Em estoque";
 
   return (
     <span

@@ -68,11 +68,11 @@ export const storeConfig: StoreConfig = {
     tiktok: v(process.env.NEXT_PUBLIC_STORE_TIKTOK, ""),
   },
   colors: {
-    bg: v(process.env.NEXT_PUBLIC_COLOR_BG, "#000000"),
-    surface: v(process.env.NEXT_PUBLIC_COLOR_SURFACE, "#0E0E12"),
+    bg: v(process.env.NEXT_PUBLIC_COLOR_BG, "#050505"),
+    surface: v(process.env.NEXT_PUBLIC_COLOR_SURFACE, "#0B0B0B"),
     primary: v(process.env.NEXT_PUBLIC_COLOR_PRIMARY, "#0A84FF"),
     accent: v(process.env.NEXT_PUBLIC_COLOR_ACCENT, "#6E5CF6"),
-    text: v(process.env.NEXT_PUBLIC_COLOR_TEXT, "#F5F5F7"),
-    muted: v(process.env.NEXT_PUBLIC_COLOR_MUTED, "#9A9AA2"),
+    text: v(process.env.NEXT_PUBLIC_COLOR_TEXT, "#FFFFFF"),
+    muted: v(process.env.NEXT_PUBLIC_COLOR_MUTED, "#A1A1AA"),
   },
 };

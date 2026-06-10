@@ -24,12 +24,12 @@
 /* Fallback caso o injector ainda não tenha rodado (ex.: SSG sem config).
    Espelha os defaults de theme.config.ts (loja demo). */
 :root {
-  --store-bg: #000000;
-  --store-surface: #0e0e12;
+  --store-bg: #050505;
+  --store-surface: #0b0b0b;
   --store-primary: #0a84ff;
   --store-accent: #6e5cf6;
-  --store-text: #f5f5f7;
-  --store-muted: #9a9aa2;
+  --store-text: #ffffff;
+  --store-muted: #a1a1aa;
 
   color-scheme: dark;
 }

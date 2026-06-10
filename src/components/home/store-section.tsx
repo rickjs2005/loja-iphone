@@ -17,7 +17,7 @@ export function StoreSection({
   if (images.length === 0 && !hasInfo) return null;
 
   return (
-    <section className="py-16 sm:py-24">
+    <section id="loja" className="scroll-mt-20 py-16 sm:py-24">
       <Container>
         <Reveal>
           <SectionHeading

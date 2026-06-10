@@ -1,11 +1,13 @@
 import { Hero } from "@/components/home/hero";
 import { TrustBand } from "@/components/home/trust-band";
-import { Highlight } from "@/components/home/highlight";
+import { TradeIn } from "@/components/home/trade-in";
 import { Features } from "@/components/home/features";
 import { StoreSection } from "@/components/home/store-section";
 import { DeliverySection } from "@/components/home/delivery-section";
 import { AccessoriesSection } from "@/components/home/accessories-section";
+import { InstagramSection } from "@/components/home/instagram-section";
 import { CategoryNav } from "@/components/home/category-nav";
+import { MobileWhatsappBar } from "@/components/layout/mobile-whatsapp-bar";
 import { ProductGrid } from "@/components/product/product-grid";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -28,12 +30,14 @@ const LINE_SUBTITLES: Record<ProductCategory, string> = {
 };
 
 export default async function HomePage() {
-  const [products, settings, lojaImgs, entregaImgs] = await Promise.all([
-    getActiveProducts(),
-    getStoreSettings(),
-    getSiteImages("loja"),
-    getSiteImages("entrega"),
-  ]);
+  const [products, settings, lojaImgs, entregaImgs, instagramImgs] =
+    await Promise.all([
+      getActiveProducts(),
+      getStoreSettings(),
+      getSiteImages("loja"),
+      getSiteImages("entrega"),
+      getSiteImages("instagram"),
+    ]);
 
   const accessories = products.filter((p) => p.category === "accessory");
   // Uma seção por linha Apple — só as que têm produto ativo.
@@ -48,7 +52,7 @@ export default async function HomePage() {
     <>
       <Hero />
       <TrustBand />
-      <Highlight />
+      <TradeIn />
 
       <CategoryNav products={products} />
 
@@ -57,13 +61,14 @@ export default async function HomePage() {
           <section
             key={line.value}
             id={`linha-${line.value}`}
-            className="scroll-mt-20 py-16 sm:py-24"
+            className="scroll-mt-20 py-14 sm:py-20"
           >
             <Container>
               <Reveal>
                 <SectionHeading
+                  align="left"
                   eyebrow="Catálogo"
-                  title={line.plural}
+                  title={`Destaques ${line.plural}`}
                   subtitle={LINE_SUBTITLES[line.value]}
                 />
               </Reveal>
@@ -94,6 +99,10 @@ export default async function HomePage() {
       <Features />
       <StoreSection settings={settings} images={lojaImgs} />
       <DeliverySection images={entregaImgs} />
+      <InstagramSection images={instagramImgs} />
+
+      {/* Conversão sempre à mão no mobile (o FAB assume no desktop). */}
+      <MobileWhatsappBar />
     </>
   );
 }

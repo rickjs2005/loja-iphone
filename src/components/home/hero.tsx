@@ -1,10 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
-import { WhatsappIcon } from "@/components/ui/icons";
-import { storeConfig } from "@/config/theme.config";
+import { PhoneIcon } from "@/components/ui/icons";
 
 // Posições fixas das partículas (determinístico → sem mismatch de hidratação).
 const PARTICLES = [
@@ -33,31 +33,38 @@ const fade = {
   }),
 };
 
+/** Branco → prata: gradiente vertical que dá o brilho "flagship". */
+const silverDrop =
+  "bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent";
+/** Prata escovada horizontal — o luxo é monocromático; cor só nos CTAs. */
+const silverBrush =
+  "bg-gradient-to-r from-white/40 via-white/75 to-white/40 bg-clip-text text-transparent";
+
 function PhoneVisual() {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.92 }}
+      // Última entrada da sequência de reveal: headline → subtítulo → botões → device.
+      initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 1, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className="relative flex items-center justify-center"
     >
       {/* Luz monocromática grande atrás do aparelho */}
       <div className="absolute left-1/2 top-1/2 -z-10 size-[640px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.16),rgba(255,255,255,0.06)_42%,transparent_70%)] blur-2xl" />
+      {/* Flutuação muito sutil — presença, não distração */}
       <motion.div
-        animate={{ y: [0, -16, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
         className="w-full max-w-[460px]"
       >
-        <div className="overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.7)]">
-          <video
-            src="/hero.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            aria-label="iPhone em destaque"
-            className="block w-full"
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.7)]">
+          <Image
+            src="https://images.unsplash.com/photo-1759588071781-2c3ba9128497?w=1600&q=80"
+            alt="iPhone em destaque"
+            fill
+            priority
+            sizes="(max-width: 1024px) 90vw, 460px"
+            className="object-cover"
           />
         </div>
       </motion.div>
@@ -101,21 +108,17 @@ export function Hero() {
               Pronta entrega · Garantia · Procedência
             </motion.span>
 
+            {/* Headline empilhada em 3 linhas — padrão flagship (Apple/Linear) */}
             <motion.h1
               custom={1}
               variants={fade}
               initial="hidden"
               animate="show"
-              className="mt-6 text-5xl font-bold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl"
+              className="mt-6 text-[2.6rem] font-extrabold uppercase leading-[0.98] tracking-[-0.05em] sm:text-6xl lg:text-6xl xl:text-7xl"
             >
-              <span className="bg-gradient-to-b from-white to-white/55 bg-clip-text text-transparent">
-                Tecnologia premium.
-              </span>
-              <br />
-              {/* Prata escovada: o luxo é monocromático; cor só nos CTAs. */}
-              <span className="bg-gradient-to-r from-white/40 via-white/75 to-white/40 bg-clip-text text-transparent">
-                Preço justo.
-              </span>
+              <span className={`block ${silverDrop}`}>Titânio.</span>
+              <span className={`block ${silverDrop}`}>Performance.</span>
+              <span className={`block ${silverBrush}`}>Inteligência.</span>
             </motion.h1>
 
             <motion.p
@@ -123,10 +126,10 @@ export function Hero() {
               variants={fade}
               initial="hidden"
               animate="show"
-              className="mx-auto mt-6 max-w-xl text-balance text-lg text-muted sm:text-xl lg:mx-0"
+              className="mx-auto mt-6 max-w-xl text-balance text-lg font-normal text-muted sm:text-xl lg:mx-0"
             >
-              iPhones seminovos e lacrados com garantia. Entrega rápida e
-              suporte especializado, do primeiro contato à pós-venda.
+              iPhones originais com garantia, procedência e o melhor preço da
+              região.
             </motion.p>
 
             <motion.div
@@ -144,25 +147,23 @@ export function Hero() {
                   "h-14 px-8 text-base sm:text-lg",
                 )}
               >
-                Ver modelos disponíveis
+                Ver modelos
               </a>
               <a
-                href={`https://wa.me/${storeConfig.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#trocar"
                 className={buttonClasses(
-                  "whatsapp",
+                  "outline",
                   "lg",
                   "h-14 px-8 text-base sm:text-lg",
                 )}
               >
-                <WhatsappIcon className="size-5" />
-                Falar no WhatsApp
+                <PhoneIcon className="size-5" />
+                Trocar meu iPhone
               </a>
             </motion.div>
           </div>
 
-          {/* Coluna do mockup 3D */}
+          {/* Coluna do device — foto premium em moldura */}
           <PhoneVisual />
         </div>
       </Container>

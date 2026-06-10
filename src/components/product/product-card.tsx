@@ -4,9 +4,10 @@ import Link from "next/link";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
 import { StockBadge } from "@/components/product/stock-badge";
-import { AddToCartButton } from "@/components/cart/add-to-cart-button";
-import { ShieldIcon } from "@/components/ui/icons";
+import { buttonClasses } from "@/components/ui/button";
+import { ShieldIcon, WhatsappIcon } from "@/components/ui/icons";
 import { IphoneRender, colorwayByIndex } from "@/components/visual/iphone-render";
+import { buildBuyNowUrl } from "@/lib/whatsapp";
 import { formatCents, formatInstallments } from "@/lib/format";
 import {
   coverImage,
@@ -48,7 +49,7 @@ export function ProductCard({
     <motion.article
       variants={item}
       onMouseMove={onMove}
-      whileHover={{ y: -10 }}
+      whileHover={{ y: -8, scale: 1.02 }}
       transition={{ type: "spring", stiffness: 280, damping: 22 }}
       className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors duration-300 hover:border-white/30 hover:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]"
     >
@@ -92,14 +93,16 @@ export function ProductCard({
           <div className="absolute left-3 top-3 z-20">
             <StockBadge stock={product.stock} />
           </div>
+          {/* Canto inferior: não disputa espaço com o badge de estoque no
+              grid mobile de 2 colunas. */}
           {isNew(product) ? (
             /* Lacrado: badge monocromático, destaque máximo sem cor extra. */
-            <div className="absolute right-3 top-3 z-20 rounded-full bg-white px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-black">
+            <div className="absolute bottom-3 right-3 z-20 rounded-full bg-white px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-black">
               Novo
             </div>
           ) : (
             conditionLabel(product.condition) && (
-              <div className="absolute right-3 top-3 z-20 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-zinc-100 backdrop-blur">
+              <div className="absolute bottom-3 right-3 z-20 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-zinc-100 backdrop-blur">
                 {conditionLabel(product.condition)}
               </div>
             )
@@ -107,23 +110,24 @@ export function ProductCard({
         </div>
       </Link>
 
-      <div className="relative z-20 flex flex-1 flex-col gap-3 p-5">
+      <div className="relative z-20 flex flex-1 flex-col gap-2 p-3 sm:gap-3 sm:p-5">
         <Link href={`/produtos/${product.id}`} className="flex-1">
-          <h3 className="text-lg font-semibold leading-snug text-fg transition-colors group-hover:text-primary">
+          <h3 className="text-base font-semibold leading-snug text-fg transition-colors group-hover:text-primary sm:text-lg">
             {product.name}
           </h3>
           {product.description && (
-            <p className="mt-1 line-clamp-2 text-sm text-muted">
+            /* Uma linha só: funciona como a "linha de spec" do mockup */
+            <p className="mt-1 line-clamp-1 text-xs text-muted sm:text-sm">
               {product.description}
             </p>
           )}
         </Link>
 
         <div>
-          <p className="text-3xl font-extrabold tracking-tight text-fg">
+          <p className="text-2xl font-extrabold tracking-tight text-fg sm:text-3xl">
             {formatCents(product.price_cents)}
           </p>
-          <p className="text-sm text-muted">
+          <p className="text-xs text-muted sm:text-sm">
             ou {formatInstallments(product.price_cents, product.installments)}{" "}
             sem juros
           </p>
@@ -135,18 +139,34 @@ export function ProductCard({
           {product.battery_health ? ` · Bateria ${product.battery_health}%` : ""}
         </div>
 
-        <AddToCartButton
-          size="md"
-          fullWidth
-          product={{
-            productId: product.id,
-            name: product.name,
-            priceCents: product.price_cents,
-            imageUrl: cover?.url ?? null,
-            stock: product.stock,
-            category: product.category === "accessory" ? "accessory" : "iphone",
-          }}
-        />
+        {/* CTA de conversão: direto pro WhatsApp com nome + preço + link */}
+        {product.stock > 0 ? (
+          <a
+            href={buildBuyNowUrl({
+              id: product.id,
+              name: product.name,
+              priceCents: product.price_cents,
+            })}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonClasses("whatsapp", "md", "w-full")}
+          >
+            <WhatsappIcon className="size-4" />
+            {/* Rótulo curto no grid estreito de 2 colunas */}
+            <span className="sm:hidden">WhatsApp</span>
+            <span className="hidden sm:inline">Falar no WhatsApp</span>
+          </a>
+        ) : (
+          <span
+            className={buttonClasses(
+              "outline",
+              "md",
+              "w-full opacity-50 pointer-events-none",
+            )}
+          >
+            Esgotado
+          </span>
+        )}
       </div>
     </motion.article>
   );

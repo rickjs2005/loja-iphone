@@ -25,6 +25,19 @@ export function buildWhatsappUrl(items: CartItem[], totalCents: number): string 
   return `https://wa.me/${storeConfig.whatsapp}?text=${encodeURIComponent(mensagem)}`;
 }
 
+/** Trade-in: abre o WhatsApp já no fluxo de avaliação do aparelho usado. */
+export function buildTradeInUrl(): string {
+  const mensagem = [
+    `Olá, ${storeConfig.name}! Quero dar meu iPhone usado como entrada.`,
+    "",
+    "Modelo do meu aparelho:",
+    "Saúde da bateria (%):",
+    "",
+    "Vou mandar as fotos em seguida. Quanto ele vale de crédito?",
+  ].join("\n");
+  return `https://wa.me/${storeConfig.whatsapp}?text=${encodeURIComponent(mensagem)}`;
+}
+
 /** Link simples para tirar dúvidas sobre um produto específico. */
 export function buildProductInquiryUrl(productName: string): string {
   const mensagem = `Olá, ${storeConfig.name}! Tenho interesse no ${productName}. Está disponível?`;

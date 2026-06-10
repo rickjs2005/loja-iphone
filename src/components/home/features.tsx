@@ -2,8 +2,8 @@ import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import {
-  BadgeCheckIcon,
-  BoltIcon,
+  BagIcon,
+  CheckIcon,
   HeadsetIcon,
   ShieldIcon,
 } from "@/components/ui/icons";
@@ -12,31 +12,31 @@ import type { ReactNode } from "react";
 
 const FEATURES: { icon: ReactNode; title: string; text: string }[] = [
   {
-    icon: <ShieldIcon className="size-6" />,
-    title: "Garantia de verdade",
-    text: "Todo aparelho acompanha garantia. Deu problema, a gente resolve.",
-  },
-  {
-    icon: <BadgeCheckIcon className="size-6" />,
-    title: "Procedência checada",
-    text: "IMEI verificado e origem comprovada. Nada de aparelho bloqueado.",
-  },
-  {
-    icon: <BoltIcon className="size-6" />,
-    title: "Bateria saudável",
-    text: "Saúde da bateria testada e informada antes da compra.",
-  },
-  {
     icon: <HeadsetIcon className="size-6" />,
-    title: "Suporte especializado",
-    text: "Atendimento humano no WhatsApp, do primeiro oi à pós-venda.",
+    title: "Especialistas",
+    text: "Time que respira Apple, do primeiro oi à pós-venda.",
+  },
+  {
+    icon: <ShieldIcon className="size-6" />,
+    title: "Compra segura",
+    text: "Aparelhos testados, com garantia e procedência.",
+  },
+  {
+    icon: <CheckIcon className="size-6" />,
+    title: "Pós-venda",
+    text: "Suporte completo depois da compra, sem sumir.",
+  },
+  {
+    icon: <BagIcon className="size-6" />,
+    title: "Loja física",
+    text: "Endereço real para visitar, conferir e retirar.",
   },
 ];
 
 /** Bloco "por que comprar aqui" — reforça confiança e valor. */
 export function Features() {
   return (
-    <section className="py-16 sm:py-24">
+    <section id="porque" className="py-16 sm:py-24">
       <Container>
         <Reveal>
           <SectionHeading

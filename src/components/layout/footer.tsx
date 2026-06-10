@@ -4,56 +4,123 @@ import { InstagramIcon, WhatsappIcon } from "@/components/ui/icons";
 import { storeConfig } from "@/config/theme.config";
 import { getStoreSettings } from "@/lib/data/site";
 
-/** Rodapé com endereço/horário (do admin), redes sociais e WhatsApp. */
+// Títulos das colunas seguem o mesmo padrão tipográfico.
+const colTitle = "text-xs font-semibold uppercase tracking-[0.2em] text-muted";
+const colLink = "text-sm text-muted transition-colors hover:text-fg";
+
+const INSTITUCIONAL: { label: string; href: string }[] = [
+  { label: "Sobre nós", href: "#loja" },
+  { label: "Por que comprar", href: "#porque" },
+  { label: "Trocar meu iPhone", href: "#trocar" },
+];
+
+const CATEGORIAS: { label: string; href: string }[] = [
+  { label: "iPhones", href: "#linha-iphone" },
+  { label: "MacBooks", href: "#linha-macbook" },
+  { label: "iPads", href: "#linha-ipad" },
+  { label: "Acessórios", href: "#acessorios" },
+];
+
+/** Rodapé corporativo em 4 colunas — última camada de confiança da página. */
 export async function Footer() {
-  const { social, whatsapp, name } = storeConfig;
+  const { social, whatsapp, name, description } = storeConfig;
   const settings = await getStoreSettings();
   const ano = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-white/10 bg-surface/40">
-      {(settings.address || settings.hours) && (
-        <Container className="border-b border-white/10 py-6 text-sm text-muted">
-          {settings.address && (
-            <p>
-              <span className="text-fg">Endereço:</span> {settings.address}
-            </p>
-          )}
-          {settings.hours && (
-            <p className="mt-1">
-              <span className="text-fg">Horário:</span> {settings.hours}
-            </p>
-          )}
-        </Container>
-      )}
-      <Container className="flex flex-col items-center gap-4 py-8 sm:flex-row sm:justify-between">
-        <p className="text-sm text-muted">
-          © {ano} {name}. Todos os direitos reservados.
-        </p>
-
-        <div className="flex items-center gap-2">
-          {social.instagram && (
+    <footer id="contato" className="mt-auto border-t border-white/10 bg-surface/40">
+      <Container className="grid grid-cols-1 gap-10 py-14 lg:grid-cols-4">
+        {/* Col 1 — marca */}
+        <div>
+          <p className="font-semibold text-fg">{name}</p>
+          <p className="mt-2 text-sm text-muted">{description}</p>
+          <div className="mt-4 flex items-center gap-2">
+            {social.instagram && (
+              <Link
+                href={social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="inline-flex size-10 items-center justify-center rounded-xl text-muted transition-colors hover:bg-white/5 hover:text-fg"
+              >
+                <InstagramIcon className="size-5" />
+              </Link>
+            )}
             <Link
-              href={social.instagram}
+              href={`https://wa.me/${whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Instagram"
+              aria-label="WhatsApp"
               className="inline-flex size-10 items-center justify-center rounded-xl text-muted transition-colors hover:bg-white/5 hover:text-fg"
             >
-              <InstagramIcon className="size-5" />
+              <WhatsappIcon className="size-5" />
             </Link>
-          )}
-          <Link
-            href={`https://wa.me/${whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="WhatsApp"
-            className="inline-flex size-10 items-center justify-center rounded-xl text-muted transition-colors hover:bg-white/5 hover:text-fg"
-          >
-            <WhatsappIcon className="size-5" />
-          </Link>
+          </div>
+        </div>
+
+        {/* Col 2 — institucional */}
+        <div>
+          <p className={colTitle}>Institucional</p>
+          <ul className="mt-4 space-y-2.5">
+            {INSTITUCIONAL.map((link) => (
+              <li key={link.href}>
+                <a href={link.href} className={colLink}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Col 3 — categorias */}
+        <div>
+          <p className={colTitle}>Categorias</p>
+          <ul className="mt-4 space-y-2.5">
+            {CATEGORIAS.map((link) => (
+              <li key={link.href}>
+                <a href={link.href} className={colLink}>
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Col 4 — atendimento (só dados reais do admin) */}
+        <div>
+          <p className={colTitle}>Atendimento</p>
+          <ul className="mt-4 space-y-2.5">
+            <li>
+              <a
+                href={`https://wa.me/${whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={colLink}
+              >
+                Falar no WhatsApp
+              </a>
+            </li>
+            {settings.address && (
+              <li className="text-sm text-muted">{settings.address}</li>
+            )}
+            {settings.hours && (
+              <li className="text-sm text-muted">{settings.hours}</li>
+            )}
+            {settings.warranty_text && (
+              <li className="text-sm text-muted">{settings.warranty_text}</li>
+            )}
+          </ul>
         </div>
       </Container>
+
+      {/* pb extra no mobile: as barras fixas (WhatsApp/compra) cobrem o fim da página. */}
+      <div className="border-t border-white/10 pb-24 lg:pb-0">
+        <Container className="py-6">
+          <p className="text-center text-sm text-muted">
+            © {ano} {name}. Todos os direitos reservados.
+          </p>
+        </Container>
+      </div>
     </footer>
   );
 }

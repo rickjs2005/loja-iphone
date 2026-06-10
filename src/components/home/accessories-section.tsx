@@ -38,13 +38,14 @@ export function AccessoriesSection({
     <section id="acessorios" className="scroll-mt-20 py-16 sm:py-24">
       <Container>
         <SectionHeading
+          align="left"
           eyebrow="Acessórios"
           title="Complete seu ecossistema"
           subtitle="Capas, películas, carregadores e áudio para o seu iPhone."
         />
 
         {/* Filtro por categoria */}
-        <div className="mb-8 flex flex-wrap justify-center gap-2">
+        <div className="mb-8 flex flex-wrap gap-2">
           {tabs.map((t) => (
             <button
               key={t.value}
