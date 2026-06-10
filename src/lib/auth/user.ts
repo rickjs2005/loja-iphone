@@ -39,11 +39,14 @@ export async function requireAdmin() {
 
   const supabase = await createClient();
   // Os tipos gerados (database.types.ts) não incluem a função is_admin;
-  // chamada via assinatura estrutural mínima.
-  const rpc = supabase.rpc as unknown as (
-    fn: "is_admin",
-  ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
-  const { data, error } = await rpc("is_admin");
+  // o cast é no CLIENT (não no método solto: extrair supabase.rpc perderia
+  // o `this` e o supabase-js quebra ao acessar this.rest).
+  const client = supabase as unknown as {
+    rpc: (
+      fn: "is_admin",
+    ) => PromiseLike<{ data: unknown; error: { message: string } | null }>;
+  };
+  const { data, error } = await client.rpc("is_admin");
 
   if (error || data !== true) redirect("/admin/login");
   return user;

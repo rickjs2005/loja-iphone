@@ -47,8 +47,10 @@ type UntypedRpc = (
 
 async function callRpc(fn: string, ipHash: string): Promise<unknown> {
   const supabase = await createClient();
-  const rpc = supabase.rpc as unknown as UntypedRpc;
-  const { data, error } = await rpc(fn, { p_ip_hash: ipHash });
+  // Cast no CLIENT, não no método solto: extrair supabase.rpc perderia o
+  // `this` e o supabase-js quebra ao acessar this.rest.
+  const client = supabase as unknown as { rpc: UntypedRpc };
+  const { data, error } = await client.rpc(fn, { p_ip_hash: ipHash });
   if (error) throw new Error(error.message);
   return data;
 }
