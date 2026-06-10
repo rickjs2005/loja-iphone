@@ -68,11 +68,33 @@ export async function saveProductAction(
     return { ok: true };
   }
 
+  // Fotos opcionais escolhidas já no cadastro: valida ANTES de criar o produto
+  // para não deixar um produto criado caso alguma imagem seja inválida.
+  const newFiles = formData
+    .getAll("images")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+
+  for (const file of newFiles) {
+    const valid = imageFileSchema.safeParse(file);
+    if (!valid.success) {
+      return { error: valid.error.issues[0]?.message ?? "Imagem inválida." };
+    }
+  }
+
   const newId = await createProduct(parsed.data);
+
+  // Sobe as imagens (se houver) agora que o produto — e seu ID — existem.
+  let order = 0;
+  for (const file of newFiles) {
+    const url = await uploadProductImage(newId, file, order);
+    await addProductImage(newId, url, order);
+    order += 1;
+  }
+
   revalidatePath("/admin/produtos");
   revalidatePath("/");
-  // Vai para a edição para adicionar as fotos do produto recém-criado.
-  redirect(`/admin/produtos/${newId}`);
+  // Volta para a lista com aviso de sucesso.
+  redirect("/admin/produtos?criado=1");
 }
 
 export async function deleteProductAction(formData: FormData): Promise<void> {

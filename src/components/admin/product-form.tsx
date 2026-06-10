@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import {
   Input,
   Label,
@@ -29,10 +29,28 @@ export function ProductForm({ product }: { product?: ProductRow }) {
   const [category, setCategory] = useState<"iphone" | "accessory">(
     (product?.category as "iphone" | "accessory") ?? "iphone",
   );
+  // Fotos só no cadastro (na edição quem cuida é o ImageManager).
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
 
   const err = state.fieldErrors ?? {};
   const preview = Number(priceCents);
   const isIphone = category === "iphone";
+
+  // Libera as URLs de pré-visualização ao desmontar.
+  useEffect(() => {
+    return () => {
+      photoPreviews.forEach((u) => URL.revokeObjectURL(u));
+    };
+  }, [photoPreviews]);
+
+  function onSelectPhotos(e: React.ChangeEvent<HTMLInputElement>) {
+    setPhotoPreviews((prev) => {
+      prev.forEach((u) => URL.revokeObjectURL(u));
+      return Array.from(e.target.files ?? []).map((f) =>
+        URL.createObjectURL(f),
+      );
+    });
+  }
 
   return (
     <form action={formAction} className="flex max-w-2xl flex-col gap-5">
@@ -214,6 +232,38 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           Produto ativo (visível na loja)
         </span>
       </label>
+
+      {/* Fotos: só no cadastro. Na edição, o ImageManager assume. */}
+      {!product && (
+        <div>
+          <Label htmlFor="images">Fotos (opcional)</Label>
+          <input
+            id="images"
+            type="file"
+            name="images"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+            onChange={onSelectPhotos}
+            className="block w-full text-sm text-zinc-400 file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white hover:file:brightness-110"
+          />
+          <FormHelp>
+            JPG, PNG ou WebP, até 5 MB cada. Você poderá adicionar mais depois.
+          </FormHelp>
+          {photoPreviews.length > 0 && (
+            <div className="mt-3 grid grid-cols-4 gap-2">
+              {photoPreviews.map((src) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={src}
+                  src={src}
+                  alt="Pré-visualização"
+                  className="aspect-square w-full rounded-md object-cover opacity-80"
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {state.error && <FieldError>{state.error}</FieldError>}
       {state.ok && (

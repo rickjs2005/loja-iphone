@@ -13,6 +13,11 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // Não expõe a versão do Next no header (reduz fingerprinting).
   poweredByHeader: false,
+  experimental: {
+    // Uploads de fotos passam pela Server Action; o padrão (1 MB) estoura com
+    // múltiplas imagens (cada uma até 5 MB pela validação do produto).
+    serverActions: { bodySizeLimit: "30mb" },
+  },
   images: {
     remotePatterns: [
       // Imagens dos produtos servidas pelo Supabase Storage.
