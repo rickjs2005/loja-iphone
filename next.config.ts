@@ -26,6 +26,9 @@ const nextConfig: NextConfig = {
         hostname: "*.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      // Fotos de catálogo hotlinkadas (demo): CDN oficial da Apple e Unsplash.
+      { protocol: "https", hostname: "store.storeimages.cdn-apple.com" },
+      { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
   async headers() {
