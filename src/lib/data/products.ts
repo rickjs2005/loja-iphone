@@ -181,13 +181,20 @@ export async function deleteProductImage(imageId: string): Promise<void> {
   if (error) throw new Error(`Falha ao remover imagem: ${error.message}`);
 }
 
-export async function countProductImages(productId: string): Promise<number> {
+/**
+ * Próxima posição na galeria: max(sort_order) + 1. Contar linhas não serve —
+ * após uma deleção o count colide com posições já ocupadas.
+ */
+export async function getNextImageOrder(productId: string): Promise<number> {
   const supabase = await createClient();
-  const { count, error } = await supabase
+  const { data, error } = await supabase
     .from("product_images")
-    .select("id", { count: "exact", head: true })
-    .eq("product_id", productId);
+    .select("sort_order")
+    .eq("product_id", productId)
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-  if (error) throw new Error(`Falha ao contar imagens: ${error.message}`);
-  return count ?? 0;
+  if (error) throw new Error(`Falha ao buscar ordem das imagens: ${error.message}`);
+  return (data?.sort_order ?? -1) + 1;
 }

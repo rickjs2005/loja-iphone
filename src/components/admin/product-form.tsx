@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import {
   Input,
   Label,
@@ -13,7 +13,7 @@ import {
   saveProductAction,
   type ProductFormState,
 } from "@/app/admin/produtos/actions";
-import { formatCents } from "@/lib/format";
+import { centsPorExtenso, formatCentsInput } from "@/lib/format";
 import { ACCESSORY_CATEGORIES, CONDITIONS } from "@/lib/data/types";
 import { cn } from "@/lib/cn";
 import type { ProductRow } from "@/types/database.types";
@@ -23,27 +23,62 @@ export function ProductForm({ product }: { product?: ProductRow }) {
     saveProductAction,
     {},
   );
-  const [priceCents, setPriceCents] = useState(
-    product ? String(product.price_cents) : "",
+  // Preço em CENTAVOS; o input visível mostra a máscara de moeda.
+  const [priceCents, setPriceCents] = useState<number | null>(
+    product ? product.price_cents : null,
   );
   const [category, setCategory] = useState<"iphone" | "accessory">(
     (product?.category as "iphone" | "accessory") ?? "iphone",
   );
   // Fotos só no cadastro (na edição quem cuida é o ImageManager).
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [reselectPhotos, setReselectPhotos] = useState(false);
+  const [showSaved, setShowSaved] = useState(false);
 
   const err = state.fieldErrors ?? {};
-  const preview = Number(priceCents);
+  // Após erro, a action ecoa o que foi digitado: o reset do React 19 aplica
+  // o defaultValue ATUAL, então usar o eco evita perder o preenchido.
+  const v = state.values;
   const isIphone = category === "iphone";
 
-  // Libera as URLs de pré-visualização ao desmontar.
+  // Libera as URLs de pré-visualização ao trocar a seleção / desmontar.
   useEffect(() => {
     return () => {
       photoPreviews.forEach((u) => URL.revokeObjectURL(u));
     };
   }, [photoPreviews]);
 
+  // Após erro do servidor o React reseta o form e o input de arquivos
+  // esvazia: limpa os previews (que ficariam "fantasmas") e pede pra
+  // selecionar as fotos de novo. O ref garante tratar cada erro uma vez só.
+  const handledErrorRef = useRef<ProductFormState | null>(null);
+  useEffect(() => {
+    if (!state.error || handledErrorRef.current === state) return;
+    handledErrorRef.current = state;
+    if (photoPreviews.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPhotoPreviews([]); // o cleanup acima revoga as URLs antigas
+      setReselectPhotos(true);
+    }
+  }, [state, photoPreviews]);
+
+  // Mensagem de sucesso (edição) some sozinha depois de alguns segundos.
+  useEffect(() => {
+    if (!state.ok) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setShowSaved(true);
+    const timer = setTimeout(() => setShowSaved(false), 4000);
+    return () => clearTimeout(timer);
+  }, [state]);
+
+  function onPriceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    // Máscara de PDV: só dígitos; cada dígito digitado entra como centavo.
+    const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+    setPriceCents(digits ? Number(digits) : null);
+  }
+
   function onSelectPhotos(e: React.ChangeEvent<HTMLInputElement>) {
+    setReselectPhotos(false);
     setPhotoPreviews((prev) => {
       prev.forEach((u) => URL.revokeObjectURL(u));
       return Array.from(e.target.files ?? []).map((f) =>
@@ -85,7 +120,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           id="name"
           name="name"
           required
-          defaultValue={product?.name}
+          defaultValue={v?.name ?? product?.name}
           placeholder={isIphone ? "iPhone 15 Pro 256GB" : "Capa MagSafe transparente"}
         />
         <FieldError>{err.name?.[0]}</FieldError>
@@ -96,7 +131,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
         <Textarea
           id="description"
           name="description"
-          defaultValue={product?.description ?? ""}
+          defaultValue={v?.description ?? product?.description ?? ""}
           placeholder="Detalhes, cor, condição, garantia..."
         />
         <FieldError>{err.description?.[0]}</FieldError>
@@ -104,22 +139,23 @@ export function ProductForm({ product }: { product?: ProductRow }) {
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <Label htmlFor="price_cents">Preço (em centavos)</Label>
+          <Label htmlFor="price">Preço</Label>
           <Input
-            id="price_cents"
-            name="price_cents"
-            type="number"
-            min={0}
-            step={1}
+            id="price"
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
             required
-            value={priceCents}
-            onChange={(e) => setPriceCents(e.target.value)}
-            placeholder="999900"
+            value={formatCentsInput(priceCents)}
+            onChange={onPriceChange}
+            placeholder="R$ 0,00"
           />
+          {/* O banco recebe sempre os CENTAVOS, via campo oculto. */}
+          <input type="hidden" name="price_cents" value={priceCents ?? ""} />
           <FormHelp>
-            {Number.isFinite(preview) && priceCents !== ""
-              ? `Equivale a ${formatCents(preview)}`
-              : "Ex.: 999900 = R$ 9.999,00"}
+            {priceCents
+              ? `Equivale a ${centsPorExtenso(priceCents)}.`
+              : "Digite só números — cada dígito entra como centavo (3500 vira R$ 35,00)."}
           </FormHelp>
           <FieldError>{err.price_cents?.[0]}</FieldError>
         </div>
@@ -133,7 +169,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
             min={0}
             step={1}
             required
-            defaultValue={product?.stock ?? 0}
+            defaultValue={v?.stock ?? product?.stock ?? 0}
           />
           <FieldError>{err.stock?.[0]}</FieldError>
         </div>
@@ -148,7 +184,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           min={1}
           max={24}
           step={1}
-          defaultValue={product?.installments ?? 12}
+          defaultValue={v?.installments ?? product?.installments ?? 12}
         />
         <FieldError>{err.installments?.[0]}</FieldError>
       </div>
@@ -165,7 +201,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
               min={0}
               max={100}
               step={1}
-              defaultValue={product?.battery_health ?? ""}
+              defaultValue={v?.battery_health ?? product?.battery_health ?? ""}
               placeholder="100"
             />
             <FieldError>{err.battery_health?.[0]}</FieldError>
@@ -175,7 +211,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
             <select
               id="condition"
               name="condition"
-              defaultValue={product?.condition ?? ""}
+              defaultValue={v?.condition ?? product?.condition ?? ""}
               className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/40"
             >
               <option value="">—</option>
@@ -196,7 +232,9 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           <select
             id="accessory_category"
             name="accessory_category"
-            defaultValue={product?.accessory_category ?? "outros"}
+            defaultValue={
+              v?.accessory_category ?? product?.accessory_category ?? "outros"
+            }
             className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/40"
           >
             {ACCESSORY_CATEGORIES.map((c) => (
@@ -216,7 +254,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           type="number"
           min={0}
           step={1}
-          defaultValue={product?.sort_order ?? 0}
+          defaultValue={v?.sort_order ?? product?.sort_order ?? 0}
         />
         <FormHelp>Menor número aparece primeiro.</FormHelp>
       </div>
@@ -225,7 +263,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
         <input
           type="checkbox"
           name="is_active"
-          defaultChecked={product?.is_active ?? true}
+          defaultChecked={v ? v.is_active === "on" : (product?.is_active ?? true)}
           className="size-5 rounded border-zinc-700 bg-zinc-950 text-primary accent-primary"
         />
         <span className="text-sm text-zinc-300">
@@ -249,6 +287,11 @@ export function ProductForm({ product }: { product?: ProductRow }) {
           <FormHelp>
             JPG, PNG ou WebP, até 5 MB cada. Você poderá adicionar mais depois.
           </FormHelp>
+          {reselectPhotos && (
+            <p className="mt-2 text-sm text-amber-400">
+              Selecione as fotos novamente.
+            </p>
+          )}
           {photoPreviews.length > 0 && (
             <div className="mt-3 grid grid-cols-4 gap-2">
               {photoPreviews.map((src) => (
@@ -266,7 +309,7 @@ export function ProductForm({ product }: { product?: ProductRow }) {
       )}
 
       {state.error && <FieldError>{state.error}</FieldError>}
-      {state.ok && (
+      {showSaved && (
         <p className="text-sm text-emerald-400">Alterações salvas com sucesso.</p>
       )}
 

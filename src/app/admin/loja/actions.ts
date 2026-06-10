@@ -6,8 +6,8 @@ import { siteSettingsSchema } from "@/lib/validation/site.schema";
 import { imageFileSchema } from "@/lib/validation/product.schema";
 import {
   addSiteImage,
-  countSiteImages,
   deleteSiteImage,
+  getNextSiteImageOrder,
   updateStoreSettings,
 } from "@/lib/data/site";
 import { removeProductImageByUrl, uploadSiteImage } from "@/lib/data/storage";
@@ -17,16 +17,32 @@ export type SiteFormState = {
   ok?: boolean;
   error?: string;
   fieldErrors?: Record<string, string[]>;
+  /**
+   * Valores digitados, ecoados junto com o erro: o React 19 reseta o form
+   * pro defaultValue ATUAL após a action — ecoar evita perder o preenchido.
+   */
+  values?: Record<string, string>;
 };
 
 const isSection = (v: string): v is SiteSection =>
   v === "loja" || v === "entrega";
+
+/** Campos de texto do FormData (nunca Files) pro form repreencher após erro. */
+function echoValues(formData: FormData): Record<string, string> {
+  const values: Record<string, string> = {};
+  for (const [key, value] of formData.entries()) {
+    if (typeof value === "string") values[key] = value;
+  }
+  return values;
+}
 
 export async function saveSettingsAction(
   _prev: SiteFormState,
   formData: FormData,
 ): Promise<SiteFormState> {
   await requireUser();
+
+  const values = echoValues(formData);
 
   const parsed = siteSettingsSchema.safeParse({
     address: formData.get("address"),
@@ -38,10 +54,16 @@ export async function saveSettingsAction(
     return {
       error: "Confira os campos.",
       fieldErrors: parsed.error.flatten().fieldErrors,
+      values,
     };
   }
 
-  await updateStoreSettings(parsed.data);
+  try {
+    await updateStoreSettings(parsed.data);
+  } catch {
+    return { error: "Não foi possível salvar. Tente de novo.", values };
+  }
+
   revalidatePath("/");
   revalidatePath("/admin/loja");
   return { ok: true };
@@ -61,15 +83,24 @@ export async function uploadSiteImagesAction(
     .filter((f): f is File => f instanceof File && f.size > 0);
   if (files.length === 0) return { error: "Selecione ao menos uma imagem." };
 
-  let order = await countSiteImages(section);
+  // Valida TODOS os arquivos antes do primeiro upload: nada de upload
+  // parcial (um retry depois duplicaria as fotos que já subiram).
   for (const file of files) {
     const valid = imageFileSchema.safeParse(file);
     if (!valid.success) {
       return { error: valid.error.issues[0]?.message ?? "Imagem inválida." };
     }
-    const url = await uploadSiteImage(section, file, order);
-    await addSiteImage(section, url, order);
-    order += 1;
+  }
+
+  try {
+    let order = await getNextSiteImageOrder(section);
+    for (const file of files) {
+      const url = await uploadSiteImage(section, file);
+      await addSiteImage(section, url, order);
+      order += 1;
+    }
+  } catch {
+    return { error: "Falha ao enviar as imagens. Tente de novo." };
   }
 
   revalidatePath("/");
@@ -83,8 +114,15 @@ export async function deleteSiteImageAction(formData: FormData): Promise<void> {
   const url = String(formData.get("url") || "");
   if (!id) return;
 
-  await removeProductImageByUrl(url);
+  // Linha primeiro; arquivo órfão no storage é inofensivo (o inverso
+  // deixaria a imagem quebrada no site se a 2ª etapa falhasse).
   await deleteSiteImage(id);
+  try {
+    await removeProductImageByUrl(url);
+  } catch {
+    // Arquivo órfão no storage não afeta a loja.
+  }
+
   revalidatePath("/");
   revalidatePath("/admin/loja");
 }

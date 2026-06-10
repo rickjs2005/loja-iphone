@@ -30,16 +30,18 @@ export function SiteImageManager({
   const [previews, setPreviews] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Depende de [state] (objeto novo a cada retorno da action): com
+  // [state.ok], o segundo sucesso (true === true) não disparava e o input
+  // mantinha os arquivos — reenvio duplicava as fotos.
   useEffect(() => {
-    if (state.ok) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPreviews((prev) => {
-        prev.forEach((u) => URL.revokeObjectURL(u));
-        return [];
-      });
-      if (inputRef.current) inputRef.current.value = "";
-    }
-  }, [state.ok]);
+    if (!state.ok) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPreviews((prev) => {
+      prev.forEach((u) => URL.revokeObjectURL(u));
+      return [];
+    });
+    if (inputRef.current) inputRef.current.value = "";
+  }, [state]);
 
   function onSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);

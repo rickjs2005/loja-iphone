@@ -21,15 +21,17 @@ export const productSchema = z.object({
     emptyToUndefined,
     z.string().trim().max(2000, "Descrição muito longa").optional(),
   ),
-  // Preço canônico em CENTAVOS (inteiro não-negativo).
+  // Preço canônico em CENTAVOS (inteiro não-negativo, dentro do int4).
   price_cents: z.coerce
     .number({ message: "Preço inválido" })
     .int("O preço deve ser um inteiro em centavos")
-    .min(0, "O preço não pode ser negativo"),
+    .min(0, "O preço não pode ser negativo")
+    .max(100_000_000, "Preço máximo é R$ 1.000.000,00"),
   stock: z.coerce
     .number({ message: "Estoque inválido" })
     .int("O estoque deve ser um número inteiro")
-    .min(0, "O estoque não pode ser negativo"),
+    .min(0, "O estoque não pode ser negativo")
+    .max(100_000, "Estoque máximo é 100.000"),
   installments: z.coerce
     .number({ message: "Parcelas inválidas" })
     .int("Use um número inteiro de parcelas")

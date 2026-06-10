@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ProductList } from "@/components/admin/product-list";
+import { SuccessBanner } from "@/components/admin/success-banner";
 import { PlusIcon } from "@/components/ui/icons";
 import { requireUser } from "@/lib/auth/user";
 import { getAllProducts } from "@/lib/data/products";
@@ -24,11 +25,7 @@ export default async function AdminProdutosPage({
 
   return (
     <div>
-      {criado && (
-        <p className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
-          Produto criado com sucesso.
-        </p>
-      )}
+      {criado && <SuccessBanner message="Produto criado com sucesso." />}
 
       {/* Dashboard rápido */}
       <div className="mb-8 grid grid-cols-3 gap-3 sm:gap-4">

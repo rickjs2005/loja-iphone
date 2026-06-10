@@ -70,16 +70,16 @@ export async function updateStoreSettings(
   input: SiteSettingsInput,
 ): Promise<void> {
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("store_settings")
-    .update({
-      address: input.address ?? null,
-      hours: input.hours ?? null,
-      maps_url: input.maps_url ?? null,
-      payment_methods: input.payment_methods ?? null,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", 1);
+  // upsert: cria a linha id=1 se ainda não existir (UPDATE puro falharia
+  // em silêncio num banco recém-provisionado).
+  const { error } = await supabase.from("store_settings").upsert({
+    id: 1,
+    address: input.address ?? null,
+    hours: input.hours ?? null,
+    maps_url: input.maps_url ?? null,
+    payment_methods: input.payment_methods ?? null,
+    updated_at: new Date().toISOString(),
+  });
 
   if (error) throw new Error(`Falha ao salvar config: ${error.message}`);
 }
@@ -104,13 +104,22 @@ export async function deleteSiteImage(id: string): Promise<void> {
   if (error) throw new Error(`Falha ao remover imagem: ${error.message}`);
 }
 
-export async function countSiteImages(section: SiteSection): Promise<number> {
+/**
+ * Próxima posição da galeria da seção: max(sort_order) + 1 (contar linhas
+ * colide com posições ocupadas após uma deleção).
+ */
+export async function getNextSiteImageOrder(
+  section: SiteSection,
+): Promise<number> {
   const supabase = await createClient();
-  const { count, error } = await supabase
+  const { data, error } = await supabase
     .from("site_images")
-    .select("id", { count: "exact", head: true })
-    .eq("section", section);
+    .select("sort_order")
+    .eq("section", section)
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-  if (error) throw new Error(`Falha ao contar imagens: ${error.message}`);
-  return count ?? 0;
+  if (error) throw new Error(`Falha ao buscar ordem das imagens: ${error.message}`);
+  return (data?.sort_order ?? -1) + 1;
 }

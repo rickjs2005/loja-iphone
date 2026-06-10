@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Input, Label, FieldError, FormHelp } from "@/components/ui/field";
 import { SubmitButton } from "@/components/ui/submit-button";
 import {
@@ -14,7 +14,20 @@ export function SettingsForm({ settings }: { settings: StoreSettingsRow }) {
     saveSettingsAction,
     {},
   );
+  const [showSaved, setShowSaved] = useState(false);
   const err = state.fieldErrors ?? {};
+  // Após erro, a action ecoa o que foi digitado: o reset do React 19 aplica
+  // o defaultValue ATUAL, então usar o eco evita reverter pros valores antigos.
+  const v = state.values;
+
+  // Mensagem de sucesso some sozinha depois de alguns segundos.
+  useEffect(() => {
+    if (!state.ok) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setShowSaved(true);
+    const timer = setTimeout(() => setShowSaved(false), 4000);
+    return () => clearTimeout(timer);
+  }, [state]);
 
   return (
     <form action={formAction} className="flex max-w-2xl flex-col gap-5">
@@ -23,7 +36,7 @@ export function SettingsForm({ settings }: { settings: StoreSettingsRow }) {
         <Input
           id="address"
           name="address"
-          defaultValue={settings.address ?? ""}
+          defaultValue={v?.address ?? settings.address ?? ""}
           placeholder="Av. Exemplo, 123 — Centro, Cidade/UF"
         />
         <FieldError>{err.address?.[0]}</FieldError>
@@ -34,7 +47,7 @@ export function SettingsForm({ settings }: { settings: StoreSettingsRow }) {
         <Input
           id="hours"
           name="hours"
-          defaultValue={settings.hours ?? ""}
+          defaultValue={v?.hours ?? settings.hours ?? ""}
           placeholder="Seg a Sex, 9h às 18h · Sáb, 9h às 13h"
         />
         <FieldError>{err.hours?.[0]}</FieldError>
@@ -45,7 +58,7 @@ export function SettingsForm({ settings }: { settings: StoreSettingsRow }) {
         <Input
           id="payment_methods"
           name="payment_methods"
-          defaultValue={settings.payment_methods ?? ""}
+          defaultValue={v?.payment_methods ?? settings.payment_methods ?? ""}
           placeholder="Pix, cartão em até 12x e dinheiro"
         />
         <FormHelp>Aparece nas páginas dos produtos.</FormHelp>
@@ -58,14 +71,15 @@ export function SettingsForm({ settings }: { settings: StoreSettingsRow }) {
           id="maps_url"
           name="maps_url"
           type="url"
-          defaultValue={settings.maps_url ?? ""}
+          defaultValue={v?.maps_url ?? settings.maps_url ?? ""}
           placeholder="https://maps.google.com/..."
         />
         <FormHelp>Cole o link de compartilhamento da sua loja no Maps.</FormHelp>
         <FieldError>{err.maps_url?.[0]}</FieldError>
       </div>
 
-      {state.ok && (
+      {state.error && <FieldError>{state.error}</FieldError>}
+      {showSaved && (
         <p className="text-sm text-emerald-400">Alterações salvas com sucesso.</p>
       )}
 

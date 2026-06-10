@@ -9,24 +9,26 @@ import { createClient } from "@/lib/supabase/server";
 
 const BUCKET = "product-images";
 
-/** Caminho determinístico: product-images é organizado por produto. */
-function buildPath(productId: string, fileName: string, index: number): string {
-  const safe = fileName.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-  // O índice (posição na galeria) evita colisão entre arquivos de mesmo nome.
-  return `${productId}/${index}-${safe}`;
+/** Extensão original sanitizada (".jpg", ".webp"...; vazio se não houver). */
+function safeExt(fileName: string): string {
+  const match = /\.([a-zA-Z0-9]+)$/.exec(fileName);
+  return match ? `.${match[1].toLowerCase()}` : "";
 }
 
-export async function uploadProductImage(
-  productId: string,
-  file: File,
-  index: number,
-): Promise<string> {
+/**
+ * Caminho ÚNICO por arquivo: UUID garante que dois uploads nunca colidem
+ * (índice/nome repetido sobrescreveria o arquivo de outra linha).
+ */
+function buildPath(prefix: string, fileName: string): string {
+  return `${prefix}/${crypto.randomUUID()}${safeExt(fileName)}`;
+}
+
+async function uploadToBucket(path: string, file: File): Promise<string> {
   const supabase = await createClient();
-  const path = buildPath(productId, file.name, index);
 
   const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
     cacheControl: "3600",
-    upsert: true,
+    upsert: false, // nunca sobrescreve: cada upload é um arquivo novo
     contentType: file.type,
   });
 
@@ -34,28 +36,22 @@ export async function uploadProductImage(
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
   return data.publicUrl;
+}
+
+/** Upload de foto de produto (organizado por produto no bucket). */
+export async function uploadProductImage(
+  productId: string,
+  file: File,
+): Promise<string> {
+  return uploadToBucket(buildPath(productId, file.name), file);
 }
 
 /** Upload de imagem de conteúdo do site (loja física / entrega). */
 export async function uploadSiteImage(
   section: string,
   file: File,
-  index: number,
 ): Promise<string> {
-  const supabase = await createClient();
-  const safe = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-  const path = `site/${section}/${index}-${safe}`;
-
-  const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
-    cacheControl: "3600",
-    upsert: true,
-    contentType: file.type,
-  });
-
-  if (error) throw new Error(`Falha no upload da imagem: ${error.message}`);
-
-  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
-  return data.publicUrl;
+  return uploadToBucket(buildPath(`site/${section}`, file.name), file);
 }
 
 /** Extrai o caminho interno do bucket a partir da URL pública. */
@@ -67,11 +63,18 @@ export function storagePathFromUrl(url: string): string | null {
 }
 
 export async function removeProductImageByUrl(url: string): Promise<void> {
-  const path = storagePathFromUrl(url);
-  if (!path) return; // URL externa/desconhecida: nada a remover no storage.
+  return removeImagesByUrls([url]);
+}
+
+/** Remove vários arquivos de uma vez (URLs externas são ignoradas). */
+export async function removeImagesByUrls(urls: string[]): Promise<void> {
+  const paths = urls
+    .map(storagePathFromUrl)
+    .filter((p): p is string => p !== null);
+  if (paths.length === 0) return;
 
   const supabase = await createClient();
-  const { error } = await supabase.storage.from(BUCKET).remove([path]);
+  const { error } = await supabase.storage.from(BUCKET).remove(paths);
 
-  if (error) throw new Error(`Falha ao remover arquivo: ${error.message}`);
+  if (error) throw new Error(`Falha ao remover arquivos: ${error.message}`);
 }

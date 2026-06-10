@@ -11,7 +11,17 @@ export const siteSettingsSchema = z.object({
   hours: z.preprocess(emptyToUndefined, z.string().trim().max(300).optional()),
   maps_url: z.preprocess(
     emptyToUndefined,
-    z.string().trim().url("Link do mapa inválido").max(500).optional(),
+    z
+      .string()
+      .trim()
+      .url("Link do mapa inválido")
+      .max(500)
+      // `url()` aceita qualquer esquema (até javascript:) — só http/https aqui.
+      .refine(
+        (u) => /^https?:\/\//i.test(u),
+        "O link deve começar com http:// ou https://",
+      )
+      .optional(),
   ),
   payment_methods: z.preprocess(
     emptyToUndefined,
