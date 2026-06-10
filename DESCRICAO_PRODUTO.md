@@ -138,15 +138,16 @@ erro/404 tematizadas, validação de imagem (formato/tamanho) antes do upload.
 - Carrinho multi-item com checkout WhatsApp
 - Admin CRUD completo de produtos com upload de fotos (criação e edição)
 - Conteúdo institucional editável (endereço/horário/pagamentos/maps/fotos)
+- **Prova social editável**: números da loja (vendidos, satisfação, avaliação
+  média, nº de avaliações) e depoimentos de clientes cadastrados no admin;
+  campo vazio = a seção some da loja (nenhum dado fictício em loja real)
+- **Garantia configurável** por loja (texto no admin, aparece na página do
+  produto; vazio mostra texto genérico)
 - White-label por env vars + modo demo sem backend
 - SEO técnico (sitemap, robots, JSON-LD, OG por produto)
 - Segurança com allow-list de admins
 
 **Parcial / com ressalvas:**
-- **Prova social é fictícia e fixa no código**: avaliações ("4,9 · 312
-  avaliações", depoimentos com nomes) e números ("+3.000 vendidos", "98%
-  satisfação") são de demonstração, não editáveis pelo admin. Precisa virar
-  editável (ou ser removido) antes de entregar a uma loja real
 - Carrinho guarda **preço do momento do clique** no navegador; cliente que
   volta dias depois pode enviar pedido com preço desatualizado (o vendedor vê
   na conversa, mas gera atrito)
@@ -155,8 +156,6 @@ erro/404 tematizadas, validação de imagem (formato/tamanho) antes do upload.
 - Lista de produtos do admin sem busca/paginação (ok até ~50 itens)
 - Vídeo do hero pesa 2,3 MB (funciona, mas merece compressão) e as imagens de
   marketing do hero/destaque são da marca demo
-- Garantia aparece como texto fixo ("90 dias") na seção de specs — não é
-  configurável por loja
 
 **Não existe (não prometer):**
 - Pagamento online (Pix/cartão no site), checkout com pedido/comprovante
@@ -282,16 +281,11 @@ conversa menos pra vender o mesmo tanto."
 
 Em ordem de prioridade para este público:
 
-1. **Prova social fake precisa sair ou virar editável.** O site exibe
-   avaliações e números inventados ("4,9 · 312 avaliações", "+3.000
-   vendidos"). Para um público cuja única prova social hoje são os destaques
-   de "Feedback", o certo é o admin poder subir os prints/números REAIS dele
-   (ou esconder a seção). Entregar com número falso é risco jurídico e mata a
-   confiança se descoberto. **Bloqueador para entrega comercial.**
-2. **Garantia configurável.** Essas lojas vendem "com garantia" como
-   diferencial, e cada uma dá um prazo. Hoje o "90 dias" é texto fixo no
-   código. Precisa estar no admin (e idealmente uma página curta de
+1. ~~Prova social fake~~ **RESOLVIDO**: números e depoimentos agora são
+   editáveis no admin e as seções somem quando vazias. Resta orientar o
+   lojista a preencher só com dados reais (e idealmente uma página curta de
    garantia/trocas + CNPJ no rodapé — confiança para ticket de R$ 3–8 mil).
+2. ~~Garantia fixa~~ **RESOLVIDO**: texto da garantia configurável no admin.
 3. **Sem analytics = sem prova de resultado.** O pitch promete "vendas que
    você não vê"; sem nem um contador de cliques no botão de WhatsApp, não dá
    para mostrar ao dono o que o site gerou — e renovação depende disso.
