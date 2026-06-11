@@ -6,6 +6,7 @@ import { Carousel } from "@/components/ui/carousel";
 import { buttonClasses } from "@/components/ui/button";
 import { ClockIcon, MapPinIcon, WhatsappIcon } from "@/components/ui/icons";
 import { formatUnitAddress, hasMatrizUnit } from "@/lib/format";
+import { genericMessage, waUrl } from "@/lib/whatsapp";
 import { storeConfig } from "@/config/theme.config";
 import type {
   SiteImageRow,
@@ -154,7 +155,7 @@ export function StoreSection({
                       {/* Só aparece se a unidade tem WhatsApp próprio. */}
                       {unit.whatsapp && (
                         <a
-                          href={`https://wa.me/${unit.whatsapp}`}
+                          href={waUrl(unit.whatsapp, genericMessage())}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={buttonClasses("whatsapp", "sm")}
@@ -223,7 +224,10 @@ export function StoreSection({
                     </a>
                   )}
                   <a
-                    href={`https://wa.me/${settings.whatsapp ?? storeConfig.whatsapp}`}
+                    href={waUrl(
+                      settings.whatsapp ?? storeConfig.whatsapp,
+                      genericMessage(),
+                    )}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={buttonClasses("whatsapp", "md")}

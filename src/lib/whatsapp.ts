@@ -6,8 +6,14 @@ import type { CartItem } from "@/lib/cart/store";
  * Mensagens prontas de WhatsApp (TEXTO cru). Quem escolhe o NÚMERO é o
  * <WhatsappCta>: a unidade que o cliente selecionar, ou o número geral
  * configurado no admin (com o white-label como reserva). Não monte links
- * wa.me por fora — sempre passe por ele.
+ * wa.me por fora — sempre passe por ele (ou, quando o número já é fixo,
+ * use waUrl para o link sempre sair com mensagem).
  */
+
+/** Link wa.me com a mensagem encodada — nunca abra conversa sem texto. */
+export function waUrl(phone: string, message: string): string {
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
 
 /** Resumo do pedido do carrinho (fechamento 100% no WhatsApp). */
 export function cartMessage(items: CartItem[], totalCents: number): string {

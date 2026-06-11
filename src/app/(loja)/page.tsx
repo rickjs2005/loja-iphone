@@ -24,8 +24,6 @@ const LINE_SUBTITLES: Record<ProductCategory, string> = {
     "Modelos disponíveis para entrega imediata. Finalize pelo WhatsApp em segundos.",
   macbook: "Desempenho para trabalhar e criar, com a garantia da loja.",
   ipad: "Tela grande para estudar, criar e assistir onde quiser.",
-  watch: "O complemento perfeito do seu iPhone, no seu pulso.",
-  airpods: "Som imersivo com pareamento instantâneo.",
   accessory: "",
 };
 

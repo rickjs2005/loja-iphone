@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, m } from "framer-motion";
 import { MapPinIcon, WhatsappIcon, XIcon } from "@/components/ui/icons";
 import { focusRing } from "@/components/ui/button";
 import { storeConfig } from "@/config/theme.config";
+import { waUrl } from "@/lib/whatsapp";
 import {
   useAttendingUnits,
   useDefaultWhatsapp,
   type AttendingUnit,
 } from "@/components/whatsapp/units-context";
-
-const waUrl = (phone: string, message: string) =>
-  `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
 /**
  * CTA de WhatsApp ciente das unidades: com 2+ lojas atendendo, pergunta ao
@@ -101,7 +100,11 @@ function UnitPicker({
     };
   }, [onClose]);
 
-  return (
+  // Portal no <body>: o CTA pode estar dentro de seções animadas (Reveal/
+  // Framer aplica transform), e transform em ancestral faz `position: fixed`
+  // ancorar na seção em vez da viewport — o modal renderizava cortado, sem o
+  // botão de fechar, com o scroll da página travado (usuário preso na tela).
+  return createPortal(
     <m.div
       role="dialog"
       aria-modal="true"
@@ -171,6 +174,7 @@ function UnitPicker({
           ))}
         </ul>
       </m.div>
-    </m.div>
+    </m.div>,
+    document.body,
   );
 }

@@ -14,7 +14,7 @@ export function DeliverySection({ images }: { images: SiteImageRow[] }) {
         <Reveal>
           <SectionHeading
             eyebrow="Entrega"
-            title="Como entregamos"
+            title="Entregas realizadas"
             subtitle="Do nosso balcão até a sua mão — com rastreio para todo o Brasil."
           />
         </Reveal>

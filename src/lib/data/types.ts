@@ -5,17 +5,15 @@ export type ProductWithImages = ProductRow & {
   images: ProductImageRow[];
 };
 
-export type ProductCategory =
-  | "iphone"
-  | "macbook"
-  | "ipad"
-  | "watch"
-  | "airpods"
-  | "accessory";
+export type ProductCategory = "iphone" | "macbook" | "ipad" | "accessory";
 export type AccessoryCategory = "carregadores" | "capas" | "audio" | "outros";
 export type Condition = "novo" | "vitrine" | "excelente" | "bom";
 
-/** Linhas de produto Apple (valor no banco + rótulos na UI). */
+/**
+ * Linhas de produto Apple (valor no banco + rótulos na UI).
+ * Apple Watch e AirPods não têm linha própria: entram como acessórios
+ * (subcategoria) e aparecem no filtro da vitrine de acessórios.
+ */
 export const CATEGORIES: {
   value: ProductCategory;
   label: string;
@@ -24,8 +22,6 @@ export const CATEGORIES: {
   { value: "iphone", label: "iPhone", plural: "iPhones" },
   { value: "macbook", label: "MacBook", plural: "MacBooks" },
   { value: "ipad", label: "iPad", plural: "iPads" },
-  { value: "watch", label: "Apple Watch", plural: "Apple Watch" },
-  { value: "airpods", label: "AirPods", plural: "AirPods" },
   { value: "accessory", label: "Acessório", plural: "Acessórios" },
 ];
 

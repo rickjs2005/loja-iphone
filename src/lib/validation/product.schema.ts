@@ -40,7 +40,7 @@ export const productSchema = z.object({
     .optional()
     .transform((v) => v ?? 12),
   category: z
-    .enum(["iphone", "macbook", "ipad", "watch", "airpods", "accessory"])
+    .enum(["iphone", "macbook", "ipad", "accessory"])
     .default("iphone"),
   accessory_category: z.preprocess(
     emptyToUndefined,
