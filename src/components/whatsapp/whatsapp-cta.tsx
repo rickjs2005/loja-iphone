@@ -7,6 +7,7 @@ import { focusRing } from "@/components/ui/button";
 import { storeConfig } from "@/config/theme.config";
 import {
   useAttendingUnits,
+  useDefaultWhatsapp,
   type AttendingUnit,
 } from "@/components/whatsapp/units-context";
 
@@ -32,11 +33,13 @@ export function WhatsappCta({
   ariaLabel?: string;
 }) {
   const units = useAttendingUnits();
+  const defaultPhone = useDefaultWhatsapp();
   const [open, setOpen] = useState(false);
 
-  // 0 unidades com número → WhatsApp geral; 1 → direto nela; 2+ → escolher.
+  // 0 unidades com número → WhatsApp geral (admin > white-label);
+  // 1 → direto nela; 2+ → o cliente escolhe.
   if (units.length < 2) {
-    const phone = units[0]?.whatsapp ?? storeConfig.whatsapp;
+    const phone = units[0]?.whatsapp || defaultPhone || storeConfig.whatsapp;
     return (
       <a
         href={waUrl(phone, message)}

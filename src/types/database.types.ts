@@ -78,6 +78,7 @@ export type Database = {
           street: string | null;
           number: string | null;
           reference: string | null;
+          whatsapp: string | null;
           hours: string | null;
           maps_url: string | null;
           payment_methods: string | null;
@@ -92,6 +93,7 @@ export type Database = {
           street?: string | null;
           number?: string | null;
           reference?: string | null;
+          whatsapp?: string | null;
           hours?: string | null;
           maps_url?: string | null;
           payment_methods?: string | null;
@@ -106,6 +108,7 @@ export type Database = {
           street?: string | null;
           number?: string | null;
           reference?: string | null;
+          whatsapp?: string | null;
           hours?: string | null;
           maps_url?: string | null;
           payment_methods?: string | null;

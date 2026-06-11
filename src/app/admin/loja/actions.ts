@@ -62,6 +62,7 @@ export async function saveSettingsAction(
     street: formData.get("street"),
     number: formData.get("number"),
     reference: formData.get("reference"),
+    whatsapp: formData.get("whatsapp"),
     hours: formData.get("hours"),
     maps_url: formData.get("maps_url"),
     payment_methods: formData.get("payment_methods"),

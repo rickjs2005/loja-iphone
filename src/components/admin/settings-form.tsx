@@ -50,6 +50,24 @@ export function SettingsForm({
         </p>
       )}
 
+      <div>
+        <Label htmlFor="whatsapp">WhatsApp da loja</Label>
+        <Input
+          id="whatsapp"
+          name="whatsapp"
+          inputMode="numeric"
+          defaultValue={v?.whatsapp ?? settings.whatsapp ?? ""}
+          placeholder="5533999999999"
+        />
+        <FormHelp>
+          Só dígitos, com DDI. É o número dos botões do site
+          {hasUnits
+            ? " quando a unidade não tem número próprio."
+            : "."}
+        </FormHelp>
+        <FieldError>{err.whatsapp?.[0]}</FieldError>
+      </div>
+
       {/* Endereço estruturado — mesmo formato do cadastro de unidades. */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>

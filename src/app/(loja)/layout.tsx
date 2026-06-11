@@ -8,8 +8,10 @@ import { MotionProvider } from "@/components/visual/motion-provider";
 import { UnitsProvider } from "@/components/whatsapp/units-context";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { getUpsellAccessories } from "@/lib/data/products";
+import { getStoreSettings } from "@/lib/data/site";
 import { getUnits } from "@/lib/data/units";
 import { coverImage } from "@/lib/data/types";
+import { storeConfig } from "@/config/theme.config";
 
 /** Layout das rotas públicas: cabeçalho + conteúdo + rodapé. */
 export default async function LojaLayout({
@@ -19,10 +21,11 @@ export default async function LojaLayout({
 }) {
   const demo = !isSupabaseConfigured();
 
-  // Buscas independentes em paralelo (getUnits é deduplicado via React.cache).
-  const [accessories, units] = await Promise.all([
+  // Buscas independentes em paralelo (todas deduplicadas via React.cache).
+  const [accessories, units, settings] = await Promise.all([
     getUpsellAccessories(),
     getUnits(),
+    getStoreSettings(),
   ]);
 
   // Acessórios em estoque para o upsell no carrinho (query já filtrada e
@@ -49,7 +52,11 @@ export default async function LojaLayout({
 
   return (
     <MotionProvider>
-      <UnitsProvider units={attendingUnits}>
+      <UnitsProvider
+        units={attendingUnits}
+        // Número geral: o do admin manda; o do white-label é só reserva.
+        defaultPhone={settings.whatsapp ?? storeConfig.whatsapp}
+      >
         <AuroraBackground />
         <MouseSpotlight />
         {demo && (

@@ -200,7 +200,7 @@ export function StoreSection({
                     </a>
                   )}
                   <a
-                    href={`https://wa.me/${storeConfig.whatsapp}`}
+                    href={`https://wa.me/${settings.whatsapp ?? storeConfig.whatsapp}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={buttonClasses("whatsapp", "md")}

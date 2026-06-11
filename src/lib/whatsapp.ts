@@ -3,14 +3,11 @@ import { formatCents } from "@/lib/format";
 import type { CartItem } from "@/lib/cart/store";
 
 /**
- * Mensagens prontas de WhatsApp. As funções *Message retornam o TEXTO cru
- * (o <WhatsappCta> escolhe o número — da unidade que o cliente selecionar
- * ou o geral); as *Url montam o link completo com o número geral, para os
- * pontos que não passam pelo seletor de unidade.
+ * Mensagens prontas de WhatsApp (TEXTO cru). Quem escolhe o NÚMERO é o
+ * <WhatsappCta>: a unidade que o cliente selecionar, ou o número geral
+ * configurado no admin (com o white-label como reserva). Não monte links
+ * wa.me por fora — sempre passe por ele.
  */
-
-const waUrl = (message: string, phone = storeConfig.whatsapp) =>
-  `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
 /** Resumo do pedido do carrinho (fechamento 100% no WhatsApp). */
 export function cartMessage(items: CartItem[], totalCents: number): string {
@@ -30,17 +27,9 @@ export function cartMessage(items: CartItem[], totalCents: number): string {
   ].join("\n");
 }
 
-export function buildWhatsappUrl(items: CartItem[], totalCents: number): string {
-  return waUrl(cartMessage(items, totalCents));
-}
-
 /** Dúvida sobre um produto específico. */
 export function productInquiryMessage(productName: string): string {
   return `Olá, ${storeConfig.name}! Tenho interesse no ${productName}. Está disponível?`;
-}
-
-export function buildProductInquiryUrl(productName: string): string {
-  return waUrl(productInquiryMessage(productName));
 }
 
 /** Trade-in: fluxo de avaliação do aparelho usado. */
@@ -53,10 +42,6 @@ export function tradeInMessage(): string {
     "",
     "Vou mandar as fotos em seguida. Quanto ele vale de crédito?",
   ].join("\n");
-}
-
-export function buildTradeInUrl(): string {
-  return waUrl(tradeInMessage());
 }
 
 /** Abordagem genérica (header/footer). */
@@ -86,13 +71,4 @@ export function buyNowMessage(product: {
     "",
     "Pode me ajudar a finalizar?",
   ].join("\n");
-}
-
-export function buildBuyNowUrl(product: {
-  id: string;
-  name: string;
-  priceCents: number;
-  quantity?: number;
-}): string {
-  return waUrl(buyNowMessage(product));
 }
