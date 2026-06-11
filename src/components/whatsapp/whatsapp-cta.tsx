@@ -140,14 +140,16 @@ function UnitPicker({
           </button>
         </div>
 
-        <ul className="flex flex-col gap-2">
-          {units.map((unit) => (
+        {/* Scroll interno: redes com muitas lojas não estouram a tela. */}
+        <ul className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto">
+          {units.map((unit, i) => (
             <li key={unit.id}>
               <a
                 href={waUrl(unit.whatsapp, message)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={onClose}
+                autoFocus={i === 0}
                 className={`flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition-colors hover:border-white/30 hover:bg-white/[0.06] ${focusRing}`}
               >
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-fg">

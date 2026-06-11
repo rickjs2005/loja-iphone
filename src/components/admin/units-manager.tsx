@@ -318,6 +318,14 @@ export function UnitsManager({ units }: { units: UnitRow[] }) {
         </ul>
       )}
 
+      {units.length > 0 && (
+        <p className="mt-4 text-xs text-zinc-500">
+          Dica: se a matriz também guarda estoque, cadastre-a aqui como uma
+          unidade chamada &quot;Matriz&quot; — ela entra no estoque por
+          unidade e substitui o card automático do site.
+        </p>
+      )}
+
       {/* Criação: colapsada atrás do botão; aberta, ganha título e Cancelar. */}
       {adding ? (
         <div className={units.length > 0 ? "mt-6 border-t border-zinc-800 pt-5" : ""}>

@@ -4,6 +4,15 @@
  */
 
 /**
+ * A loja cadastrou uma unidade chamada "Matriz"? Então ela assume o papel
+ * (com estoque próprio e tudo) e o card automático das Informações da loja
+ * sai de cena — sem isso o site mostraria duas "Matriz".
+ */
+export function hasMatrizUnit(units: { name: string }[]): boolean {
+  return units.some((u) => u.name.trim().toLowerCase() === "matriz");
+}
+
+/**
  * Endereço da unidade a partir dos campos estruturados (todos opcionais):
  * "Rua X, 123 — Bairro · Cidade". Sem nenhum campo novo preenchido, cai no
  * `address` livre legado. Retorna null quando não há nada a exibir.

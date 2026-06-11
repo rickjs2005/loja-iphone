@@ -43,10 +43,13 @@ export function SettingsForm({
     >
       {hasUnits && (
         <p className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2 text-xs text-amber-300/90">
-          Você tem unidades cadastradas: no site valem os endereços de cada
-          unidade (o endereço abaixo fica guardado, sem aparecer). Já o
-          horário abaixo vira o horário geral — vale para toda unidade que
-          não tiver um horário próprio.
+          Você tem unidades cadastradas: no site valem os endereços e
+          WhatsApps de cada unidade (os campos abaixo viram a &quot;Matriz&quot;
+          e o número reserva). O horário abaixo é o geral — vale para
+          unidades sem horário próprio. E o estoque dos produtos passa a ser
+          informado por unidade: se a matriz também guarda estoque, cadastre
+          uma unidade chamada &quot;Matriz&quot; (ela substitui o card
+          automático do site).
         </p>
       )}
 

@@ -11,6 +11,7 @@ import { getUpsellAccessories } from "@/lib/data/products";
 import { getStoreSettings } from "@/lib/data/site";
 import { getUnits } from "@/lib/data/units";
 import { coverImage } from "@/lib/data/types";
+import { hasMatrizUnit } from "@/lib/format";
 import { storeConfig } from "@/config/theme.config";
 
 /** Layout das rotas públicas: cabeçalho + conteúdo + rodapé. */
@@ -51,7 +52,7 @@ export default async function LojaLayout({
       whatsapp: u.whatsapp as string,
     }));
   const attendingUnits =
-    settings.whatsapp && unidadesAtendentes.length > 0
+    settings.whatsapp && unidadesAtendentes.length > 0 && !hasMatrizUnit(units)
       ? [
           {
             id: "matriz",

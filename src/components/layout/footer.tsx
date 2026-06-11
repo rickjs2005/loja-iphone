@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/container";
 import { InstagramIcon, WhatsappIcon } from "@/components/ui/icons";
 import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
 import { genericMessage } from "@/lib/whatsapp";
-import { formatUnitAddress } from "@/lib/format";
+import { formatUnitAddress, hasMatrizUnit } from "@/lib/format";
 import { storeConfig } from "@/config/theme.config";
 import { getStoreSettings } from "@/lib/data/site";
 import { getUnits } from "@/lib/data/units";
@@ -103,7 +103,7 @@ export async function Footer() {
                 toda parte; exceções aparecem no card da unidade na home). */}
             {units.length > 0 ? (
               <>
-                {formatUnitAddress(settings) && (
+                {formatUnitAddress(settings) && !hasMatrizUnit(units) && (
                   <li>
                     <p className="text-sm text-fg">Matriz</p>
                     <p className="text-xs text-muted">

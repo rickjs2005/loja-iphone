@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { Carousel } from "@/components/ui/carousel";
 import { buttonClasses } from "@/components/ui/button";
 import { ClockIcon, MapPinIcon, WhatsappIcon } from "@/components/ui/icons";
-import { formatUnitAddress } from "@/lib/format";
+import { formatUnitAddress, hasMatrizUnit } from "@/lib/format";
 import { storeConfig } from "@/config/theme.config";
 import type {
   SiteImageRow,
@@ -45,7 +45,7 @@ export function StoreSection({
   // Com unidades cadastradas, a MATRIZ (Informações da loja) também vira um
   // card — ela é uma loja como as outras, não some da vitrine.
   const matriz: UnitRow | null =
-    hasUnits && (enderecoLoja || settings.whatsapp)
+    hasUnits && (enderecoLoja || settings.whatsapp) && !hasMatrizUnit(units)
       ? {
           id: "matriz",
           name: "Matriz",
