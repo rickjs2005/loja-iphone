@@ -13,6 +13,7 @@ import { getProductById, getRelatedProducts } from "@/lib/data/products";
 import { getStoreSettings } from "@/lib/data/site";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
+import { jsonLdHtml } from "@/lib/seo";
 import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
 import { productInquiryMessage } from "@/lib/whatsapp";
 import { storeConfig } from "@/config/theme.config";
@@ -120,7 +121,7 @@ export default async function ProdutoPage({ params }: Props) {
     <Container className="py-8 pb-28 sm:py-12 lg:pb-12">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
       <Link
         href="/"

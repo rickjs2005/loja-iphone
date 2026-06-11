@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeInjector } from "@/components/theme/theme-injector";
 import { storeConfig } from "@/config/theme.config";
+import { jsonLdHtml } from "@/lib/seo";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -71,7 +72,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationJsonLd),
+            __html: jsonLdHtml(organizationJsonLd),
           }}
         />
       </head>

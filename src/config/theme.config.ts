@@ -61,7 +61,10 @@ export const storeConfig: StoreConfig = {
     "Os melhores iPhones da região, com garantia e procedência.",
   ),
   logoUrl: v(process.env.NEXT_PUBLIC_STORE_LOGO_URL, "/logo.svg"),
-  whatsapp: v(process.env.NEXT_PUBLIC_STORE_WHATSAPP, "5533999999999"),
+  // SEM número de exemplo no fallback: loja real nunca pode mandar venda para
+  // um número morto. Use no .env o MESMO número da matriz (Informações da
+  // loja); se a env var faltar, vale o número salvo no admin.
+  whatsapp: v(process.env.NEXT_PUBLIC_STORE_WHATSAPP, ""),
   social: {
     instagram: v(process.env.NEXT_PUBLIC_STORE_INSTAGRAM, ""),
     facebook: v(process.env.NEXT_PUBLIC_STORE_FACEBOOK, ""),
