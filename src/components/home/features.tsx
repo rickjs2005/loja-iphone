@@ -8,30 +8,21 @@ import {
   ShieldIcon,
 } from "@/components/ui/icons";
 import { storeConfig } from "@/config/theme.config";
+import { copy, withStoreName } from "@/config/copy";
 import type { ReactNode } from "react";
 
-const FEATURES: { icon: ReactNode; title: string; text: string }[] = [
-  {
-    icon: <HeadsetIcon className="size-6" />,
-    title: "Especialistas",
-    text: "Time que respira Apple, do primeiro oi à pós-venda.",
-  },
-  {
-    icon: <ShieldIcon className="size-6" />,
-    title: "Compra segura",
-    text: "Aparelhos testados, com garantia e procedência.",
-  },
-  {
-    icon: <CheckIcon className="size-6" />,
-    title: "Pós-venda",
-    text: "Suporte completo depois da compra, sem sumir.",
-  },
-  {
-    icon: <BagIcon className="size-6" />,
-    title: "Loja física",
-    text: "Endereço real para visitar, conferir e retirar.",
-  },
+// Ícones na MESMA ordem dos textos em copy.features.items.
+const ICONS: ReactNode[] = [
+  <HeadsetIcon key="h" className="size-6" />,
+  <ShieldIcon key="s" className="size-6" />,
+  <CheckIcon key="c" className="size-6" />,
+  <BagIcon key="b" className="size-6" />,
 ];
+
+const FEATURES = copy.features.items.map((item, i) => ({
+  ...item,
+  icon: ICONS[i],
+}));
 
 /** Bloco "por que comprar aqui" — reforça confiança e valor. */
 export function Features() {
@@ -40,9 +31,9 @@ export function Features() {
       <Container>
         <Reveal>
           <SectionHeading
-            eyebrow="A loja"
-            title={`Por que comprar na ${storeConfig.name}`}
-            subtitle="Confiança não se promete, se entrega."
+            eyebrow={copy.features.eyebrow}
+            title={withStoreName(copy.features.title, storeConfig.name)}
+            subtitle={copy.features.subtitle}
           />
         </Reveal>
 

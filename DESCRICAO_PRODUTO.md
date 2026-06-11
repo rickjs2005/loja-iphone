@@ -43,9 +43,9 @@ demonstração comercial sem custo.
 1. **Hero** com vídeo de iPhone, headline e CTAs
 2. Faixa de confiança (garantia, procedência, parcelamento)
 3. Destaque visual do aparelho
-4. **Cards de linha Apple** (iPhone, MacBook, iPad, Apple Watch, AirPods,
-   Acessórios) — cada card só aparece quando a linha tem produto ativo, e
-   leva à seção correspondente
+4. **Cards de linha Apple** (iPhone, MacBook, iPad, Acessórios) — cada card
+   só aparece quando a linha tem produto ativo, e leva à seção
+   correspondente (Watch e AirPods entram como acessórios, no filtro)
 5. **Uma seção de catálogo por linha** — grade de produtos com foto, preço,
    parcelamento (ex.: "12x de R$ 291,59"), saúde da bateria e condição no
    card; aparelho lacrado ganha badge **"Novo"** monocromático
@@ -55,7 +55,7 @@ demonstração comercial sem custo.
 8. **"Nossa loja"** — endereço, horário, link do Google Maps e carrossel de
    fotos reais do ponto físico, com legenda opcional por foto (tudo editável
    no admin)
-9. **"Como entregamos"** — carrossel de fotos de entregas/clientes, com
+9. **"Entregas realizadas"** — carrossel de fotos de entregas/clientes, com
    legenda opcional (editável no admin)
 
 **Página de produto** (`/produtos/[id]`) — cada aparelho tem URL própria com:
@@ -66,9 +66,8 @@ demonstração comercial sem custo.
 - Badge de estoque honesto: "Disponível", **"Últimas N unidades"** (estoque ≤ 3)
   ou "Esgotado" (esgotado desabilita compra)
 - Formas de pagamento aceitas (texto editável no admin)
-- **CTA primário "Comprar pelo WhatsApp"**: abre o WhatsApp do dono com
-  mensagem pronta contendo nome do aparelho, preço e o link do produto
-- Secundário: adicionar ao carrinho / tirar dúvida no WhatsApp
+- **CTA "Adicionar ao carrinho"** (no mobile, barra fixa estilo app): a
+  compra fecha sempre pelo carrinho, no botão "Finalizar no WhatsApp"
 - Produtos relacionados da mesma categoria
 
 **Carrinho** (`/carrinho` + drawer lateral) — para compra de mais de um item:
@@ -84,8 +83,9 @@ footer com redes sociais da loja.
 
 ```
 Instagram (link na bio) → Home → página do iPhone (preço, 12x, bateria, fotos)
-   → "Comprar pelo WhatsApp" → chat do dono com mensagem pronta → venda fecha
-     no WhatsApp como hoje (Pix, cartão, retirada, entrega — combinados lá)
+   → "Adicionar ao carrinho" → "Finalizar no WhatsApp" → chat do dono com a
+     mensagem pronta → venda fecha no WhatsApp como hoje (Pix, cartão,
+     retirada, entrega — combinados lá)
 ```
 
 O site **não processa pagamento nem cria "pedidos"** — ele qualifica e
@@ -99,10 +99,10 @@ força bruta). Funciona bem em celular (campos sem zoom forçado no iOS).
 
 **Produtos** (`/admin/produtos`):
 - Dashboard rápido: produtos ativos, estoque total, itens sem estoque
-- Lista com abas por linha (Todos / iPhones / MacBooks / iPads / Apple Watch /
-  AirPods / Acessórios — só as com produto), toggle ativo/inativo (otimista),
+- Lista com abas por linha (Todos / iPhones / MacBooks / iPads /
+  Acessórios — só as com produto), toggle ativo/inativo (otimista),
   edição e exclusão com confirmação
-- **Criar produto**: linha Apple (iPhone, MacBook, iPad, Watch, AirPods ou
+- **Criar produto**: linha Apple (iPhone, MacBook, iPad ou
   acessório), nome, descrição, **preço com máscara de moeda** (digita e
   vê "R$ 2.000,00"), estoque, parcelas, e por tipo: saúde da bateria +
   condição (aparelhos) ou categoria do acessório. **Upload de fotos na própria
@@ -114,7 +114,7 @@ força bruta). Funciona bem em celular (campos sem zoom forçado no iOS).
 **Conteúdo da loja** (`/admin/loja`):
 - Endereço, horário de funcionamento, formas de pagamento, link do Google
   Maps, texto da garantia
-- Upload das fotos das seções "Nossa loja" e "Como entregamos", com legenda
+- Upload das fotos das seções "Nossa loja" e "Entregas realizadas", com legenda
   opcional por foto
 
 **Robustez** (trabalhada recentemente): formulários não perdem o que foi
@@ -142,10 +142,10 @@ erro/404 tematizadas, validação de imagem (formato/tamanho) antes do upload.
 ## Estado honesto: pronto × parcial × inexistente
 
 **Pronto e funcionando:**
-- Catálogo completo por linha Apple (iPhones, MacBooks, iPads, Apple Watch,
-  AirPods e acessórios) com preço, parcelas, bateria, condição (incl. "Novo"
-  lacrado com badge) e cards de navegação por linha na home
-- Página por produto com galeria, SEO e compra via WhatsApp com mensagem pronta
+- Catálogo completo por linha Apple (iPhones, MacBooks, iPads e
+  acessórios — Watch/AirPods entram como acessórios) com preço, parcelas,
+  bateria, condição (incl. "Novo" lacrado com badge) e cards de navegação
+- Página por produto com galeria e SEO; compra fecha pelo carrinho no WhatsApp
 - Carrinho multi-item com checkout WhatsApp
 - Admin CRUD completo de produtos com upload de fotos (criação e edição)
 - Conteúdo institucional editável (endereço/horário/pagamentos/maps/fotos)
@@ -202,8 +202,8 @@ sabendo o valor — quem chama é quem quer comprar.
 **Dor 2 — Catálogo enterrado no feed.**
 O iPhone 13 postado há 3 semanas está 40 posts pra baixo; o cliente não acha,
 e estoque vendido continua aparecendo no feed.
-→ *Feature:* **grade organizada por linha (iPhones, MacBooks, iPads, Watch,
-AirPods, acessórios)**, cada aparelho com
+→ *Feature:* **grade organizada por linha (iPhones, MacBooks, iPads,
+acessórios)**, cada aparelho com
 página própria (todas as fotos, bateria %, condição, estoque). Vendeu? O dono
 desativa no admin pelo celular e o aparelho **some do site na hora** — sem
 apagar post, sem repostar.
@@ -217,9 +217,9 @@ WhatsApp vira fechamento, não triagem.
 **Dor 4 — Fricção entre o interesse e a mensagem.**
 Hoje o caminho é: ver post → ir na bio → abrir WhatsApp → escrever "oi, vi o
 iPhone 13 de vocês..." — e muita gente desiste no meio.
-→ *Feature:* botão **"Comprar pelo WhatsApp"** em cada aparelho que abre o
-chat do dono **com a mensagem pronta**: nome do aparelho, preço e link. Um
-toque. E o vendedor recebe exatamente qual produto é, sem adivinhar.
+→ *Feature:* carrinho com **"Finalizar no WhatsApp"** que abre o chat do
+dono **com a mensagem pronta**: itens, quantidades e total. Poucos toques.
+E o vendedor recebe exatamente quais produtos são, sem adivinhar.
 
 **Dor 5 — Invisível fora do Instagram.**
 Quem pesquisa "iPhone seminovo Manhuaçu" no Google não encontra a loja —

@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { storeConfig } from "@/config/theme.config";
+import { copy } from "@/config/copy";
 import type { SiteImageRow } from "@/types/database.types";
 
 /**
@@ -20,8 +21,8 @@ export function InstagramSection({ images }: { images: SiteImageRow[] }) {
         <Reveal>
           <SectionHeading
             align="left"
-            eyebrow="Instagram"
-            title="Acompanhe nosso Instagram"
+            eyebrow={copy.instagram.eyebrow}
+            title={copy.instagram.title}
             action={
               <a
                 href={instagram}

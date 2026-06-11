@@ -54,10 +54,6 @@ export function isNew(p: Pick<ProductRow, "condition">): boolean {
   return p.condition === "novo";
 }
 
-export function accessoryCategoryLabel(value: string | null): string {
-  return ACCESSORY_CATEGORIES.find((c) => c.value === value)?.label ?? "Acessório";
-}
-
 export function conditionLabel(value: string | null): string | null {
   return CONDITIONS.find((c) => c.value === value)?.label ?? null;
 }
@@ -71,6 +67,3 @@ export function coverImage(product: ProductWithImages): ProductImageRow | null {
   return product.images[0] ?? null;
 }
 
-export function isInStock(product: Pick<ProductRow, "stock">): boolean {
-  return product.stock > 0;
-}

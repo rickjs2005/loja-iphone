@@ -39,16 +39,26 @@ export const storeConfig = {
 };
 ```
 
-### 2. Troque o logo
+### 2. Ajuste os textos em `src/config/copy.ts` (opcional)
 
-Substitua `public/logo.svg` (ou aponte `logoUrl` para outro arquivo em
-`/public`, ex.: `/logo.png`).
+Todos os títulos, frases e CTAs da vitrine (hero, "por que comprar",
+trade-in, seções da home, benefícios do produto) moram em **um arquivo só**.
+Quer um hero diferente para um cliente? Edita uma linha, sem tocar em
+componente.
 
-### 3. Cadastre os produtos
+### 3. Troque o logo e o vídeo do hero
+
+Substitua `public/logo.svg` e `public/hero-v4.mp4` (ou aponte `logoUrl` para
+outro arquivo em `/public`, ex.: `/logo.png`).
+
+### 4. Cadastre os produtos
 
 No painel admin (`/admin`) ou rodando o `supabase/seed.sql`.
 
 **Pronto.** Nenhum componente precisa ser editado.
+
+> 📋 Roteiro completo de provisionamento (banco novo, admin, deploy,
+> conferência final): [`docs/NOVA-LOJA.md`](./docs/NOVA-LOJA.md).
 
 ### Revenda (1 código, várias lojas)
 
@@ -132,7 +142,8 @@ src/
     (loja)/                # rotas públicas (home, produtos, carrinho)
     admin/                 # login + CRUD protegido
   components/              # componentes reutilizáveis (sem queries)
-  config/theme.config.ts   # 👈 personalização white-label
+  config/theme.config.ts   # 👈 personalização: cores, contatos, redes
+  config/copy.ts           # 👈 personalização: textos da vitrine
   lib/
     data/                  # ÚNICA camada que fala com o Supabase
     supabase/              # clients (server, client, middleware)
@@ -149,6 +160,10 @@ supabase/
 - **Preços em centavos** (inteiro) no banco; `formatCents()` formata só na UI.
 - **Nenhum componente** importa o Supabase direto — tudo passa por `lib/data/`.
 - **Mutações** só via Server Actions com validação Zod.
+- **Texto de marketing** mora em `config/copy.ts`; componente não tem frase
+  de marca hardcoded (rótulos de UI, como "Adicionar ao carrinho", podem).
+- **Número de WhatsApp** sempre passa por `lib/phone.ts` (normalização) e
+  links saem por `waUrl()`/`<WhatsappCta>` — nunca monte `wa.me` na mão.
 
 ## Regenerar os types do banco
 

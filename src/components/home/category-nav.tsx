@@ -3,6 +3,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ProductImage } from "@/components/product/product-image";
 import { CATEGORIES, type ProductWithImages } from "@/lib/data/types";
+import { copy } from "@/config/copy";
 
 /**
  * Cards das linhas Apple (iPhone, MacBook, iPad...) com foto de capa — a capa
@@ -26,8 +27,8 @@ export function CategoryNav({ products }: { products: ProductWithImages[] }) {
       <Container>
         <SectionHeading
           align="left"
-          eyebrow="Navegue"
-          title="Nossas categorias"
+          eyebrow={copy.categoryNav.eyebrow}
+          title={copy.categoryNav.title}
           action={
             <a href="#produtos" className="text-sm text-primary hover:underline">
               Ver todas →

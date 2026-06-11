@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
 import { PhoneIcon } from "@/components/ui/icons";
+import { copy } from "@/config/copy";
 
 // Posições fixas das partículas (determinístico → sem mismatch de hidratação).
 const PARTICLES = [
@@ -110,7 +111,7 @@ export function Hero() {
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-muted backdrop-blur sm:text-sm"
             >
               <span className="size-1.5 animate-pulse rounded-full bg-fg/80" />
-              Pronta entrega · Garantia · Procedência
+              {copy.hero.badge}
             </m.span>
 
             {/* Headline empilhada em 3 linhas — padrão flagship (Apple/Linear) */}
@@ -121,9 +122,15 @@ export function Hero() {
               animate="show"
               className="mt-6 text-[2.6rem] font-extrabold uppercase leading-[0.98] tracking-[-0.05em] sm:text-6xl lg:text-6xl xl:text-7xl"
             >
-              <span className={`block ${silverDrop}`}>Titânio.</span>
-              <span className={`block ${silverDrop}`}>Performance.</span>
-              <span className={`block ${silverBrush}`}>Inteligência.</span>
+              {copy.hero.headline.map((line, i) => (
+                <span
+                  key={line}
+                  // Última linha com o brilho "escovado"; as demais, prata.
+                  className={`block ${i === copy.hero.headline.length - 1 ? silverBrush : silverDrop}`}
+                >
+                  {line}
+                </span>
+              ))}
             </m.h1>
 
             <m.p
@@ -133,8 +140,7 @@ export function Hero() {
               animate="show"
               className="mx-auto mt-6 max-w-xl text-balance text-lg font-normal text-muted sm:text-xl lg:mx-0"
             >
-              iPhones originais com garantia, procedência e o melhor preço da
-              região.
+              {copy.hero.subtitle}
             </m.p>
 
             <m.div
@@ -154,7 +160,7 @@ export function Hero() {
                   "h-14 w-full px-8 text-base sm:w-auto sm:text-lg",
                 )}
               >
-                Ver modelos
+                {copy.hero.ctaPrimary}
               </a>
               <a
                 href="#trocar"
@@ -165,7 +171,7 @@ export function Hero() {
                 )}
               >
                 <PhoneIcon className="size-5" />
-                Trocar meu iPhone
+                {copy.hero.ctaSecondary}
               </a>
             </m.div>
           </div>

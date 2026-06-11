@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { AccessoryCard } from "@/components/product/accessory-card";
 import { ACCESSORY_CATEGORIES, type ProductWithImages } from "@/lib/data/types";
+import { copy } from "@/config/copy";
 import { cn } from "@/lib/cn";
 
 const container = {
@@ -39,9 +40,9 @@ export function AccessoriesSection({
       <Container>
         <SectionHeading
           align="left"
-          eyebrow="Acessórios"
-          title="Complete seu ecossistema"
-          subtitle="Capas, películas, carregadores e áudio para o seu iPhone."
+          eyebrow={copy.accessories.eyebrow}
+          title={copy.accessories.title}
+          subtitle={copy.accessories.subtitle}
         />
 
         {/* Filtro por categoria */}

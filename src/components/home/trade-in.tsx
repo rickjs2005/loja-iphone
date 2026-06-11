@@ -7,15 +7,19 @@ import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
 import { BoltIcon, CheckIcon, WhatsappIcon } from "@/components/ui/icons";
 import { TradeInForm } from "@/components/home/trade-in-form";
+import { copy } from "@/config/copy";
 
-const STEPS: {
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
-  text: string;
-}[] = [
-  { icon: WhatsappIcon, text: "Conte o modelo e a bateria" },
-  { icon: BoltIcon, text: "Receba a avaliação em minutos" },
-  { icon: CheckIcon, text: "Use o crédito na sua compra" },
+// Ícones na MESMA ordem dos textos em copy.tradeIn.steps.
+const STEP_ICONS: ComponentType<SVGProps<SVGSVGElement>>[] = [
+  WhatsappIcon,
+  BoltIcon,
+  CheckIcon,
 ];
+
+const STEPS = copy.tradeIn.steps.map((text, i) => ({
+  text,
+  icon: STEP_ICONS[i],
+}));
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -70,14 +74,13 @@ export function TradeIn() {
               className="text-center lg:text-left"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted">
-                Trocamos
+                {copy.tradeIn.eyebrow}
               </p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-fg sm:text-4xl">
-                Seu iPhone usado vale crédito
+                {copy.tradeIn.title}
               </h2>
               <p className="mx-auto mt-4 max-w-md text-muted lg:mx-0">
-                Seu iPhone atual vale crédito para o próximo. Avalie sem sair
-                de casa.
+                {copy.tradeIn.text}
               </p>
 
               <ul className="mx-auto mt-8 flex max-w-md flex-col gap-4 text-left lg:mx-0">
@@ -101,7 +104,7 @@ export function TradeIn() {
                 )}
               >
                 <WhatsappIcon className="size-5" />
-                Avaliar meu aparelho
+                {copy.tradeIn.cta}
               </button>
             </m.div>
           </div>

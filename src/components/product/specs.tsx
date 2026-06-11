@@ -4,25 +4,20 @@ import {
   ShieldIcon,
   TruckIcon,
 } from "@/components/ui/icons";
+import { copy } from "@/config/copy";
 import type { ReactNode } from "react";
 
-const ITEMS: { icon: ReactNode; title: string; text: string }[] = [
-  {
-    icon: <BoltIcon className="size-5" />,
-    title: "Bateria testada",
-    text: "Saúde da bateria verificada e informada antes da compra.",
-  },
-  {
-    icon: <BadgeCheckIcon className="size-5" />,
-    title: "Procedência (IMEI)",
-    text: "Origem verificada, sem bloqueio e com nota fiscal.",
-  },
-  {
-    icon: <TruckIcon className="size-5" />,
-    title: "Envio para todo Brasil",
-    text: "Enviamos com rastreio para todo o país.",
-  },
+// Ícones na MESMA ordem dos textos em copy.productBenefits.items.
+const ICONS: ReactNode[] = [
+  <BoltIcon key="b" className="size-5" />,
+  <BadgeCheckIcon key="p" className="size-5" />,
+  <TruckIcon key="t" className="size-5" />,
 ];
+
+const ITEMS = copy.productBenefits.items.map((item, i) => ({
+  ...item,
+  icon: ICONS[i],
+}));
 
 /**
  * Bloco de garantias/benefícios na página de produto.
@@ -32,15 +27,17 @@ export function Specs({ warrantyText }: { warrantyText?: string | null }) {
   const items = [
     {
       icon: <ShieldIcon className="size-5" />,
-      title: warrantyText?.trim() || "Garantia da loja",
-      text: "Cobertura contra defeitos. Deu problema, a gente resolve.",
+      title: warrantyText?.trim() || copy.productBenefits.warrantyFallbackTitle,
+      text: copy.productBenefits.warrantyText,
     },
     ...ITEMS,
   ];
 
   return (
     <div>
-      <h2 className="mb-5 text-xl font-bold text-fg">Garantias e benefícios</h2>
+      <h2 className="mb-5 text-xl font-bold text-fg">
+        {copy.productBenefits.heading}
+      </h2>
       <div className="grid gap-4 sm:grid-cols-2">
         {items.map((it) => (
           <div

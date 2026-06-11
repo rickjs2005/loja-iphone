@@ -14,18 +14,11 @@ import { Container } from "@/components/ui/container";
 import { getActiveProducts } from "@/lib/data/products";
 import { getSiteImages, getStoreSettings } from "@/lib/data/site";
 import { getUnits } from "@/lib/data/units";
-import { CATEGORIES, type ProductCategory } from "@/lib/data/types";
+import { CATEGORIES } from "@/lib/data/types";
+import { copy } from "@/config/copy";
 
 // Sempre buscar dados frescos (estoque/preço mudam no admin).
 export const dynamic = "force-dynamic";
-
-const LINE_SUBTITLES: Record<ProductCategory, string> = {
-  iphone:
-    "Modelos disponíveis para entrega imediata. Finalize pelo WhatsApp em segundos.",
-  macbook: "Desempenho para trabalhar e criar, com a garantia da loja.",
-  ipad: "Tela grande para estudar, criar e assistir onde quiser.",
-  accessory: "",
-};
 
 export default async function HomePage() {
   const [products, settings, lojaImgs, entregaImgs, instagramImgs, units] =
@@ -66,9 +59,9 @@ export default async function HomePage() {
               <Reveal>
                 <SectionHeading
                   align="left"
-                  eyebrow="Catálogo"
-                  title={`Destaques ${line.plural}`}
-                  subtitle={LINE_SUBTITLES[line.value]}
+                  eyebrow={copy.catalog.eyebrow}
+                  title={copy.catalog.lineTitle.replace("{linha}", line.plural)}
+                  subtitle={copy.catalog.lineSubtitles[line.value]}
                 />
               </Reveal>
 
@@ -83,8 +76,8 @@ export default async function HomePage() {
             <Container>
               <Reveal>
                 <SectionHeading
-                  title="Nossos produtos"
-                  subtitle="Em breve novos aparelhos por aqui."
+                  title={copy.catalog.emptyTitle}
+                  subtitle={copy.catalog.emptySubtitle}
                 />
               </Reveal>
               <ProductGrid products={[]} />

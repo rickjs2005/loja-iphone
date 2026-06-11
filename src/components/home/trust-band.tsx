@@ -6,33 +6,17 @@ import {
   ShieldIcon,
   TruckIcon,
 } from "@/components/ui/icons";
+import { copy } from "@/config/copy";
 
-const ITEMS: {
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
-  title: string;
-  subtitle: string;
-}[] = [
-  {
-    icon: ShieldIcon,
-    title: "Garantia",
-    subtitle: "Cobertura real em todos os aparelhos",
-  },
-  {
-    icon: BadgeCheckIcon,
-    title: "Procedência",
-    subtitle: "Originais e desbloqueados",
-  },
-  {
-    icon: BoltIcon,
-    title: "Bateria verificada",
-    subtitle: "Testamos todos os aparelhos",
-  },
-  {
-    icon: TruckIcon,
-    title: "Envio rápido",
-    subtitle: "Para todo o Brasil",
-  },
+// Ícones na MESMA ordem dos textos em copy.trustBand.
+const ICONS: ComponentType<SVGProps<SVGSVGElement>>[] = [
+  ShieldIcon,
+  BadgeCheckIcon,
+  BoltIcon,
+  TruckIcon,
 ];
+
+const ITEMS = copy.trustBand.map((item, i) => ({ ...item, icon: ICONS[i] }));
 
 /** Faixa de confiança logo abaixo do hero — 4 mini-cards monocromáticos. */
 export function TrustBand() {

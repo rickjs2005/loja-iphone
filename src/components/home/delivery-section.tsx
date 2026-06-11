@@ -2,6 +2,7 @@ import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Carousel } from "@/components/ui/carousel";
+import { copy } from "@/config/copy";
 import type { SiteImageRow } from "@/types/database.types";
 
 /** "Como entregamos": carrossel mostrando clientes recebendo seus aparelhos. */
@@ -13,9 +14,9 @@ export function DeliverySection({ images }: { images: SiteImageRow[] }) {
       <Container>
         <Reveal>
           <SectionHeading
-            eyebrow="Entrega"
-            title="Entregas realizadas"
-            subtitle="Do nosso balcão até a sua mão — com rastreio para todo o Brasil."
+            eyebrow={copy.delivery.eyebrow}
+            title={copy.delivery.title}
+            subtitle={copy.delivery.subtitle}
           />
         </Reveal>
         <Reveal>
