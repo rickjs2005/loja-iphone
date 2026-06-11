@@ -16,6 +16,8 @@
  * ============================================================================
  */
 
+import { normalizeWhatsapp } from "@/lib/phone";
+
 export type StoreColors = {
   bg: string;
   surface: string;
@@ -63,8 +65,9 @@ export const storeConfig: StoreConfig = {
   logoUrl: v(process.env.NEXT_PUBLIC_STORE_LOGO_URL, "/logo.svg"),
   // SEM número de exemplo no fallback: loja real nunca pode mandar venda para
   // um número morto. Use no .env o MESMO número da matriz (Informações da
-  // loja); se a env var faltar, vale o número salvo no admin.
-  whatsapp: v(process.env.NEXT_PUBLIC_STORE_WHATSAPP, ""),
+  // loja); se a env var faltar, vale o número salvo no admin. O valor é
+  // normalizado (máscara/+55/nono dígito) por normalizeWhatsapp no consumo.
+  whatsapp: normalizeWhatsapp(v(process.env.NEXT_PUBLIC_STORE_WHATSAPP, "")),
   social: {
     instagram: v(process.env.NEXT_PUBLIC_STORE_INSTAGRAM, ""),
     facebook: v(process.env.NEXT_PUBLIC_STORE_FACEBOOK, ""),

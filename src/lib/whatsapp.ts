@@ -1,5 +1,6 @@
 import { storeConfig } from "@/config/theme.config";
 import { formatCents } from "@/lib/format";
+import { normalizeWhatsapp } from "@/lib/phone";
 import type { CartItem } from "@/lib/cart/store";
 
 /**
@@ -10,9 +11,13 @@ import type { CartItem } from "@/lib/cart/store";
  * use waUrl para o link sempre sair com mensagem).
  */
 
-/** Link wa.me com a mensagem encodada — nunca abra conversa sem texto. */
+/**
+ * Link wa.me com a mensagem encodada — nunca abra conversa sem texto.
+ * O número passa pelo normalizeWhatsapp: dados antigos do banco ou env vars
+ * com máscara/espaços não geram link quebrado.
+ */
 export function waUrl(phone: string, message: string): string {
-  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${normalizeWhatsapp(phone)}?text=${encodeURIComponent(message)}`;
 }
 
 /** Resumo do pedido do carrinho (fechamento 100% no WhatsApp). */

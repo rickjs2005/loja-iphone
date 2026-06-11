@@ -11,6 +11,7 @@ import {
   type SiteFormState,
 } from "@/app/admin/loja/actions";
 import { formatUnitAddress } from "@/lib/format";
+import { formatWhatsappDisplay } from "@/lib/phone";
 import type { UnitRow } from "@/types/database.types";
 
 /**
@@ -69,11 +70,14 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
           <Input
             id={`unit-whatsapp-${unit?.id ?? "nova"}`}
             name="whatsapp"
-            inputMode="numeric"
+            inputMode="tel"
             defaultValue={v?.whatsapp ?? unit?.whatsapp ?? ""}
-            placeholder="5533999999999"
+            placeholder="(33) 99983-0475"
           />
-          <FormHelp>Só dígitos, com DDI (ex.: 5533999999999).</FormHelp>
+          <FormHelp>
+            Com DDD — pode digitar com máscara, +55 ou só dígitos; o sistema
+            salva no formato certo.
+          </FormHelp>
           <FieldError>{err.whatsapp?.[0]}</FieldError>
         </div>
       </div>
@@ -298,7 +302,7 @@ export function UnitsManager({
                   )}
                   {unit.whatsapp && (
                     <p className="truncate text-xs text-zinc-500">
-                      WhatsApp: {unit.whatsapp}
+                      WhatsApp: {formatWhatsappDisplay(unit.whatsapp)}
                     </p>
                   )}
                 </div>

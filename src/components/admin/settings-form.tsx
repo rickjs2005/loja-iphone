@@ -56,12 +56,13 @@ export function SettingsForm({
         <Input
           id="whatsapp"
           name="whatsapp"
-          inputMode="numeric"
+          inputMode="tel"
           defaultValue={v?.whatsapp ?? settings.whatsapp ?? ""}
-          placeholder="5533999999999"
+          placeholder="(33) 99983-0475"
         />
         <FormHelp>
-          Só dígitos, com DDI. É o número dos botões do site
+          Com DDD — pode digitar com máscara, +55 ou só dígitos; o sistema
+          salva no formato certo. É o número dos botões do site
           {hasUnits
             ? " quando a unidade não tem número próprio."
             : "."}

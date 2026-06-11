@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { whatsappField } from "@/lib/validation/whatsapp.schema";
 
 // Campos ausentes do FormData chegam como null; vazio e null = "não informado".
 const emptyToUndefined = (v: unknown) =>
@@ -23,14 +24,7 @@ export const unitSchema = z.object({
     z.string().trim().max(200).optional(),
   ),
   hours: z.preprocess(emptyToUndefined, z.string().trim().max(300).optional()),
-  whatsapp: z.preprocess(
-    emptyToUndefined,
-    z
-      .string()
-      .trim()
-      .regex(/^\d{10,15}$/, "Só dígitos, com DDI (ex.: 5533999999999)")
-      .optional(),
-  ),
+  whatsapp: z.preprocess(emptyToUndefined, whatsappField.optional()),
   maps_url: z.preprocess(
     emptyToUndefined,
     z
