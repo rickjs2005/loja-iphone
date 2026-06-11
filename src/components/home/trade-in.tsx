@@ -1,19 +1,18 @@
 "use client";
 
-import type { ComponentType, SVGProps } from "react";
+import { useState, type ComponentType, type SVGProps } from "react";
 import Image from "next/image";
-import { m } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
 import { BoltIcon, CheckIcon, WhatsappIcon } from "@/components/ui/icons";
-import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
-import { tradeInMessage } from "@/lib/whatsapp";
+import { TradeInForm } from "@/components/home/trade-in-form";
 
 const STEPS: {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   text: string;
 }[] = [
-  { icon: WhatsappIcon, text: "Envie fotos pelo WhatsApp" },
+  { icon: WhatsappIcon, text: "Conte o modelo e a bateria" },
   { icon: BoltIcon, text: "Receba a avaliação em minutos" },
   { icon: CheckIcon, text: "Use o crédito na sua compra" },
 ];
@@ -23,6 +22,10 @@ const easeOut = [0.22, 1, 0.36, 1] as const;
 
 /** Seção de trade-in — a principal geradora de leads da home. */
 export function TradeIn() {
+  // O CTA abre o formulário (modelo + bateria) em vez de jogar o cliente
+  // numa conversa em branco: a mensagem chega pronta e o atendimento voa.
+  const [formOpen, setFormOpen] = useState(false);
+
   return (
     <section id="trocar" className="py-16 sm:py-24">
       <Container>
@@ -88,21 +91,26 @@ export function TradeIn() {
                 ))}
               </ul>
 
-              <WhatsappCta
-                message={tradeInMessage()}
+              <button
+                type="button"
+                onClick={() => setFormOpen(true)}
                 className={buttonClasses(
                   "whatsapp",
                   "lg",
-                  "mt-10 h-14 px-8 text-base sm:text-lg",
+                  "mt-10 h-14 w-full px-8 text-base sm:w-auto sm:text-lg",
                 )}
               >
                 <WhatsappIcon className="size-5" />
                 Avaliar meu aparelho
-              </WhatsappCta>
+              </button>
             </m.div>
           </div>
         </div>
       </Container>
+
+      <AnimatePresence>
+        {formOpen && <TradeInForm onClose={() => setFormOpen(false)} />}
+      </AnimatePresence>
     </section>
   );
 }

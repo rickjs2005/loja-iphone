@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button, buttonClasses, focusRing } from "@/components/ui/button";
-import { CartIcon, MinusIcon, PlusIcon, WhatsappIcon } from "@/components/ui/icons";
+import { Button, focusRing } from "@/components/ui/button";
+import { CartIcon, MinusIcon, PlusIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
 import { useCartUI } from "@/lib/cart/ui-store";
-import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
-import { buyNowMessage } from "@/lib/whatsapp";
 
 /** Seletor de quantidade + comprar no WhatsApp + adicionar ao carrinho (PDP). */
 export function PurchasePanel({
@@ -36,6 +34,8 @@ export function PurchasePanel({
     );
   }
 
+  // Um único CTA: adicionar ao carrinho. A compra fecha SEMPRE pelo
+  // carrinho ("Finalizar no WhatsApp") — decisão do dono: sem compra direta.
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-3 sm:flex-row">
@@ -63,31 +63,16 @@ export function PurchasePanel({
           </button>
         </div>
 
-        {/* CTA primário: fecha direto no WhatsApp, sem passar pelo carrinho. */}
-        <WhatsappCta
-          message={buyNowMessage({
-            id: product.productId,
-            name: product.name,
-            priceCents: product.priceCents,
-            quantity: qty,
-          })}
-          className={buttonClasses("whatsapp", "lg", "flex-1")}
+        <Button
+          size="lg"
+          onClick={handleAdd}
+          className="flex-1"
+          aria-live="polite"
         >
-          <WhatsappIcon className="size-5" />
-          Comprar pelo WhatsApp
-        </WhatsappCta>
+          <CartIcon className="size-5" />
+          {added ? "Adicionado ao carrinho!" : "Adicionar ao carrinho"}
+        </Button>
       </div>
-
-      <Button
-        variant="outline"
-        size="lg"
-        onClick={handleAdd}
-        className="w-full"
-        aria-live="polite"
-      >
-        <CartIcon className="size-5" />
-        {added ? "Adicionado ao carrinho!" : "Adicionar ao carrinho"}
-      </Button>
     </div>
   );
 }

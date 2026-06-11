@@ -78,9 +78,10 @@ function PhoneVisual() {
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[92vh] items-center overflow-hidden py-16 lg:py-0">
-      {/* Partículas flutuando */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
+    <section className="relative flex items-center overflow-hidden py-12 sm:py-16 lg:min-h-[92vh] lg:py-0">
+      {/* Partículas flutuando (só em telas grandes: no celular competem com
+          o conteúdo e gastam bateria sem ninguém reparar nelas) */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 max-sm:hidden">
         {PARTICLES.map((p, i) => (
           <m.span
             key={i}
@@ -98,7 +99,7 @@ export function Hero() {
       </div>
 
       <Container className="relative w-full">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-10">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-10">
           {/* Coluna de texto */}
           <div className="text-center lg:text-left">
             <m.span
@@ -141,14 +142,16 @@ export function Hero() {
               variants={fade}
               initial="hidden"
               animate="show"
-              className="mt-10 flex flex-col items-center gap-3 sm:flex-row lg:justify-start"
+              className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row lg:justify-start"
             >
+              {/* Largura cheia no celular: botões empilhados com larguras
+                  diferentes parecem desalinhados (feedback de QA mobile). */}
               <a
                 href="#produtos"
                 className={buttonClasses(
                   "primary",
                   "lg",
-                  "h-14 px-8 text-base sm:text-lg",
+                  "h-14 w-full px-8 text-base sm:w-auto sm:text-lg",
                 )}
               >
                 Ver modelos
@@ -158,7 +161,7 @@ export function Hero() {
                 className={buttonClasses(
                   "outline",
                   "lg",
-                  "h-14 px-8 text-base sm:text-lg",
+                  "h-14 w-full px-8 text-base sm:w-auto sm:text-lg",
                 )}
               >
                 <PhoneIcon className="size-5" />

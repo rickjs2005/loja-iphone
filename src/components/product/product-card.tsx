@@ -5,10 +5,8 @@ import { m, useMotionTemplate, useMotionValue } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
 import { StockBadge } from "@/components/product/stock-badge";
 import { buttonClasses } from "@/components/ui/button";
-import { ShieldIcon, WhatsappIcon } from "@/components/ui/icons";
+import { ShieldIcon } from "@/components/ui/icons";
 import { IphoneRender, colorwayByIndex } from "@/components/visual/iphone-render";
-import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
-import { buyNowMessage } from "@/lib/whatsapp";
 import { formatCents, formatInstallments } from "@/lib/format";
 import {
   coverImage,
@@ -140,21 +138,14 @@ export function ProductCard({
           {product.battery_health ? ` · Bateria ${product.battery_health}%` : ""}
         </div>
 
-        {/* CTA de conversão: direto pro WhatsApp com nome + preço + link */}
+        {/* CTA: abre a página do produto — a compra fecha pelo carrinho. */}
         {product.stock > 0 ? (
-          <WhatsappCta
-            message={buyNowMessage({
-              id: product.id,
-              name: product.name,
-              priceCents: product.price_cents,
-            })}
-            className={buttonClasses("whatsapp", "md", "w-full")}
+          <Link
+            href={`/produtos/${product.id}`}
+            className={buttonClasses("primary", "md", "w-full")}
           >
-            <WhatsappIcon className="size-4" />
-            {/* Rótulo curto no grid estreito de 2 colunas */}
-            <span className="sm:hidden">WhatsApp</span>
-            <span className="hidden sm:inline">Falar no WhatsApp</span>
-          </WhatsappCta>
+            Ver produto
+          </Link>
         ) : (
           <span
             className={buttonClasses(

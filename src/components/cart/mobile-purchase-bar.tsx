@@ -1,14 +1,16 @@
 "use client";
 
-import { Button, buttonClasses, focusRing } from "@/components/ui/button";
-import { CartIcon, WhatsappIcon } from "@/components/ui/icons";
+import { Button } from "@/components/ui/button";
+import { CartIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
 import { useCartUI } from "@/lib/cart/ui-store";
 import { formatCents } from "@/lib/format";
-import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
-import { buyNowMessage } from "@/lib/whatsapp";
 
-/** Barra fixa de compra no rodapé — só no mobile (experiência de app). */
+/**
+ * Barra fixa de compra no rodapé — só no mobile (experiência de app).
+ * Um único CTA: adicionar ao carrinho. A compra fecha SEMPRE pelo carrinho
+ * ("Finalizar no WhatsApp") — decisão do dono: sem botão de compra direta.
+ */
 export function MobilePurchaseBar({
   product,
 }: {
@@ -19,7 +21,7 @@ export function MobilePurchaseBar({
   const esgotado = product.stock <= 0;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-white/10 bg-surface/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pr-20 backdrop-blur-xl lg:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-white/10 bg-surface/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-xl lg:hidden">
       <div className="leading-tight">
         <p className="text-[11px] text-muted">à vista</p>
         <p className="text-lg font-bold text-fg">
@@ -32,33 +34,17 @@ export function MobilePurchaseBar({
           Esgotado
         </Button>
       ) : (
-        <>
-          {/* Secundário: adiciona ao carrinho sem sair da página. */}
-          <button
-            type="button"
-            onClick={() => {
-              addItem(product, 1);
-              openCart();
-            }}
-            aria-label="Adicionar ao carrinho"
-            className={`inline-flex size-13 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-surface/60 text-fg transition-colors hover:bg-surface ${focusRing}`}
-          >
-            <CartIcon className="size-5" />
-          </button>
-
-          {/* Primário: compra direto no WhatsApp. */}
-          <WhatsappCta
-            message={buyNowMessage({
-              id: product.productId,
-              name: product.name,
-              priceCents: product.priceCents,
-            })}
-            className={buttonClasses("whatsapp", "lg", "flex-1")}
-          >
-            <WhatsappIcon className="size-5" />
-            Comprar
-          </WhatsappCta>
-        </>
+        <Button
+          size="lg"
+          className="flex-1 whitespace-nowrap text-[15px]"
+          onClick={() => {
+            addItem(product, 1);
+            openCart();
+          }}
+        >
+          <CartIcon className="size-5 shrink-0" />
+          Adicionar ao carrinho
+        </Button>
       )}
     </div>
   );

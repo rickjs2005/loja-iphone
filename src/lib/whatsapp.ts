@@ -38,18 +38,22 @@ export function cartMessage(items: CartItem[], totalCents: number): string {
   ].join("\n");
 }
 
-/** Dúvida sobre um produto específico. */
-export function productInquiryMessage(productName: string): string {
-  return `Olá, ${storeConfig.name}! Tenho interesse no ${productName}. Está disponível?`;
-}
-
-/** Trade-in: fluxo de avaliação do aparelho usado. */
-export function tradeInMessage(): string {
+/**
+ * Trade-in: avaliação do aparelho usado. Com os dados do formulário a
+ * mensagem já chega preenchida (modelo/bateria) — a loja responde na hora.
+ * As FOTOS vão na própria conversa: link wa.me não carrega anexo.
+ */
+export function tradeInMessage(data?: {
+  model?: string;
+  battery?: string;
+}): string {
+  const model = data?.model?.trim() ?? "";
+  const battery = data?.battery?.trim() ?? "";
   return [
     `Olá, ${storeConfig.name}! Quero dar meu iPhone usado como entrada.`,
     "",
-    "Modelo do meu aparelho:",
-    "Saúde da bateria (%):",
+    `Modelo do meu aparelho: ${model}`,
+    `Saúde da bateria (%): ${battery}`,
     "",
     "Vou mandar as fotos em seguida. Quanto ele vale de crédito?",
   ].join("\n");
@@ -58,28 +62,4 @@ export function tradeInMessage(): string {
 /** Abordagem genérica (header/footer). */
 export function genericMessage(): string {
   return `Olá, ${storeConfig.name}! Vim pelo site e quero saber mais sobre os produtos disponíveis.`;
-}
-
-// Mesma base do metadataBase no layout raiz (NEXT_PUBLIC_* é inlinado no client).
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
-/**
- * "Comprar agora": mensagem completa com nome, preço e link do produto —
- * a loja identifica o aparelho na hora, sem ida obrigatória ao carrinho.
- */
-export function buyNowMessage(product: {
-  id: string;
-  name: string;
-  priceCents: number;
-  quantity?: number;
-}): string {
-  const qty = product.quantity ?? 1;
-  return [
-    `Olá, ${storeConfig.name}! Quero comprar:`,
-    "",
-    `• ${qty}x ${product.name} — ${formatCents(product.priceCents * qty)}`,
-    `${siteUrl}/produtos/${product.id}`,
-    "",
-    "Pode me ajudar a finalizar?",
-  ].join("\n");
 }

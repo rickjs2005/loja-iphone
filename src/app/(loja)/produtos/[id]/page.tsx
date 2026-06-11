@@ -8,15 +8,13 @@ import { PurchasePanel } from "@/components/cart/purchase-panel";
 import { MobilePurchaseBar } from "@/components/cart/mobile-purchase-bar";
 import { Specs } from "@/components/product/specs";
 import { RelatedProducts } from "@/components/product/related-products";
-import { ChevronLeftIcon, ShieldIcon, WhatsappIcon } from "@/components/ui/icons";
+import { ChevronLeftIcon, ShieldIcon } from "@/components/ui/icons";
 import { getProductById, getRelatedProducts } from "@/lib/data/products";
 import { getStoreSettings } from "@/lib/data/site";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
 import { jsonLdHtml } from "@/lib/seo";
 import { isUuid } from "@/lib/uuid";
-import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
-import { productInquiryMessage } from "@/lib/whatsapp";
 import { storeConfig } from "@/config/theme.config";
 import { ConditionCard } from "@/components/product/condition-card";
 import { UnitAvailability } from "@/components/product/unit-availability";
@@ -190,7 +188,10 @@ export default async function ProdutoPage({ params }: Props) {
             </p>
           )}
 
-          <div className="mt-8">
+          {/* No mobile o CTA é a barra fixa do rodapé — painel duplicado
+              aqui ficava redundante (feedback do dono). No desktop a barra
+              não existe, então o painel continua sendo o único CTA. */}
+          <div className="mt-8 max-lg:hidden">
             <PurchasePanel
               product={{
                 productId: product.id,
@@ -203,14 +204,6 @@ export default async function ProdutoPage({ params }: Props) {
             />
           </div>
 
-          {/* Secundário: o CTA verde de compra agora vive no PurchasePanel. */}
-          <WhatsappCta
-            message={productInquiryMessage(product.name)}
-            className="mt-4 inline-flex items-center justify-center gap-2 self-center text-sm text-muted transition-colors hover:text-fg"
-          >
-            <WhatsappIcon className="size-4" />
-            Ficou com dúvida? Fale com a gente no WhatsApp
-          </WhatsappCta>
         </div>
       </div>
 

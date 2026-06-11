@@ -193,7 +193,7 @@ export function CartDrawer({
                 {hasDevice && upsell.length > 0 && (
                   <div className="border-t border-white/10 p-5">
                     <p className="mb-3 text-sm font-semibold text-fg">
-                      Proteja seu novo iPhone 🛡️
+                      Leve alguns acessórios também 🎁
                     </p>
                     <div className="space-y-2">
                       {upsell.map((a) => (
