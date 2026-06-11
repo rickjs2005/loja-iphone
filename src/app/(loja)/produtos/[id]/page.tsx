@@ -14,6 +14,7 @@ import { getStoreSettings } from "@/lib/data/site";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
 import { jsonLdHtml } from "@/lib/seo";
+import { isUuid } from "@/lib/uuid";
 import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
 import { productInquiryMessage } from "@/lib/whatsapp";
 import { storeConfig } from "@/config/theme.config";
@@ -41,8 +42,12 @@ function offerValidUntil(): string {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
+  // notFound() AQUI (antes do streaming começar) devolve o status 404 de
+  // verdade — dentro do componente a resposta já saiu como 200 (shell +
+  // loading) e o 404 vira só visual. Id malformado nem toca o banco.
+  if (!isUuid(id)) notFound();
   const product = await getProductById(id);
-  if (!product) return { title: "Produto não encontrado" };
+  if (!product) notFound();
 
   const description =
     product.description ??
@@ -70,6 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProdutoPage({ params }: Props) {
   const { id } = await params;
+  if (!isUuid(id)) notFound();
   // Fetches independentes em paralelo (getProductById deduplicado com o
   // generateMetadata via React.cache).
   const [product, settings] = await Promise.all([

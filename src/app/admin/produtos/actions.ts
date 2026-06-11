@@ -21,6 +21,7 @@ import {
   uploadProductImage,
 } from "@/lib/data/storage";
 import { getUnits, setProductInventory } from "@/lib/data/units";
+import { isUuid } from "@/lib/uuid";
 
 export type ProductFormState = {
   ok?: boolean;
@@ -33,9 +34,6 @@ export type ProductFormState = {
   values?: Record<string, string>;
 };
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const isUuid = (v: string) => UUID_RE.test(v);
 
 /** Campos de texto do FormData (nunca Files) pro form repreencher após erro. */
 function echoValues(formData: FormData): Record<string, string> {

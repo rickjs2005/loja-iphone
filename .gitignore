@@ -47,3 +47,6 @@ next-env.d.ts
 .env.local
 .env*.local
 /supabase/.temp
+
+# QR code local de desenvolvimento
+qr-loja.png

@@ -25,7 +25,12 @@ export function ActiveToggle({
       const fd = new FormData();
       fd.set("id", id);
       fd.set("next", String(next));
-      await toggleActiveAction(fd);
+      try {
+        await toggleActiveAction(fd);
+      } catch {
+        // Falhou (rede/banco): o useOptimistic reverte sozinho ao fim da
+        // transition — o catch só evita derrubar a tela no error boundary.
+      }
     });
   }
 
