@@ -98,11 +98,19 @@ export async function Footer() {
                 Falar no WhatsApp
               </WhatsappCta>
             </li>
-            {/* Com unidades cadastradas, lista os endereços delas e o horário
-                geral uma vez só (redes têm o mesmo horário em toda parte;
-                exceções aparecem no card da unidade na home). */}
+            {/* Com unidades cadastradas, lista a MATRIZ e os endereços delas,
+                mais o horário geral uma vez só (redes têm o mesmo horário em
+                toda parte; exceções aparecem no card da unidade na home). */}
             {units.length > 0 ? (
               <>
+                {formatUnitAddress(settings) && (
+                  <li>
+                    <p className="text-sm text-fg">Matriz</p>
+                    <p className="text-xs text-muted">
+                      {formatUnitAddress(settings)}
+                    </p>
+                  </li>
+                )}
                 {units.map((unit) => {
                   // Endereço estruturado (rua/número/bairro/cidade), com
                   // fallback no campo livre legado.

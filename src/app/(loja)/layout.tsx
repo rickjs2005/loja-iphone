@@ -39,9 +39,10 @@ export default async function LojaLayout({
     category: "accessory" as const,
   }));
 
-  // Só as unidades com WhatsApp próprio atendem; com 2+, os CTAs perguntam
-  // ao cliente em qual loja ele quer ser atendido.
-  const attendingUnits = units
+  // Quem atende pelo WhatsApp: a MATRIZ (número das Informações da loja) +
+  // as unidades com número próprio. Com 2+ opções, os CTAs perguntam ao
+  // cliente em qual loja ele quer ser atendido.
+  const unidadesAtendentes = units
     .filter((u) => Boolean(u.whatsapp))
     .map((u) => ({
       id: u.id,
@@ -49,6 +50,18 @@ export default async function LojaLayout({
       city: u.city,
       whatsapp: u.whatsapp as string,
     }));
+  const attendingUnits =
+    settings.whatsapp && unidadesAtendentes.length > 0
+      ? [
+          {
+            id: "matriz",
+            name: "Matriz",
+            city: settings.city,
+            whatsapp: settings.whatsapp,
+          },
+          ...unidadesAtendentes,
+        ]
+      : unidadesAtendentes;
 
   return (
     <MotionProvider>

@@ -42,7 +42,30 @@ export function StoreSection({
   const hasInfo = Boolean(enderecoLoja || settings.hours);
   if (images.length === 0 && !hasInfo && !hasUnits) return null;
 
-  const plural = units.length > 1;
+  // Com unidades cadastradas, a MATRIZ (Informações da loja) também vira um
+  // card — ela é uma loja como as outras, não some da vitrine.
+  const matriz: UnitRow | null =
+    hasUnits && (enderecoLoja || settings.whatsapp)
+      ? {
+          id: "matriz",
+          name: "Matriz",
+          address: settings.address,
+          city: settings.city,
+          neighborhood: settings.neighborhood,
+          street: settings.street,
+          number: settings.number,
+          reference: settings.reference,
+          hours: settings.hours,
+          whatsapp: settings.whatsapp,
+          maps_url: settings.maps_url,
+          photo_url: null,
+          sort_order: -1,
+          created_at: "",
+        }
+      : null;
+  const lojas = matriz ? [matriz, ...units] : units;
+
+  const plural = lojas.length > 1;
 
   return (
     <section id="loja" className="scroll-mt-20 py-16 sm:py-24">
@@ -67,9 +90,9 @@ export function StoreSection({
 
         {hasUnits ? (
           <Reveal>
-            {/* Um card por unidade física cadastrada no admin. */}
+            {/* Um card por loja: a matriz primeiro, depois as unidades. */}
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {units.map((unit) => {
+              {lojas.map((unit) => {
                 // Endereço estruturado (rua/número/bairro/cidade), com
                 // fallback no campo livre legado.
                 const endereco = formatUnitAddress(unit);
