@@ -37,7 +37,9 @@ export function StoreSection({
   units: UnitRow[];
 }) {
   const hasUnits = units.length > 0;
-  const hasInfo = Boolean(settings.address || settings.hours);
+  // Endereço composto dos campos estruturados (fallback no texto legado).
+  const enderecoLoja = formatUnitAddress(settings);
+  const hasInfo = Boolean(enderecoLoja || settings.hours);
   if (images.length === 0 && !hasInfo && !hasUnits) return null;
 
   const plural = units.length > 1;
@@ -152,7 +154,7 @@ export function StoreSection({
                   caminhos que importam — chegar até a loja ou chamar agora. */}
               <div className="mt-8 flex flex-col gap-6 rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-8">
                 <div className="flex flex-col gap-5 sm:flex-row sm:gap-12">
-                  {settings.address && (
+                  {enderecoLoja && (
                     <div className="flex items-start gap-3">
                       <InfoChip>
                         <MapPinIcon className="size-4" />
@@ -161,9 +163,12 @@ export function StoreSection({
                         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">
                           Endereço
                         </p>
-                        <p className="mt-1 max-w-xs text-fg">
-                          {settings.address}
-                        </p>
+                        <p className="mt-1 max-w-xs text-fg">{enderecoLoja}</p>
+                        {settings.reference && (
+                          <p className="mt-0.5 max-w-xs text-xs text-muted">
+                            Ref.: {settings.reference}
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}

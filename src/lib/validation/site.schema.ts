@@ -5,9 +5,17 @@ const emptyToUndefined = (v: unknown) =>
   v === null || (typeof v === "string" && v.trim() === "") ? undefined : v;
 
 export const siteSettingsSchema = z.object({
-  address: z.preprocess(
+  // Endereço estruturado (mesmo formato das unidades); nada obrigatório.
+  city: z.preprocess(emptyToUndefined, z.string().trim().max(120).optional()),
+  neighborhood: z.preprocess(
     emptyToUndefined,
-    z.string().trim().max(300).optional(),
+    z.string().trim().max(120).optional(),
+  ),
+  street: z.preprocess(emptyToUndefined, z.string().trim().max(200).optional()),
+  number: z.preprocess(emptyToUndefined, z.string().trim().max(20).optional()),
+  reference: z.preprocess(
+    emptyToUndefined,
+    z.string().trim().max(200).optional(),
   ),
   hours: z.preprocess(emptyToUndefined, z.string().trim().max(300).optional()),
   maps_url: z.preprocess(

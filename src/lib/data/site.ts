@@ -17,7 +17,12 @@ import type {
 // Conteúdo de exemplo para o MODO DEMO (sem Supabase configurado).
 const DEMO_SETTINGS: StoreSettingsRow = {
   id: 1,
-  address: "Av. Exemplo, 123 — Centro, Sua Cidade/UF",
+  address: null,
+  city: "Sua Cidade/UF",
+  neighborhood: "Centro",
+  street: "Av. Exemplo",
+  number: "123",
+  reference: null,
   hours: "Seg a Sex, 9h às 18h · Sáb, 9h às 13h",
   maps_url: "",
   payment_methods: "Pix, cartão em até 12x e dinheiro",
@@ -42,6 +47,11 @@ export const getStoreSettings = cache(async (): Promise<StoreSettingsRow> => {
     data ?? {
       id: 1,
       address: null,
+      city: null,
+      neighborhood: null,
+      street: null,
+      number: null,
+      reference: null,
       hours: null,
       maps_url: null,
       payment_methods: null,
@@ -79,7 +89,11 @@ export async function updateStoreSettings(
   // em silêncio num banco recém-provisionado).
   const { error } = await supabase.from("store_settings").upsert({
     id: 1,
-    address: input.address ?? null,
+    city: input.city ?? null,
+    neighborhood: input.neighborhood ?? null,
+    street: input.street ?? null,
+    number: input.number ?? null,
+    reference: input.reference ?? null,
     hours: input.hours ?? null,
     maps_url: input.maps_url ?? null,
     payment_methods: input.payment_methods ?? null,

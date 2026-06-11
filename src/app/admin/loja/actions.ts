@@ -57,7 +57,11 @@ export async function saveSettingsAction(
   const values = echoValues(formData);
 
   const parsed = siteSettingsSchema.safeParse({
-    address: formData.get("address"),
+    city: formData.get("city"),
+    neighborhood: formData.get("neighborhood"),
+    street: formData.get("street"),
+    number: formData.get("number"),
+    reference: formData.get("reference"),
     hours: formData.get("hours"),
     maps_url: formData.get("maps_url"),
     payment_methods: formData.get("payment_methods"),

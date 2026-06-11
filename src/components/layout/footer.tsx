@@ -122,8 +122,10 @@ export async function Footer() {
               </>
             ) : (
               <>
-                {settings.address && (
-                  <li className="text-sm text-muted">{settings.address}</li>
+                {formatUnitAddress(settings) && (
+                  <li className="text-sm text-muted">
+                    {formatUnitAddress(settings)}
+                  </li>
                 )}
                 {settings.hours && (
                   <li className="text-sm text-muted">{settings.hours}</li>

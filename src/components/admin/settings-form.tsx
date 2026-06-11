@@ -37,24 +37,77 @@ export function SettingsForm({
   }, [state]);
 
   return (
-    <form action={formAction} className="flex max-w-2xl flex-col gap-5">
+    <form
+      action={formAction}
+      className="flex max-w-2xl flex-col gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-5"
+    >
       {hasUnits && (
         <p className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2 text-xs text-amber-300/90">
           Você tem unidades cadastradas: no site valem os endereços de cada
-          unidade (o campo de endereço abaixo fica guardado, sem aparecer).
-          Já o horário abaixo vira o horário geral — vale para toda unidade
-          que não tiver um horário próprio.
+          unidade (o endereço abaixo fica guardado, sem aparecer). Já o
+          horário abaixo vira o horário geral — vale para toda unidade que
+          não tiver um horário próprio.
         </p>
       )}
+
+      {/* Endereço estruturado — mesmo formato do cadastro de unidades. */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="city">Cidade</Label>
+          <Input
+            id="city"
+            name="city"
+            defaultValue={v?.city ?? settings.city ?? ""}
+            placeholder="Manhuaçu"
+          />
+          <FieldError>{err.city?.[0]}</FieldError>
+        </div>
+
+        <div>
+          <Label htmlFor="neighborhood">Bairro</Label>
+          <Input
+            id="neighborhood"
+            name="neighborhood"
+            defaultValue={v?.neighborhood ?? settings.neighborhood ?? ""}
+            placeholder="Centro"
+          />
+          <FieldError>{err.neighborhood?.[0]}</FieldError>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-[1fr_8rem]">
+        <div>
+          <Label htmlFor="street">Endereço</Label>
+          <Input
+            id="street"
+            name="street"
+            defaultValue={v?.street ?? settings.street ?? ""}
+            placeholder="Av. Salime Nacif"
+          />
+          <FieldError>{err.street?.[0]}</FieldError>
+        </div>
+
+        <div>
+          <Label htmlFor="number">Número</Label>
+          <Input
+            id="number"
+            name="number"
+            defaultValue={v?.number ?? settings.number ?? ""}
+            placeholder="120"
+          />
+          <FieldError>{err.number?.[0]}</FieldError>
+        </div>
+      </div>
+
       <div>
-        <Label htmlFor="address">Endereço</Label>
+        <Label htmlFor="reference">Ponto de referência</Label>
         <Input
-          id="address"
-          name="address"
-          defaultValue={v?.address ?? settings.address ?? ""}
-          placeholder="Av. Exemplo, 123 — Centro, Cidade/UF"
+          id="reference"
+          name="reference"
+          defaultValue={v?.reference ?? settings.reference ?? ""}
+          placeholder="Em frente à praça da matriz"
         />
-        <FieldError>{err.address?.[0]}</FieldError>
+        <FieldError>{err.reference?.[0]}</FieldError>
       </div>
 
       <div>

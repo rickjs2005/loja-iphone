@@ -73,6 +73,11 @@ export type Database = {
         Row: {
           id: number;
           address: string | null;
+          city: string | null;
+          neighborhood: string | null;
+          street: string | null;
+          number: string | null;
+          reference: string | null;
           hours: string | null;
           maps_url: string | null;
           payment_methods: string | null;
@@ -82,6 +87,11 @@ export type Database = {
         Insert: {
           id?: number;
           address?: string | null;
+          city?: string | null;
+          neighborhood?: string | null;
+          street?: string | null;
+          number?: string | null;
+          reference?: string | null;
           hours?: string | null;
           maps_url?: string | null;
           payment_methods?: string | null;
@@ -91,6 +101,11 @@ export type Database = {
         Update: {
           id?: number;
           address?: string | null;
+          city?: string | null;
+          neighborhood?: string | null;
+          street?: string | null;
+          number?: string | null;
+          reference?: string | null;
           hours?: string | null;
           maps_url?: string | null;
           payment_methods?: string | null;
