@@ -1,16 +1,18 @@
+import { getStoreSettings } from "@/lib/data/site";
 import { getProductInventory, getUnits } from "@/lib/data/units";
 
 /**
  * Disponibilidade do produto por unidade física (server component).
- * Com menos de duas unidades o bloco não agrega nada e some — o estoque
- * total já aparece no badge da página.
+ * Só aparece com o MODO de estoque por unidade ligado e 2+ unidades —
+ * estoque compartilhado entre as lojas não tem o que detalhar aqui.
  */
 export async function UnitAvailability({ productId }: { productId: string }) {
-  const [units, inventory] = await Promise.all([
+  const [settings, units, inventory] = await Promise.all([
+    getStoreSettings(),
     getUnits(),
     getProductInventory(productId),
   ]);
-  if (units.length < 2) return null;
+  if (!settings.track_stock_by_unit || units.length < 2) return null;
 
   // Linha ausente no inventory = 0 naquela unidade.
   const stockByUnit = new Map(inventory.map((row) => [row.unit_id, row.stock]));

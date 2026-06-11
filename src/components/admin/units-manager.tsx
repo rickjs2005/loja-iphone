@@ -7,6 +7,7 @@ import { ConfirmDeleteButton } from "@/components/admin/confirm-delete-button";
 import {
   saveUnitAction,
   deleteUnitAction,
+  toggleUnitStockAction,
   type SiteFormState,
 } from "@/app/admin/loja/actions";
 import { formatUnitAddress } from "@/lib/format";
@@ -239,7 +240,14 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
  * O form de criação fica COLAPSADO atrás de um botão — quem tem uma loja só
  * não carrega um formulário aberto à toa; quem vai adicionar, abre na hora.
  */
-export function UnitsManager({ units }: { units: UnitRow[] }) {
+export function UnitsManager({
+  units,
+  trackStockByUnit = false,
+}: {
+  units: UnitRow[];
+  /** Modo de estoque: por unidade (ligado) ou único/compartilhado. */
+  trackStockByUnit?: boolean;
+}) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
@@ -320,10 +328,41 @@ export function UnitsManager({ units }: { units: UnitRow[] }) {
 
       {units.length > 0 && (
         <p className="mt-4 text-xs text-zinc-500">
-          Dica: se a matriz também guarda estoque, cadastre-a aqui como uma
-          unidade chamada &quot;Matriz&quot; — ela entra no estoque por
-          unidade e substitui o card automático do site.
+          Dica: cadastre a matriz também como uma unidade chamada
+          &quot;Matriz&quot; para ela ter WhatsApp, endereço e foto próprios
+          — ela substitui o card automático do site.
         </p>
+      )}
+
+      {/* Modo de estoque: a maioria das redes compartilha o estoque entre
+          as lojas (faltou numa, a outra envia) — por isso nasce desligado. */}
+      {units.length > 0 && (
+        <form
+          action={toggleUnitStockAction}
+          className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-800 bg-zinc-950/50 p-4"
+        >
+          <input
+            type="hidden"
+            name="enabled"
+            value={trackStockByUnit ? "0" : "1"}
+          />
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-zinc-100">
+              Estoque por unidade:{" "}
+              <span className={trackStockByUnit ? "text-emerald-400" : "text-zinc-400"}>
+                {trackStockByUnit ? "ligado" : "desligado"}
+              </span>
+            </p>
+            <p className="mt-1 max-w-md text-xs text-zinc-500">
+              {trackStockByUnit
+                ? "Você informa quanto tem em cada loja no cadastro do produto; o site soma o total sozinho."
+                : "Estoque único e compartilhado entre as lojas (faltou numa, a outra envia). Ligue se quiser informar quanto tem em cada uma."}
+            </p>
+          </div>
+          <SubmitButton variant="outline" size="sm" pendingLabel="...">
+            {trackStockByUnit ? "Desligar" : "Ligar"}
+          </SubmitButton>
+        </form>
       )}
 
       {/* Criação: colapsada atrás do botão; aberta, ganha título e Cancelar. */}

@@ -131,6 +131,56 @@ export async function setProductInventory(
 }
 
 /**
+ * Liga/desliga o controle de estoque por unidade.
+ * LIGAR: semeia o inventário (todo o estoque atual vai para a primeira
+ * unidade — o total não muda, só ganha um endereço de partida).
+ * DESLIGAR: limpa o inventário; products.stock volta a ser a única fonte
+ * (o trigger preserva o total quando as linhas somem).
+ */
+export async function setTrackStockByUnit(enabled: boolean): Promise<void> {
+  const supabase = await createClient();
+
+  // A flag muda PRIMEIRO: desligado, o trigger vira no-op e a limpeza não
+  // recalcula totais no meio do caminho (deletar linha a linha com o modo
+  // ligado sobrescreveria o estoque com somas parciais).
+  const { error: flagError } = await supabase
+    .from("store_settings")
+    .update({ track_stock_by_unit: enabled })
+    .eq("id", 1);
+  if (flagError) throw new Error(`Falha ao salvar o modo: ${flagError.message}`);
+
+  if (enabled) {
+    const units = await getUnits();
+    const first = units[0];
+    if (first) {
+      const { data: products, error } = await supabase
+        .from("products")
+        .select("id, stock");
+      if (error) throw new Error(`Falha ao ativar o modo: ${error.message}`);
+      if (products && products.length > 0) {
+        const { error: seedError } = await supabase.from("inventory").upsert(
+          products.map((p) => ({
+            product_id: p.id,
+            unit_id: first.id,
+            stock: p.stock,
+          })),
+        );
+        if (seedError)
+          throw new Error(`Falha ao ativar o modo: ${seedError.message}`);
+      }
+    }
+  } else {
+    // Ação explícita do admin: zera a distribuição (totais preservados,
+    // pois o trigger já está desligado pela flag acima).
+    const { error } = await supabase
+      .from("inventory")
+      .delete()
+      .gte("stock", 0);
+    if (error) throw new Error(`Falha ao desativar o modo: ${error.message}`);
+  }
+}
+
+/**
  * Semeia o inventário ao criar a PRIMEIRA unidade: todo o estoque atual de
  * cada produto vai para ela (o total não muda; só ganha endereço).
  */

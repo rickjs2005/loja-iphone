@@ -45,10 +45,14 @@ export default async function AdminLojaPage() {
         </h2>
         <p className="mb-4 text-sm text-zinc-500">
           Para quem tem mais de um endereço. Cada unidade aparece no site com
-          endereço, horário e WhatsApp próprios — e o estoque dos produtos
-          passa a ser informado por unidade.
+          endereço, horário e WhatsApp próprios. O estoque pode ser único
+          (compartilhado entre as lojas) ou informado por unidade — você
+          escolhe no controle abaixo.
         </p>
-        <UnitsManager units={units} />
+        <UnitsManager
+          units={units}
+          trackStockByUnit={settings.track_stock_by_unit}
+        />
       </section>
 
       <section>

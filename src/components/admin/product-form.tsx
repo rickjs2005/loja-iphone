@@ -32,10 +32,13 @@ export function ProductForm({
   product,
   units = [],
   inventory,
+  trackStockByUnit = false,
 }: {
   product?: ProductRow;
   units?: UnitRow[];
   inventory?: InventoryRow[];
+  /** Só pede estoque por unidade quando o modo está ligado no admin. */
+  trackStockByUnit?: boolean;
 }) {
   const [state, formAction] = useActionState<ProductFormState, FormData>(
     saveProductAction,
@@ -88,6 +91,8 @@ export function ProductForm({
   const v = state.values;
   // Aparelho (qualquer linha Apple) × acessório: muda os campos específicos.
   const isDevice = category !== "accessory";
+  // Estoque por unidade só quando o MODO está ligado E há unidades.
+  const perUnitStock = trackStockByUnit && units.length > 0;
 
   // Libera as URLs de pré-visualização ao trocar a seleção / desmontar.
   useEffect(() => {
@@ -208,8 +213,9 @@ export function ProductForm({
           <FieldError>{err.price_cents?.[0]}</FieldError>
         </div>
 
-        {/* Sem unidades cadastradas: estoque único (comportamento original). */}
-        {units.length === 0 && (
+        {/* Estoque único (sem unidades ou com o modo por unidade desligado —
+            redes que compartilham estoque entre as lojas ficam aqui). */}
+        {!perUnitStock && (
           <div>
             <Label htmlFor="stock">Estoque</Label>
             <Input
@@ -226,9 +232,9 @@ export function ProductForm({
         )}
       </div>
 
-      {/* Com unidades: um estoque por unidade; o total vai no campo oculto
+      {/* Modo ligado: um estoque por unidade; o total vai no campo oculto
           "stock" (o schema continua válido) e o trigger do banco recalcula. */}
-      {units.length > 0 && (
+      {perUnitStock && (
         <fieldset className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4">
           <legend className="px-1 text-xs font-medium uppercase tracking-wide text-zinc-400">
             Estoque por unidade

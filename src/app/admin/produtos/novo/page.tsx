@@ -2,12 +2,13 @@
 import { ChevronLeftIcon } from "@/components/ui/icons";
 import { ProductForm } from "@/components/admin/product-form";
 import { requireAdmin } from "@/lib/auth/user";
+import { getStoreSettings } from "@/lib/data/site";
 import { getUnits } from "@/lib/data/units";
 
 export default async function NovoProdutoPage() {
   await requireAdmin();
-  // Com unidades cadastradas, o form pede o estoque por unidade.
-  const units = await getUnits();
+  // Com o modo ligado e unidades cadastradas, o form pede estoque por unidade.
+  const [units, settings] = await Promise.all([getUnits(), getStoreSettings()]);
 
   return (
     <div>
@@ -24,7 +25,10 @@ export default async function NovoProdutoPage() {
         Cadastre os dados. As fotos são adicionadas na próxima etapa.
       </p>
 
-      <ProductForm units={units} />
+      <ProductForm
+        units={units}
+        trackStockByUnit={settings.track_stock_by_unit}
+      />
     </div>
   );
 }

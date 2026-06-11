@@ -28,6 +28,7 @@ const DEMO_SETTINGS: StoreSettingsRow = {
   maps_url: "",
   payment_methods: "Pix, cartão em até 12x e dinheiro",
   warranty_text: "Garantia de 90 dias",
+  track_stock_by_unit: false,
   updated_at: "2026-01-01T00:00:00.000Z",
 };
 
@@ -58,6 +59,7 @@ export const getStoreSettings = cache(async (): Promise<StoreSettingsRow> => {
       maps_url: null,
       payment_methods: null,
       warranty_text: null,
+      track_stock_by_unit: false,
       updated_at: "",
     }
   );

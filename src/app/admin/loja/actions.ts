@@ -20,8 +20,10 @@ import {
   deleteUnit,
   getUnits,
   seedInventoryForFirstUnit,
+  setTrackStockByUnit,
   updateUnit,
 } from "@/lib/data/units";
+import { getStoreSettings } from "@/lib/data/site";
 import { removeProductImageByUrl, uploadSiteImage } from "@/lib/data/storage";
 import type { SiteSection } from "@/types/database.types";
 
@@ -140,11 +142,17 @@ export async function saveUnitAction(
     if (id) {
       await updateUnit(id, parsed.data, photoUrl);
     } else {
-      // Primeira unidade? O estoque atual de cada produto migra inteiro para
-      // ela — o total não muda, só passa a ter endereço.
-      const eraPrimeira = (await getUnits()).length === 0;
+      // Primeira unidade COM o modo de estoque por unidade ligado? O estoque
+      // atual de cada produto migra inteiro para ela (o total não muda).
+      // Com o modo desligado (estoque compartilhado), nada a semear.
+      const [unitsAntes, settings] = await Promise.all([
+        getUnits(),
+        getStoreSettings(),
+      ]);
       const newId = await createUnit(parsed.data, photoUrl);
-      if (eraPrimeira) await seedInventoryForFirstUnit(newId);
+      if (unitsAntes.length === 0 && settings.track_stock_by_unit) {
+        await seedInventoryForFirstUnit(newId);
+      }
     }
   } catch {
     return { error: "Não foi possível salvar a unidade. Tente de novo.", values };
@@ -154,6 +162,17 @@ export async function saveUnitAction(
   revalidatePath("/admin/loja");
   revalidatePath("/admin/produtos");
   return { ok: true };
+}
+
+/** Liga/desliga o controle de estoque por unidade (campo oculto "enabled"). */
+export async function toggleUnitStockAction(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const enabled = String(formData.get("enabled")) === "1";
+  await setTrackStockByUnit(enabled);
+
+  revalidatePath("/");
+  revalidatePath("/admin/loja");
+  revalidatePath("/admin/produtos");
 }
 
 export async function deleteUnitAction(formData: FormData): Promise<void> {

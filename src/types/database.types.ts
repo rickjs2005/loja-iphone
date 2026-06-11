@@ -83,6 +83,7 @@ export type Database = {
           maps_url: string | null;
           payment_methods: string | null;
           warranty_text: string | null;
+          track_stock_by_unit: boolean;
           updated_at: string;
         };
         Insert: {
@@ -94,6 +95,7 @@ export type Database = {
           number?: string | null;
           reference?: string | null;
           whatsapp?: string | null;
+          track_stock_by_unit?: boolean;
           hours?: string | null;
           maps_url?: string | null;
           payment_methods?: string | null;
@@ -113,6 +115,7 @@ export type Database = {
           maps_url?: string | null;
           payment_methods?: string | null;
           warranty_text?: string | null;
+          track_stock_by_unit?: boolean;
           updated_at?: string;
         };
         Relationships: [];

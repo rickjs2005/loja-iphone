@@ -5,6 +5,7 @@ import { ProductForm } from "@/components/admin/product-form";
 import { ImageManager } from "@/components/admin/image-manager";
 import { requireAdmin } from "@/lib/auth/user";
 import { getProductById } from "@/lib/data/products";
+import { getStoreSettings } from "@/lib/data/site";
 import { getProductInventory, getUnits } from "@/lib/data/units";
 
 export const dynamic = "force-dynamic";
@@ -16,11 +17,13 @@ export default async function EditarProdutoPage({
 }) {
   await requireAdmin();
   const { id } = await params;
-  // Com unidades cadastradas, o form mostra o estoque por unidade.
-  const [product, units, inventory] = await Promise.all([
+  // Com o modo ligado e unidades cadastradas, o form mostra o estoque por
+  // unidade; desligado, estoque único (compartilhado entre as lojas).
+  const [product, units, inventory, settings] = await Promise.all([
     getProductById(id),
     getUnits(),
     getProductInventory(id),
+    getStoreSettings(),
   ]);
   if (!product) notFound();
 
@@ -41,7 +44,12 @@ export default async function EditarProdutoPage({
           <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-400">
             Dados
           </h2>
-          <ProductForm product={product} units={units} inventory={inventory} />
+          <ProductForm
+            product={product}
+            units={units}
+            inventory={inventory}
+            trackStockByUnit={settings.track_stock_by_unit}
+          />
         </section>
 
         <section>
