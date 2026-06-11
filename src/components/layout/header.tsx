@@ -4,6 +4,8 @@ import { Container } from "@/components/ui/container";
 import { CartButton } from "@/components/cart/cart-button";
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsappIcon } from "@/components/ui/icons";
+import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
+import { genericMessage } from "@/lib/whatsapp";
 import { storeConfig } from "@/config/theme.config";
 
 // Links âncora para as seções da home (navegação de flagship).
@@ -47,16 +49,14 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <CartButton />
-          <a
-            href={`https://wa.me/${storeConfig.whatsapp}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <WhatsappCta
+            message={genericMessage()}
             className={buttonClasses("whatsapp", "sm", "rounded-full")}
           >
             <WhatsappIcon className="size-4" />
             <span className="hidden sm:inline">Falar no WhatsApp</span>
             <span className="sr-only sm:hidden">Falar no WhatsApp</span>
-          </a>
+          </WhatsappCta>
         </div>
       </Container>
     </header>

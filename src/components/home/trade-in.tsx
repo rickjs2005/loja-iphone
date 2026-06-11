@@ -6,7 +6,8 @@ import { m } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
 import { BoltIcon, CheckIcon, WhatsappIcon } from "@/components/ui/icons";
-import { buildTradeInUrl } from "@/lib/whatsapp";
+import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
+import { tradeInMessage } from "@/lib/whatsapp";
 
 const STEPS: {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
@@ -87,10 +88,8 @@ export function TradeIn() {
                 ))}
               </ul>
 
-              <a
-                href={buildTradeInUrl()}
-                target="_blank"
-                rel="noopener noreferrer"
+              <WhatsappCta
+                message={tradeInMessage()}
                 className={buttonClasses(
                   "whatsapp",
                   "lg",
@@ -99,7 +98,7 @@ export function TradeIn() {
               >
                 <WhatsappIcon className="size-5" />
                 Avaliar meu aparelho
-              </a>
+              </WhatsappCta>
             </m.div>
           </div>
         </div>

@@ -13,7 +13,8 @@ import { getProductById, getRelatedProducts } from "@/lib/data/products";
 import { getStoreSettings } from "@/lib/data/site";
 import { coverImage } from "@/lib/data/types";
 import { formatCents, formatInstallments } from "@/lib/format";
-import { buildProductInquiryUrl } from "@/lib/whatsapp";
+import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
+import { productInquiryMessage } from "@/lib/whatsapp";
 import { storeConfig } from "@/config/theme.config";
 import { ConditionCard } from "@/components/product/condition-card";
 import { UnitAvailability } from "@/components/product/unit-availability";
@@ -196,15 +197,13 @@ export default async function ProdutoPage({ params }: Props) {
           </div>
 
           {/* Secundário: o CTA verde de compra agora vive no PurchasePanel. */}
-          <a
-            href={buildProductInquiryUrl(product.name)}
-            target="_blank"
-            rel="noopener noreferrer"
+          <WhatsappCta
+            message={productInquiryMessage(product.name)}
             className="mt-4 inline-flex items-center justify-center gap-2 self-center text-sm text-muted transition-colors hover:text-fg"
           >
             <WhatsappIcon className="size-4" />
             Ficou com dúvida? Fale com a gente no WhatsApp
-          </a>
+          </WhatsappCta>
         </div>
       </div>
 

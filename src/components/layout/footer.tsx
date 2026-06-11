@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { InstagramIcon, WhatsappIcon } from "@/components/ui/icons";
+import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
+import { genericMessage } from "@/lib/whatsapp";
+import { formatUnitAddress } from "@/lib/format";
 import { storeConfig } from "@/config/theme.config";
 import { getStoreSettings } from "@/lib/data/site";
 import { getUnits } from "@/lib/data/units";
@@ -24,7 +27,7 @@ const CATEGORIAS: { label: string; href: string }[] = [
 
 /** Rodapé corporativo em 4 colunas — última camada de confiança da página. */
 export async function Footer() {
-  const { social, whatsapp, name, description } = storeConfig;
+  const { social, name, description } = storeConfig;
   // Buscas independentes em paralelo (getUnits é deduplicado via React.cache).
   const [settings, units] = await Promise.all([getStoreSettings(), getUnits()]);
   const ano = new Date().getFullYear();
@@ -48,15 +51,13 @@ export async function Footer() {
                 <InstagramIcon className="size-5" />
               </Link>
             )}
-            <Link
-              href={`https://wa.me/${whatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp"
+            <WhatsappCta
+              message={genericMessage()}
+              ariaLabel="WhatsApp"
               className="inline-flex size-10 items-center justify-center rounded-xl text-muted transition-colors hover:bg-white/5 hover:text-fg"
             >
               <WhatsappIcon className="size-5" />
-            </Link>
+            </WhatsappCta>
           </div>
         </div>
 
@@ -93,28 +94,28 @@ export async function Footer() {
           <p className={colTitle}>Atendimento</p>
           <ul className="mt-4 space-y-2.5">
             <li>
-              <a
-                href={`https://wa.me/${whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={colLink}
-              >
+              <WhatsappCta message={genericMessage()} className={colLink}>
                 Falar no WhatsApp
-              </a>
+              </WhatsappCta>
             </li>
             {/* Com unidades cadastradas, lista os endereços delas e o horário
                 geral uma vez só (redes têm o mesmo horário em toda parte;
                 exceções aparecem no card da unidade na home). */}
             {units.length > 0 ? (
               <>
-                {units.map((unit) => (
-                  <li key={unit.id}>
-                    <p className="text-sm text-fg">{unit.name}</p>
-                    {unit.address && (
-                      <p className="text-xs text-muted">{unit.address}</p>
-                    )}
-                  </li>
-                ))}
+                {units.map((unit) => {
+                  // Endereço estruturado (rua/número/bairro/cidade), com
+                  // fallback no campo livre legado.
+                  const endereco = formatUnitAddress(unit);
+                  return (
+                    <li key={unit.id}>
+                      <p className="text-sm text-fg">{unit.name}</p>
+                      {endereco && (
+                        <p className="text-xs text-muted">{endereco}</p>
+                      )}
+                    </li>
+                  );
+                })}
                 {settings.hours && (
                   <li className="text-sm text-muted">{settings.hours}</li>
                 )}

@@ -22,7 +22,8 @@ import { useCartUI } from "@/lib/cart/ui-store";
 import { useCartSync } from "@/components/cart/use-cart-sync";
 import { useHydrated } from "@/lib/cart/use-hydrated";
 import { formatCents } from "@/lib/format";
-import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
+import { cartMessage } from "@/lib/whatsapp";
 
 export function CartDrawer({
   accessories = [],
@@ -240,15 +241,13 @@ export function CartDrawer({
                       {formatCents(totalCents)}
                     </span>
                   </div>
-                  <a
-                    href={buildWhatsappUrl(items, totalCents)}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <WhatsappCta
+                    message={cartMessage(items, totalCents)}
                     className={buttonClasses("whatsapp", "lg", "w-full")}
                   >
                     <WhatsappIcon className="size-5" />
                     Finalizar no WhatsApp
-                  </a>
+                  </WhatsappCta>
                   <Link
                     href="/carrinho"
                     onClick={close}

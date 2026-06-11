@@ -3,6 +3,24 @@
  * só aqui convertemos para a representação em reais.
  */
 
+/**
+ * Endereço da unidade a partir dos campos estruturados (todos opcionais):
+ * "Rua X, 123 — Bairro · Cidade". Sem nenhum campo novo preenchido, cai no
+ * `address` livre legado. Retorna null quando não há nada a exibir.
+ */
+export function formatUnitAddress(unit: {
+  street?: string | null;
+  number?: string | null;
+  neighborhood?: string | null;
+  city?: string | null;
+  address?: string | null;
+}): string | null {
+  const rua = [unit.street, unit.number].filter(Boolean).join(", ");
+  const zona = [unit.neighborhood, unit.city].filter(Boolean).join(" · ");
+  const composto = [rua, zona].filter(Boolean).join(" — ");
+  return composto || unit.address || null;
+}
+
 const brl = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",

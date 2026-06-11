@@ -22,7 +22,8 @@ import {
 import { useCartSync } from "@/components/cart/use-cart-sync";
 import { useHydrated } from "@/lib/cart/use-hydrated";
 import { formatCents } from "@/lib/format";
-import { buildWhatsappUrl } from "@/lib/whatsapp";
+import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
+import { cartMessage } from "@/lib/whatsapp";
 
 /** Conteúdo do carrinho (client) — o page.tsx server só injeta metadata. */
 export function CartPageClient() {
@@ -204,15 +205,13 @@ export function CartPageClient() {
             </span>
           </div>
 
-          <a
-            href={buildWhatsappUrl(items, totalCents)}
-            target="_blank"
-            rel="noopener noreferrer"
+          <WhatsappCta
+            message={cartMessage(items, totalCents)}
             className={buttonClasses("whatsapp", "lg", "mt-6 w-full")}
           >
             <WhatsappIcon className="size-5" />
             Finalizar no WhatsApp
-          </a>
+          </WhatsappCta>
 
           <p className="mt-3 text-center text-xs text-muted">
             O pagamento e a entrega são combinados diretamente com a loja.

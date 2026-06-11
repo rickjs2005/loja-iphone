@@ -131,6 +131,11 @@ export type Database = {
           id: string;
           name: string;
           address: string | null;
+          city: string | null;
+          neighborhood: string | null;
+          street: string | null;
+          number: string | null;
+          reference: string | null;
           hours: string | null;
           whatsapp: string | null;
           maps_url: string | null;
@@ -142,6 +147,11 @@ export type Database = {
           id?: string;
           name: string;
           address?: string | null;
+          city?: string | null;
+          neighborhood?: string | null;
+          street?: string | null;
+          number?: string | null;
+          reference?: string | null;
           hours?: string | null;
           whatsapp?: string | null;
           maps_url?: string | null;
@@ -153,6 +163,11 @@ export type Database = {
           id?: string;
           name?: string;
           address?: string | null;
+          city?: string | null;
+          neighborhood?: string | null;
+          street?: string | null;
+          number?: string | null;
+          reference?: string | null;
           hours?: string | null;
           whatsapp?: string | null;
           maps_url?: string | null;

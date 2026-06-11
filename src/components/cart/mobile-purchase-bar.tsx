@@ -5,7 +5,8 @@ import { CartIcon, WhatsappIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
 import { useCartUI } from "@/lib/cart/ui-store";
 import { formatCents } from "@/lib/format";
-import { buildBuyNowUrl } from "@/lib/whatsapp";
+import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
+import { buyNowMessage } from "@/lib/whatsapp";
 
 /** Barra fixa de compra no rodapé — só no mobile (experiência de app). */
 export function MobilePurchaseBar({
@@ -46,19 +47,17 @@ export function MobilePurchaseBar({
           </button>
 
           {/* Primário: compra direto no WhatsApp. */}
-          <a
-            href={buildBuyNowUrl({
+          <WhatsappCta
+            message={buyNowMessage({
               id: product.productId,
               name: product.name,
               priceCents: product.priceCents,
             })}
-            target="_blank"
-            rel="noopener noreferrer"
             className={buttonClasses("whatsapp", "lg", "flex-1")}
           >
             <WhatsappIcon className="size-5" />
             Comprar
-          </a>
+          </WhatsappCta>
         </>
       )}
     </div>

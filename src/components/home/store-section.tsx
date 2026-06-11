@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { Carousel } from "@/components/ui/carousel";
 import { buttonClasses } from "@/components/ui/button";
 import { ClockIcon, MapPinIcon, WhatsappIcon } from "@/components/ui/icons";
+import { formatUnitAddress } from "@/lib/format";
 import { storeConfig } from "@/config/theme.config";
 import type {
   SiteImageRow,
@@ -66,7 +67,11 @@ export function StoreSection({
           <Reveal>
             {/* Um card por unidade física cadastrada no admin. */}
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {units.map((unit) => (
+              {units.map((unit) => {
+                // Endereço estruturado (rua/número/bairro/cidade), com
+                // fallback no campo livre legado.
+                const endereco = formatUnitAddress(unit);
+                return (
                 <div
                   key={unit.id}
                   className="flex flex-col gap-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur"
@@ -85,12 +90,18 @@ export function StoreSection({
                   )}
                   <div className={`flex flex-1 flex-col gap-3 p-5 ${unit.photo_url ? "pt-2" : ""}`}>
                   <p className="font-semibold text-fg">{unit.name}</p>
-                  {(unit.address || unit.hours || settings.hours) && (
+                  {(endereco || unit.hours || settings.hours) && (
                     <div className="space-y-1.5">
-                      {unit.address && (
+                      {endereco && (
                         <p className="flex items-start gap-2 text-sm text-muted">
                           <MapPinIcon className="mt-0.5 size-3.5 shrink-0" />
-                          {unit.address}
+                          {endereco}
+                        </p>
+                      )}
+                      {/* Ponto de referência ("perto do shopping X"). */}
+                      {unit.reference && (
+                        <p className="text-xs text-muted">
+                          Ref.: {unit.reference}
                         </p>
                       )}
                       {/* Horário próprio ou, na falta, o horário geral da loja
@@ -130,7 +141,8 @@ export function StoreSection({
                   )}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </Reveal>
         ) : (

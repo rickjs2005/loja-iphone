@@ -9,6 +9,7 @@ import {
   deleteUnitAction,
   type SiteFormState,
 } from "@/app/admin/loja/actions";
+import { formatUnitAddress } from "@/lib/format";
 import type { UnitRow } from "@/types/database.types";
 
 /**
@@ -47,16 +48,18 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <Label htmlFor={`unit-name-${unit?.id ?? "nova"}`}>
-            Cidade ou nome da unidade
+            Nome da unidade
           </Label>
           <Input
             id={`unit-name-${unit?.id ?? "nova"}`}
             name="name"
             required
             defaultValue={v?.name ?? unit?.name ?? ""}
-            placeholder="Manhuaçu"
+            placeholder="Matriz"
           />
-          <FormHelp>É o título do card no site (ex.: Manhuaçu, Centro).</FormHelp>
+          <FormHelp>
+            Título do card no site (ex.: Matriz, Centro, Loja Manhuaçu).
+          </FormHelp>
           <FieldError>{err.name?.[0]}</FieldError>
         </div>
 
@@ -74,15 +77,68 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
         </div>
       </div>
 
+      {/* Endereço estruturado: nenhum campo é obrigatório. */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <Label htmlFor={`unit-city-${unit?.id ?? "nova"}`}>Cidade</Label>
+          <Input
+            id={`unit-city-${unit?.id ?? "nova"}`}
+            name="city"
+            defaultValue={v?.city ?? unit?.city ?? ""}
+            placeholder="Manhuaçu"
+          />
+          <FieldError>{err.city?.[0]}</FieldError>
+        </div>
+
+        <div>
+          <Label htmlFor={`unit-neighborhood-${unit?.id ?? "nova"}`}>
+            Bairro
+          </Label>
+          <Input
+            id={`unit-neighborhood-${unit?.id ?? "nova"}`}
+            name="neighborhood"
+            defaultValue={v?.neighborhood ?? unit?.neighborhood ?? ""}
+            placeholder="Centro"
+          />
+          <FieldError>{err.neighborhood?.[0]}</FieldError>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-[1fr_8rem]">
+        <div>
+          <Label htmlFor={`unit-street-${unit?.id ?? "nova"}`}>Endereço</Label>
+          <Input
+            id={`unit-street-${unit?.id ?? "nova"}`}
+            name="street"
+            defaultValue={v?.street ?? unit?.street ?? ""}
+            placeholder="Av. Salime Nacif"
+          />
+          <FieldError>{err.street?.[0]}</FieldError>
+        </div>
+
+        <div>
+          <Label htmlFor={`unit-number-${unit?.id ?? "nova"}`}>Número</Label>
+          <Input
+            id={`unit-number-${unit?.id ?? "nova"}`}
+            name="number"
+            defaultValue={v?.number ?? unit?.number ?? ""}
+            placeholder="120"
+          />
+          <FieldError>{err.number?.[0]}</FieldError>
+        </div>
+      </div>
+
       <div>
-        <Label htmlFor={`unit-address-${unit?.id ?? "nova"}`}>Endereço</Label>
+        <Label htmlFor={`unit-reference-${unit?.id ?? "nova"}`}>
+          Ponto de referência
+        </Label>
         <Input
-          id={`unit-address-${unit?.id ?? "nova"}`}
-          name="address"
-          defaultValue={v?.address ?? unit?.address ?? ""}
-          placeholder="Av. Exemplo, 123 — Centro, Cidade/UF"
+          id={`unit-reference-${unit?.id ?? "nova"}`}
+          name="reference"
+          defaultValue={v?.reference ?? unit?.reference ?? ""}
+          placeholder="Em frente à praça da matriz"
         />
-        <FieldError>{err.address?.[0]}</FieldError>
+        <FieldError>{err.reference?.[0]}</FieldError>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -227,9 +283,9 @@ export function UnitsManager({ units }: { units: UnitRow[] }) {
                   <p className="truncate text-sm font-medium text-zinc-100">
                     {unit.name}
                   </p>
-                  {unit.address && (
+                  {formatUnitAddress(unit) && (
                     <p className="truncate text-xs text-zinc-500">
-                      {unit.address}
+                      {formatUnitAddress(unit)}
                     </p>
                   )}
                   {unit.whatsapp && (

@@ -11,9 +11,16 @@ export const unitSchema = z.object({
     .trim()
     .min(2, "Dê um nome à unidade (ex.: Centro)")
     .max(80, "Nome muito longo"),
-  address: z.preprocess(
+  city: z.preprocess(emptyToUndefined, z.string().trim().max(120).optional()),
+  neighborhood: z.preprocess(
     emptyToUndefined,
-    z.string().trim().max(300).optional(),
+    z.string().trim().max(120).optional(),
+  ),
+  street: z.preprocess(emptyToUndefined, z.string().trim().max(200).optional()),
+  number: z.preprocess(emptyToUndefined, z.string().trim().max(20).optional()),
+  reference: z.preprocess(
+    emptyToUndefined,
+    z.string().trim().max(200).optional(),
   ),
   hours: z.preprocess(emptyToUndefined, z.string().trim().max(300).optional()),
   whatsapp: z.preprocess(

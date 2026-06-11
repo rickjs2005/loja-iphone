@@ -5,7 +5,8 @@ import { Button, buttonClasses, focusRing } from "@/components/ui/button";
 import { CartIcon, MinusIcon, PlusIcon, WhatsappIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
 import { useCartUI } from "@/lib/cart/ui-store";
-import { buildBuyNowUrl } from "@/lib/whatsapp";
+import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
+import { buyNowMessage } from "@/lib/whatsapp";
 
 /** Seletor de quantidade + comprar no WhatsApp + adicionar ao carrinho (PDP). */
 export function PurchasePanel({
@@ -63,20 +64,18 @@ export function PurchasePanel({
         </div>
 
         {/* CTA primário: fecha direto no WhatsApp, sem passar pelo carrinho. */}
-        <a
-          href={buildBuyNowUrl({
+        <WhatsappCta
+          message={buyNowMessage({
             id: product.productId,
             name: product.name,
             priceCents: product.priceCents,
             quantity: qty,
           })}
-          target="_blank"
-          rel="noopener noreferrer"
           className={buttonClasses("whatsapp", "lg", "flex-1")}
         >
           <WhatsappIcon className="size-5" />
           Comprar pelo WhatsApp
-        </a>
+        </WhatsappCta>
       </div>
 
       <Button

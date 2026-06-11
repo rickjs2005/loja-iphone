@@ -7,7 +7,8 @@ import { StockBadge } from "@/components/product/stock-badge";
 import { buttonClasses } from "@/components/ui/button";
 import { ShieldIcon, WhatsappIcon } from "@/components/ui/icons";
 import { IphoneRender, colorwayByIndex } from "@/components/visual/iphone-render";
-import { buildBuyNowUrl } from "@/lib/whatsapp";
+import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
+import { buyNowMessage } from "@/lib/whatsapp";
 import { formatCents, formatInstallments } from "@/lib/format";
 import {
   coverImage,
@@ -141,21 +142,19 @@ export function ProductCard({
 
         {/* CTA de conversão: direto pro WhatsApp com nome + preço + link */}
         {product.stock > 0 ? (
-          <a
-            href={buildBuyNowUrl({
+          <WhatsappCta
+            message={buyNowMessage({
               id: product.id,
               name: product.name,
               priceCents: product.price_cents,
             })}
-            target="_blank"
-            rel="noopener noreferrer"
             className={buttonClasses("whatsapp", "md", "w-full")}
           >
             <WhatsappIcon className="size-4" />
             {/* Rótulo curto no grid estreito de 2 colunas */}
             <span className="sm:hidden">WhatsApp</span>
             <span className="hidden sm:inline">Falar no WhatsApp</span>
-          </a>
+          </WhatsappCta>
         ) : (
           <span
             className={buttonClasses(

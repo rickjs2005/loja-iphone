@@ -55,7 +55,11 @@ export async function createUnit(
     .from("units")
     .insert({
       name: input.name,
-      address: input.address ?? null,
+      city: input.city ?? null,
+      neighborhood: input.neighborhood ?? null,
+      street: input.street ?? null,
+      number: input.number ?? null,
+      reference: input.reference ?? null,
       hours: input.hours ?? null,
       whatsapp: input.whatsapp ?? null,
       maps_url: input.maps_url ?? null,
@@ -80,7 +84,11 @@ export async function updateUnit(
     .from("units")
     .update({
       name: input.name,
-      address: input.address ?? null,
+      city: input.city ?? null,
+      neighborhood: input.neighborhood ?? null,
+      street: input.street ?? null,
+      number: input.number ?? null,
+      reference: input.reference ?? null,
       hours: input.hours ?? null,
       whatsapp: input.whatsapp ?? null,
       maps_url: input.maps_url ?? null,

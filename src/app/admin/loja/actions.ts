@@ -93,7 +93,11 @@ export async function saveUnitAction(
 
   const parsed = unitSchema.safeParse({
     name: formData.get("name"),
-    address: formData.get("address"),
+    city: formData.get("city"),
+    neighborhood: formData.get("neighborhood"),
+    street: formData.get("street"),
+    number: formData.get("number"),
+    reference: formData.get("reference"),
     hours: formData.get("hours"),
     whatsapp: formData.get("whatsapp"),
     maps_url: formData.get("maps_url"),
