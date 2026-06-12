@@ -66,6 +66,16 @@ function PhoneVisual() {
         <div className="relative h-[300px] w-full min-w-0 overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.7)] sm:h-auto sm:aspect-[4/5]">
           {/* Nome versionado: trocar o vídeo = trocar o nome (evita cache). */}
           <video
+            // O React NÃO emite o atributo `muted` no HTML do servidor (bug
+            // antigo do react-dom) e o iOS só dá autoplay em vídeo que já
+            // nasce mudo — sem isto o iPhone mostrava o botão de play.
+            ref={(el) => {
+              if (!el) return;
+              el.muted = true;
+              el.play().catch(() => {
+                // Low Power Mode bloqueia autoplay: fica o poster, sem erro.
+              });
+            }}
             src="/hero-v4.mp4"
             autoPlay
             loop

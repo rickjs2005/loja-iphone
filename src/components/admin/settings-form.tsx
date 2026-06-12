@@ -70,6 +70,29 @@ export function SettingsForm({
         <FieldError>{err.whatsapp?.[0]}</FieldError>
       </div>
 
+      <div>
+        <Label htmlFor="matriz-photo">Foto da fachada (opcional)</Label>
+        {settings.photo_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={settings.photo_url}
+            alt="Foto atual da matriz"
+            className="mb-2 aspect-[4/3] w-40 rounded-md border border-zinc-800 object-cover"
+          />
+        )}
+        <input
+          id="matriz-photo"
+          type="file"
+          name="photo"
+          accept="image/jpeg,image/png,image/webp"
+          className="block w-full text-sm text-zinc-400 file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-white hover:file:brightness-110"
+        />
+        <FormHelp>
+          Aparece no card da Matriz no site, junto das unidades.
+          {settings.photo_url ? " Enviar outra substitui a atual." : ""}
+        </FormHelp>
+      </div>
+
       {/* Endereço estruturado — mesmo formato do cadastro de unidades. */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div>

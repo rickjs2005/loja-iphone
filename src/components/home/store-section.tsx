@@ -59,7 +59,8 @@ export function StoreSection({
           hours: settings.hours,
           whatsapp: settings.whatsapp,
           maps_url: settings.maps_url,
-          photo_url: null,
+          // Foto da fachada da matriz (Informações da loja → upload).
+          photo_url: settings.photo_url,
           sort_order: -1,
           created_at: "",
         }

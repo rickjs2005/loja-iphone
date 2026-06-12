@@ -78,8 +78,26 @@ export async function saveSettingsAction(
     };
   }
 
+  // Foto da fachada da matriz (opcional) — mesmo fluxo das unidades.
+  const photoFile = formData.get("photo");
+  let photoUrl: string | undefined;
+  if (photoFile instanceof File && photoFile.size > 0) {
+    const valid = imageFileSchema.safeParse(photoFile);
+    if (!valid.success) {
+      return {
+        error: valid.error.issues[0]?.message ?? "Foto inválida.",
+        values,
+      };
+    }
+    try {
+      photoUrl = await uploadSiteImage("matriz", photoFile);
+    } catch {
+      return { error: "Falha ao enviar a foto. Tente de novo.", values };
+    }
+  }
+
   try {
-    await updateStoreSettings(parsed.data);
+    await updateStoreSettings(parsed.data, photoUrl);
   } catch {
     return { error: "Não foi possível salvar. Tente de novo.", values };
   }

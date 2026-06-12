@@ -83,6 +83,7 @@ export type Database = {
           maps_url: string | null;
           payment_methods: string | null;
           warranty_text: string | null;
+          photo_url: string | null;
           track_stock_by_unit: boolean;
           updated_at: string;
         };
@@ -100,6 +101,7 @@ export type Database = {
           maps_url?: string | null;
           payment_methods?: string | null;
           warranty_text?: string | null;
+          photo_url?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -115,6 +117,7 @@ export type Database = {
           maps_url?: string | null;
           payment_methods?: string | null;
           warranty_text?: string | null;
+          photo_url?: string | null;
           track_stock_by_unit?: boolean;
           updated_at?: string;
         };
