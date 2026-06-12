@@ -1,9 +1,13 @@
+"use client";
+
+import { m } from "framer-motion";
 import { conditionLabel } from "@/lib/data/types";
 
 /**
  * Estado real do aparelho cadastrado no admin: saúde da bateria (com barra)
  * e condição estética. Linhas com valor null são omitidas; sem nenhum dado,
- * o bloco inteiro some.
+ * o bloco inteiro some. A barra preenche ao entrar na viewport — chama o
+ * olhar para o diferencial honesto da loja (micro-momento de confiança).
  */
 export function ConditionCard({
   batteryHealth,
@@ -14,6 +18,10 @@ export function ConditionCard({
 }) {
   const condLabel = conditionLabel(condition);
   if (batteryHealth === null && !condLabel) return null;
+
+  const pct = batteryHealth === null
+    ? 0
+    : Math.min(100, Math.max(0, batteryHealth));
 
   return (
     <div className="mt-5 flex flex-col gap-4 rounded-2xl border border-white/10 bg-surface/60 p-4">
@@ -35,9 +43,12 @@ export function ConditionCard({
             aria-valuemax={100}
             className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"
           >
-            <div
+            <m.div
               className="h-full rounded-full bg-primary"
-              style={{ width: `${Math.min(100, Math.max(0, batteryHealth))}%` }}
+              initial={{ width: 0 }}
+              whileInView={{ width: `${pct}%` }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             />
           </div>
         </div>

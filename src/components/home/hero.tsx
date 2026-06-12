@@ -1,9 +1,11 @@
 "use client";
 
-import { m } from "framer-motion";
+import { useState } from "react";
+import { AnimatePresence, m } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
-import { PhoneIcon } from "@/components/ui/icons";
+import { CheckIcon, PhoneIcon } from "@/components/ui/icons";
+import { TradeInForm } from "@/components/home/trade-in-form";
 import { copy } from "@/config/copy";
 
 // Posições fixas das partículas (determinístico → sem mismatch de hidratação).
@@ -47,7 +49,9 @@ function PhoneVisual() {
       initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="relative flex items-center justify-center"
+      // min-w-0: sem isso o conteúdo do carrossel (slides lado a lado) força
+      // a largura mínima da célula do grid e estoura a página no mobile.
+      className="relative flex min-w-0 items-center justify-center"
     >
       {/* Luz monocromática grande atrás do aparelho */}
       <div className="absolute left-1/2 top-1/2 -z-10 size-[640px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.16),rgba(255,255,255,0.06)_42%,transparent_70%)] blur-2xl" />
@@ -55,9 +59,11 @@ function PhoneVisual() {
       <m.div
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="w-full max-w-[460px]"
+        className="w-full min-w-0 max-w-[460px]"
       >
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.7)]">
+        {/* Mobile: o vídeo é APOIO (~300px), não o protagonista — a primeira
+            dobra entrega a mensagem + CTAs. No sm+ volta ao retrato grande. */}
+        <div className="relative h-[300px] w-full min-w-0 overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.7)] sm:h-auto sm:aspect-[4/5]">
           {/* Nome versionado: trocar o vídeo = trocar o nome (evita cache). */}
           <video
             src="/hero-v4.mp4"
@@ -68,7 +74,7 @@ function PhoneVisual() {
             preload="metadata"
             // Primeiro frame leve enquanto o vídeo carrega (melhora o LCP).
             poster="/hero-poster.jpg"
-            aria-label="iPhone 17 Pro em destaque"
+            aria-label="iPhone em destaque"
             className="absolute inset-0 h-full w-full object-cover"
           />
         </div>
@@ -77,9 +83,19 @@ function PhoneVisual() {
   );
 }
 
-export function Hero() {
+export function Hero({ stockTotal = 0 }: { stockTotal?: number }) {
+  // CTA secundário abre o formulário de avaliação direto do hero — o lead
+  // de troca não precisa rolar até a seção de trade-in.
+  const [tradeInOpen, setTradeInOpen] = useState(false);
+
+  // O item de estoque só entra quando o número impressiona (loja nova com
+  // 3 aparelhos passaria a impressão contrária).
+  const trustBits = copy.hero.trustLine.filter(
+    (bit) => !bit.includes("{estoque}") || stockTotal >= 10,
+  );
+
   return (
-    <section className="relative flex items-center overflow-hidden py-12 sm:py-16 lg:min-h-[92vh] lg:py-0">
+    <section className="relative flex items-center overflow-hidden py-8 sm:py-16 lg:min-h-[92vh] lg:py-0">
       {/* Partículas flutuando (só em telas grandes: no celular competem com
           o conteúdo e gastam bateria sem ninguém reparar nelas) */}
       <div aria-hidden className="pointer-events-none absolute inset-0 max-sm:hidden">
@@ -103,24 +119,27 @@ export function Hero() {
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-10">
           {/* Coluna de texto */}
           <div className="text-center lg:text-left">
+            {/* Selo de confiança: só do sm pra cima — no mobile a primeira
+                dobra é título + frase + CTAs + vídeo, sem ruído. */}
             <m.span
               custom={0}
               variants={fade}
               initial="hidden"
               animate="show"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-muted backdrop-blur sm:text-sm"
+              className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-muted backdrop-blur sm:inline-flex sm:text-sm"
             >
               <span className="size-1.5 animate-pulse rounded-full bg-fg/80" />
               {copy.hero.badge}
             </m.span>
 
-            {/* Headline empilhada em 3 linhas — padrão flagship (Apple/Linear) */}
+            {/* Headline empilhada — padrão flagship (Apple): frase curta,
+                sentence case, produto como apoio. */}
             <m.h1
               custom={1}
               variants={fade}
               initial="hidden"
               animate="show"
-              className="mt-6 text-[2.6rem] font-extrabold uppercase leading-[0.98] tracking-[-0.05em] sm:text-6xl lg:text-6xl xl:text-7xl"
+              className="text-[2.6rem] font-extrabold leading-[1.02] tracking-[-0.04em] sm:mt-6 sm:text-6xl lg:text-6xl xl:text-7xl"
             >
               {copy.hero.headline.map((line, i) => (
                 <span
@@ -138,7 +157,7 @@ export function Hero() {
               variants={fade}
               initial="hidden"
               animate="show"
-              className="mx-auto mt-6 max-w-xl text-balance text-lg font-normal text-muted sm:text-xl lg:mx-0"
+              className="mx-auto mt-4 max-w-xl text-balance text-lg font-normal text-muted sm:mt-6 sm:text-xl lg:mx-0"
             >
               {copy.hero.subtitle}
             </m.p>
@@ -148,10 +167,11 @@ export function Hero() {
               variants={fade}
               initial="hidden"
               animate="show"
-              className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row lg:justify-start"
+              className="mt-7 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row lg:justify-start"
             >
-              {/* Largura cheia no celular: botões empilhados com larguras
-                  diferentes parecem desalinhados (feedback de QA mobile). */}
+              {/* CTA duplo — dois públicos: quem compra (catálogo) e quem
+                  troca (avaliação). Largura cheia no celular: empilhados com
+                  larguras diferentes parecem desalinhados. */}
               <a
                 href="#produtos"
                 className={buttonClasses(
@@ -162,8 +182,9 @@ export function Hero() {
               >
                 {copy.hero.ctaPrimary}
               </a>
-              <a
-                href="#trocar"
+              <button
+                type="button"
+                onClick={() => setTradeInOpen(true)}
                 className={buttonClasses(
                   "outline",
                   "lg",
@@ -172,8 +193,25 @@ export function Hero() {
               >
                 <PhoneIcon className="size-5" />
                 {copy.hero.ctaSecondary}
-              </a>
+              </button>
             </m.div>
+
+            {/* Prova de confiança na primeira dobra do mobile (o selo do
+                topo só existe no sm+) — decide os 3 primeiros segundos. */}
+            <m.p
+              custom={4}
+              variants={fade}
+              initial="hidden"
+              animate="show"
+              className="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[13px] text-muted sm:hidden"
+            >
+              {trustBits.map((bit) => (
+                <span key={bit} className="inline-flex items-center gap-1">
+                  <CheckIcon className="size-3.5 shrink-0 text-primary" />
+                  {bit.replace("{estoque}", String(stockTotal))}
+                </span>
+              ))}
+            </m.p>
           </div>
 
           {/* Coluna do device — foto premium em moldura */}
@@ -197,6 +235,10 @@ export function Hero() {
           />
         </div>
       </m.div>
+
+      <AnimatePresence>
+        {tradeInOpen && <TradeInForm onClose={() => setTradeInOpen(false)} />}
+      </AnimatePresence>
     </section>
   );
 }

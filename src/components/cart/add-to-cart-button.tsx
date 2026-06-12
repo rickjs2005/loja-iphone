@@ -12,6 +12,8 @@ type Props = {
   variant?: "primary" | "accent" | "outline";
   size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
+  /** Rótulo curto ("Adicionar") para cards estreitos — evita quebra em 2 linhas. */
+  shortLabel?: boolean;
 };
 
 export function AddToCartButton({
@@ -20,6 +22,7 @@ export function AddToCartButton({
   variant = "primary",
   size = "md",
   fullWidth,
+  shortLabel,
 }: Props) {
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartUI((s) => s.open);
@@ -44,7 +47,13 @@ export function AddToCartButton({
       aria-live="polite"
     >
       <BagIcon className="size-4" />
-      {esgotado ? "Esgotado" : added ? "Adicionado!" : "Adicionar ao carrinho"}
+      {esgotado
+        ? "Esgotado"
+        : added
+          ? "Adicionado!"
+          : shortLabel
+            ? "Adicionar"
+            : "Adicionar ao carrinho"}
     </Button>
   );
 }

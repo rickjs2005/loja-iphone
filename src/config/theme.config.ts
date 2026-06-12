@@ -31,6 +31,12 @@ export type StoreConfig = {
   name: string;
   description: string;
   logoUrl: string;
+  /**
+   * true = o logo é um símbolo/selo (quadrado): o header mostra o NOME da
+   * loja em texto ao lado. false = o logo é um wordmark horizontal que já
+   * carrega o nome (como o iDemo padrão) e aparece sozinho.
+   */
+  logoIsBadge: boolean;
   whatsapp: string;
   social: {
     instagram: string;
@@ -63,6 +69,7 @@ export const storeConfig: StoreConfig = {
     "Os melhores iPhones da região, com garantia e procedência.",
   ),
   logoUrl: v(process.env.NEXT_PUBLIC_STORE_LOGO_URL, "/logo.svg"),
+  logoIsBadge: v(process.env.NEXT_PUBLIC_STORE_LOGO_BADGE, "") === "1",
   // SEM número de exemplo no fallback: loja real nunca pode mandar venda para
   // um número morto. Use no .env o MESMO número da matriz (Informações da
   // loja); se a env var faltar, vale o número salvo no admin. O valor é
@@ -79,6 +86,8 @@ export const storeConfig: StoreConfig = {
     primary: v(process.env.NEXT_PUBLIC_COLOR_PRIMARY, "#0A84FF"),
     accent: v(process.env.NEXT_PUBLIC_COLOR_ACCENT, "#6E5CF6"),
     text: v(process.env.NEXT_PUBLIC_COLOR_TEXT, "#FFFFFF"),
-    muted: v(process.env.NEXT_PUBLIC_COLOR_MUTED, "#A1A1AA"),
+    // Um tom acima do zinc-400: legibilidade em texto pequeno no sol
+    // (auditoria mobile) sem perder a hierarquia de "texto de apoio".
+    muted: v(process.env.NEXT_PUBLIC_COLOR_MUTED, "#B8B8C0"),
   },
 };

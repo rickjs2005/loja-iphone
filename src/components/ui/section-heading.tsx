@@ -39,7 +39,9 @@ export function SectionHeading({
               {eyebrow}
             </p>
           )}
-          <h2 className="text-xl font-bold uppercase tracking-[0.08em] text-fg sm:text-2xl">
+          {/* Sentence case: consistente com o hero (o uppercase ficou só no
+              eyebrow — hierarquia calma, padrão Apple). */}
+          <h2 className="text-xl font-bold tracking-tight text-fg sm:text-2xl">
             {title}
           </h2>
           {subtitle && (

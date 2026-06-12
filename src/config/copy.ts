@@ -23,12 +23,18 @@ import type { ProductCategory } from "@/lib/data/types";
 export const copy = {
   hero: {
     badge: "Pronta entrega · Garantia · Procedência",
-    /** 3 linhas empilhadas; a última ganha o brilho "escovado". */
-    headline: ["Titânio.", "Performance.", "Inteligência."],
-    subtitle:
-      "iPhones originais com garantia, procedência e o melhor preço da região.",
-    ctaPrimary: "Ver modelos",
-    ctaSecondary: "Trocar meu iPhone",
+    /** Linhas empilhadas; a última ganha o brilho "escovado". */
+    headline: ["Seu próximo iPhone", "está aqui."],
+    subtitle: "Novos, seminovos e com procedência garantida.",
+    ctaPrimary: "Ver catálogo",
+    /** Abre o formulário de avaliação do trade-in (lead direto do hero). */
+    ctaSecondary: "Avaliar meu aparelho",
+    /**
+     * Prova de confiança sob os CTAs no mobile (no desktop o selo do topo
+     * cumpre o papel). "{estoque}" vira o total real de unidades no banco —
+     * prova dinâmica, não promessa.
+     */
+    trustLine: ["Garantia de 1 ano", "Loja física", "{estoque} aparelhos em estoque"],
   },
 
   /** Faixa de confiança sob o hero — mesma ordem dos ícones no componente. */

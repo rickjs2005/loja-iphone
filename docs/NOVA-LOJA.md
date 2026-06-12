@@ -72,6 +72,9 @@ Arquivos em `/public` (trocar pelo material do cliente, MESMOS nomes):
 
 1. `/admin` → **Informações da loja**: WhatsApp da matriz, endereço,
    horário, formas de pagamento, texto de garantia.
+   - **Link do mapa**: cole o link da **ficha do Google Business** da loja
+     (não um pin genérico) — o cliente cai na página com avaliações e fotos,
+     que vendem confiança. No Brasil, Google Maps > Apple Maps em cobertura.
 2. **Unidades** (só se houver mais de um endereço) — cada uma pode ter
    WhatsApp próprio; o cliente escolhe a loja ao clicar nos botões.
 3. **Produtos**: cadastrar com fotos (JPG/PNG/WebP, até 5 MB cada).

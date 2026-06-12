@@ -2,20 +2,30 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { CartButton } from "@/components/cart/cart-button";
+import { MobileMenu } from "@/components/layout/mobile-menu";
 import { buttonClasses } from "@/components/ui/button";
 import { WhatsappIcon } from "@/components/ui/icons";
 import { WhatsappCta } from "@/components/whatsapp/whatsapp-cta";
 import { genericMessage } from "@/lib/whatsapp";
 import { storeConfig } from "@/config/theme.config";
 
-// Links âncora para as seções da home (navegação de flagship).
+// Links âncora para as seções da home. Com a "/" na frente funcionam de
+// QUALQUER página (na página de produto, "#linha-iphone" puro não levava
+// a lugar nenhum).
 const NAV_LINKS: { label: string; href: string }[] = [
-  { label: "iPhones", href: "#linha-iphone" },
-  { label: "MacBooks", href: "#linha-macbook" },
-  { label: "iPads", href: "#linha-ipad" },
-  { label: "Acessórios", href: "#acessorios" },
-  { label: "Sobre nós", href: "#loja" },
-  { label: "Contato", href: "#contato" },
+  { label: "iPhones", href: "/#linha-iphone" },
+  { label: "MacBooks", href: "/#linha-macbook" },
+  { label: "iPads", href: "/#linha-ipad" },
+  { label: "Acessórios", href: "/#acessorios" },
+  { label: "Sobre nós", href: "/#loja" },
+  { label: "Contato", href: "/#contato" },
+];
+
+// O menu mobile ganha também o atalho de trade-in (gerador de leads).
+const MOBILE_LINKS = [
+  ...NAV_LINKS.slice(0, 4),
+  { label: "Trocar meu iPhone", href: "/#trocar" },
+  ...NAV_LINKS.slice(4),
 ];
 
 /** Cabeçalho fixo: logo, navegação por âncoras (lg+), carrinho e CTA de WhatsApp. */
@@ -30,9 +40,17 @@ export function Header() {
             width={400}
             height={120}
             priority
-            className="h-10 w-auto"
+            className={storeConfig.logoIsBadge ? "h-11 w-auto" : "h-10 w-auto"}
           />
-          <span className="sr-only">{storeConfig.name}</span>
+          {/* Selo/símbolo não carrega o nome legível neste tamanho —
+              o nome entra em texto ao lado. Wordmark aparece sozinho. */}
+          {storeConfig.logoIsBadge ? (
+            <span className="text-lg font-bold tracking-tight text-fg">
+              {storeConfig.name}
+            </span>
+          ) : (
+            <span className="sr-only">{storeConfig.name}</span>
+          )}
         </Link>
 
         <nav className="hidden items-center gap-7 lg:flex">
@@ -57,6 +75,7 @@ export function Header() {
             <span className="hidden sm:inline">Falar no WhatsApp</span>
             <span className="sr-only sm:hidden">Falar no WhatsApp</span>
           </WhatsappCta>
+          <MobileMenu links={MOBILE_LINKS} />
         </div>
       </Container>
     </header>

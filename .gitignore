@@ -50,3 +50,8 @@ next-env.d.ts
 
 # QR codes locais de desenvolvimento
 qr-*.png
+
+.vercel
+
+# Material comercial (screenshots/vídeos)
+capturas/

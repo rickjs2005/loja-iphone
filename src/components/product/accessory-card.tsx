@@ -56,6 +56,7 @@ export function AccessoryCard({ product }: { product: ProductWithImages }) {
         <AddToCartButton
           size="sm"
           fullWidth
+          shortLabel
           product={{
             productId: product.id,
             name: product.name,

@@ -5,7 +5,6 @@ import { m, useMotionTemplate, useMotionValue } from "framer-motion";
 import { ProductImage } from "@/components/product/product-image";
 import { StockBadge } from "@/components/product/stock-badge";
 import { buttonClasses } from "@/components/ui/button";
-import { ShieldIcon } from "@/components/ui/icons";
 import { IphoneRender, colorwayByIndex } from "@/components/visual/iphone-render";
 import { formatCents, formatInstallments } from "@/lib/format";
 import {
@@ -110,16 +109,13 @@ export function ProductCard({
       </Link>
 
       <div className="relative z-20 flex flex-1 flex-col gap-2 p-3 sm:gap-3 sm:p-5">
+        {/* Card enxuto (escaneabilidade): nome, preço e parcela. Descrição,
+            garantia e bateria moram na página do produto — aqui só atrasam
+            a leitura do grid. */}
         <Link href={`/produtos/${product.id}`} className="flex-1">
           <h3 className="text-base font-semibold leading-snug text-fg transition-colors group-hover:text-primary sm:text-lg">
             {product.name}
           </h3>
-          {product.description && (
-            /* Uma linha só: funciona como a "linha de spec" do mockup */
-            <p className="mt-1 line-clamp-1 text-xs text-muted sm:text-sm">
-              {product.description}
-            </p>
-          )}
         </Link>
 
         <div>
@@ -130,12 +126,6 @@ export function ProductCard({
             ou {formatInstallments(product.price_cents, product.installments)}{" "}
             sem juros
           </p>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs text-muted">
-          <ShieldIcon className="size-3.5 text-fg/60" />
-          Garantia inclusa
-          {product.battery_health ? ` · Bateria ${product.battery_health}%` : ""}
         </div>
 
         {/* CTA: abre a página do produto — a compra fecha pelo carrinho. */}

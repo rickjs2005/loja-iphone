@@ -32,6 +32,8 @@ export default async function HomePage() {
     ]);
 
   const accessories = products.filter((p) => p.category === "accessory");
+  // Prova de confiança do hero: estoque real somado (só aparelhos à venda).
+  const stockTotal = products.reduce((acc, p) => acc + p.stock, 0);
   // Uma seção por linha Apple — só as que têm produto ativo.
   const lines = CATEGORIES.filter((c) => c.value !== "accessory")
     .map((c) => ({
@@ -42,7 +44,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero />
+      <Hero stockTotal={stockTotal} />
       <TrustBand />
       <TradeIn />
 
