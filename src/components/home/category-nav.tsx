@@ -43,7 +43,7 @@ export function CategoryNav({ products }: { products: ProductWithImages[] }) {
                 href={
                   c.value === "accessory" ? "#acessorios" : `#linha-${c.value}`
                 }
-                className="group block overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] transition-colors hover:border-white/30"
+                className="group glass glass-rim block overflow-hidden rounded-2xl transition-shadow duration-300 hover:shadow-[0_24px_50px_-24px_rgba(0,0,0,0.85)]"
               >
                 {/* Foto de capa da linha com gradiente de leitura na base */}
                 <div className="relative aspect-[4/3] overflow-hidden">

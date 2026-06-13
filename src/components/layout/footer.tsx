@@ -33,7 +33,10 @@ export async function Footer() {
   const ano = new Date().getFullYear();
 
   return (
-    <footer id="contato" className="mt-auto border-t border-white/10 bg-surface/40">
+    <footer
+      id="contato"
+      className="glass-strong mt-auto border-t border-white/10"
+    >
       <Container className="grid grid-cols-1 gap-10 py-14 lg:grid-cols-4">
         {/* Col 1 — marca */}
         <div>

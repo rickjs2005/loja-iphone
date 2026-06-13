@@ -31,9 +31,12 @@ const MOBILE_LINKS = [
 /** Cabeçalho fixo: logo, navegação por âncoras (lg+), carrinho e CTA de WhatsApp. */
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-bg/70 backdrop-blur-xl">
-      <Container className="flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5">
+    <header className="sticky top-0 z-40 pt-3">
+      <Container>
+        {/* Barra flutuante de vidro: translúcida, com borda iluminada (rim),
+            reflexo especular superior e sombra suave de profundidade. */}
+        <div className="glass glass-rim glass-spec flex h-16 items-center justify-between gap-4 rounded-[1.75rem] px-4 sm:px-6">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5">
           <Image
             src={storeConfig.logoUrl}
             alt={storeConfig.name}
@@ -76,6 +79,7 @@ export function Header() {
             <span className="sr-only sm:hidden">Falar no WhatsApp</span>
           </WhatsappCta>
           <MobileMenu links={MOBILE_LINKS} />
+          </div>
         </div>
       </Container>
     </header>

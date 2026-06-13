@@ -89,7 +89,7 @@ export function CartDrawer({
             transition={{ type: "spring", stiffness: 320, damping: 34 }}
             ref={panelRef}
             tabIndex={-1}
-            className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col overscroll-contain border-l border-white/10 bg-surface/95 outline-none backdrop-blur-xl"
+            className="glass-strong fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col overscroll-contain border-l border-white/10 outline-none"
             role="dialog"
             aria-modal="true"
             aria-label="Carrinho"

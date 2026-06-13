@@ -73,7 +73,7 @@ function MenuSheet({
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 380, damping: 38 }}
         onClick={(e) => e.stopPropagation()}
-        className="ml-auto flex h-full w-[78%] max-w-xs flex-col border-l border-white/10 bg-surface p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
+        className="glass-strong ml-auto flex h-full w-[78%] max-w-xs flex-col border-l border-white/10 p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
       >
         <div className="mb-8 flex items-center justify-between">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted">

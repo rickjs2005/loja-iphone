@@ -62,3 +62,135 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================================
+ *  LIQUID GLASS — sistema central de superfícies de vidro
+ * ----------------------------------------------------------------------------
+ *  Reutilizável em todo o site: superfície translúcida, borda iluminada
+ *  (rim light), destaque especular interno e profundidade.
+ *
+ *  IMPORTANTE (white-label): o branco/preto aqui é FÍSICA DE LUZ do vidro
+ *  (reflexo, sombra, brilho) — NÃO é cor de marca. A cor da loja continua
+ *  vivendo só em --store-* e entra via bg-primary/text-primary nos CTAs.
+ * ============================================================================ */
+@layer components {
+  /* Superfície de vidro base: translúcida, com saturação que "puxa" a cor da
+     aurora por trás, highlight especular no topo e sombra de profundidade. */
+  .glass {
+    position: relative;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.13),
+      rgba(255, 255, 255, 0.04) 34%,
+      rgba(255, 255, 255, 0.02)
+    );
+    backdrop-filter: blur(22px) saturate(200%);
+    -webkit-backdrop-filter: blur(22px) saturate(200%);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.28),
+      inset 0 -1px 0 0 rgba(0, 0, 0, 0.25),
+      0 24px 50px -28px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Mais opaca: drawers, menus e modais onde a leitura vem antes do efeito. */
+  .glass-strong {
+    position: relative;
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--store-surface) 82%, transparent),
+      color-mix(in oklab, var(--store-surface) 94%, transparent)
+    );
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+      0 30px 60px -30px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Borda iluminada (rim light): anel de 1px com gradiente — brilhante no topo,
+     discreto na base. É o detalhe que dá a sensação de vidro físico. Aplicar
+     junto de um raio (rounded-*) para o anel acompanhar o contorno. */
+  .glass-rim::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.6),
+      rgba(255, 255, 255, 0.12) 30%,
+      rgba(255, 255, 255, 0.03) 70%,
+      rgba(255, 255, 255, 0.18)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Destaque especular: reflexo diagonal suave fixo no canto superior, como
+     luz batendo no vidro. Fica ATRÁS do conteúdo (z-index negativo isolado). */
+  .glass-spec {
+    isolation: isolate;
+  }
+  .glass-spec::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: -1;
+    background: radial-gradient(
+      130% 90% at 12% -15%,
+      rgba(255, 255, 255, 0.3),
+      transparent 55%
+    );
+    pointer-events: none;
+  }
+
+  /* Brilho líquido (gloss) — domo de luz na metade superior, como um botão
+     de vidro do iOS 26. Para superfícies sólidas (botões primários, chips). */
+  .glass-gloss::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 52%;
+    border-radius: inherit;
+    z-index: -1;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.55),
+      rgba(255, 255, 255, 0.05)
+    );
+    pointer-events: none;
+  }
+
+  /* Varredura especular (sheen): faixa de luz que atravessa a superfície no
+     hover — sensação de reflexo passando pelo vidro. Para botões e cards. */
+  .glass-sheen {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .glass-sheen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      105deg,
+      transparent 32%,
+      rgba(255, 255, 255, 0.28) 48%,
+      rgba(255, 255, 255, 0.05) 56%,
+      transparent 70%
+    );
+    transform: translateX(-130%);
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .glass-sheen:hover::before {
+    transform: translateX(130%);
+  }
+}

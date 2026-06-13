@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, m } from "framer-motion";
+import {
+  m,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { buttonClasses } from "@/components/ui/button";
-import { CheckIcon, PhoneIcon } from "@/components/ui/icons";
-import { TradeInForm } from "@/components/home/trade-in-form";
+import { CheckIcon } from "@/components/ui/icons";
 import { copy } from "@/config/copy";
 
 // Posições fixas das partículas (determinístico → sem mismatch de hidratação).
@@ -42,7 +46,36 @@ const silverDrop =
 const silverBrush =
   "bg-gradient-to-r from-white/40 via-white/75 to-white/40 bg-clip-text text-transparent";
 
-function PhoneVisual() {
+function PhoneVisual({
+  px,
+  py,
+}: {
+  /** Posição normalizada do cursor (-0.5..0.5) vinda da seção. */
+  px: MotionValue<number>;
+  py: MotionValue<number>;
+}) {
+  // Parallax de cursor: o device inclina e desliza levemente seguindo o mouse,
+  // como um objeto físico flutuando sob luz. Spring suave = movimento de 60fps
+  // sem "tremer". No toque (sem mouse) os valores ficam em 0 → device parado.
+  const rotateY = useSpring(useTransform(px, [-0.5, 0.5], [9, -9]), {
+    stiffness: 80,
+    damping: 18,
+  });
+  const rotateX = useSpring(useTransform(py, [-0.5, 0.5], [-7, 7]), {
+    stiffness: 80,
+    damping: 18,
+  });
+  const translateX = useSpring(useTransform(px, [-0.5, 0.5], [-16, 16]), {
+    stiffness: 60,
+    damping: 20,
+  });
+  const translateY = useSpring(useTransform(py, [-0.5, 0.5], [-12, 12]), {
+    stiffness: 60,
+    damping: 20,
+  });
+  // Reflexo de vidro que varre a moldura conforme o cursor anda na horizontal.
+  const glarePos = useTransform(px, [-0.5, 0.5], ["20%", "80%"]);
+
   return (
     <m.div
       // Última entrada da sequência de reveal: headline → subtítulo → botões → device.
@@ -51,19 +84,32 @@ function PhoneVisual() {
       transition={{ duration: 1, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
       // min-w-0: sem isso o conteúdo do carrossel (slides lado a lado) força
       // a largura mínima da célula do grid e estoura a página no mobile.
-      className="relative flex min-w-0 items-center justify-center"
+      // perspective: dá profundidade real à inclinação 3D do device.
+      className="relative flex min-w-0 items-center justify-center [perspective:1200px]"
     >
-      {/* Luz monocromática grande atrás do aparelho */}
+      {/* Luz ambiente grande atrás do aparelho (monocromática + toque da marca) */}
       <div className="absolute left-1/2 top-1/2 -z-10 size-[640px] max-w-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.16),rgba(255,255,255,0.06)_42%,transparent_70%)] blur-2xl" />
-      {/* Flutuação muito sutil — presença, não distração */}
+      <div className="absolute left-1/2 top-1/2 -z-10 size-[420px] max-w-[90vw] -translate-x-1/2 -translate-y-[42%] rounded-full bg-primary/15 blur-[120px]" />
+      {/* Camada de parallax (segue o cursor) — separada da flutuação para os
+          dois movimentos não disputarem a mesma propriedade `y`. */}
       <m.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="w-full min-w-0 max-w-[460px]"
+        style={{
+          rotateX,
+          rotateY,
+          x: translateX,
+          y: translateY,
+          transformStyle: "preserve-3d",
+        }}
+        className="w-full min-w-0 max-w-[460px] will-change-transform"
       >
+        {/* Flutuação muito sutil — presença, não distração */}
+        <m.div
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        >
         {/* Mobile: o vídeo é APOIO (~300px), não o protagonista — a primeira
             dobra entrega a mensagem + CTAs. No sm+ volta ao retrato grande. */}
-        <div className="relative h-[300px] w-full min-w-0 overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.7)] sm:h-auto sm:aspect-[4/5]">
+        <div className="glass-rim relative h-[300px] w-full min-w-0 overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.75)] sm:h-auto sm:aspect-[4/5]">
           {/* Nome versionado: trocar o vídeo = trocar o nome (evita cache). */}
           <video
             // O React NÃO emite o atributo `muted` no HTML do servidor (bug
@@ -87,25 +133,51 @@ function PhoneVisual() {
             aria-label="iPhone em destaque"
             className="absolute inset-0 h-full w-full object-cover"
           />
+          {/* Reflexo de vidro fixo: brilho diagonal no topo da moldura. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent"
+          />
+          {/* Glare dinâmico: ponto de luz que segue o cursor pela superfície. */}
+          <m.div
+            aria-hidden
+            style={{ left: glarePos }}
+            className="pointer-events-none absolute top-0 h-full w-1/2 -translate-x-1/2 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.18),transparent_60%)] mix-blend-screen max-lg:hidden"
+          />
         </div>
+        </m.div>
       </m.div>
     </m.div>
   );
 }
 
 export function Hero({ stockTotal = 0 }: { stockTotal?: number }) {
-  // CTA secundário abre o formulário de avaliação direto do hero — o lead
-  // de troca não precisa rolar até a seção de trade-in.
-  const [tradeInOpen, setTradeInOpen] = useState(false);
-
   // O item de estoque só entra quando o número impressiona (loja nova com
   // 3 aparelhos passaria a impressão contrária).
   const trustBits = copy.hero.trustLine.filter(
     (bit) => !bit.includes("{estoque}") || stockTotal >= 10,
   );
 
+  // Posição do cursor na seção, normalizada (-0.5..0.5), que alimenta o
+  // parallax do device. Fica em 0 no toque (nunca há mousemove) → sem custo.
+  const px = useMotionValue(0);
+  const py = useMotionValue(0);
+  function onPointer(e: React.MouseEvent<HTMLElement>) {
+    const r = e.currentTarget.getBoundingClientRect();
+    px.set((e.clientX - r.left) / r.width - 0.5);
+    py.set((e.clientY - r.top) / r.height - 0.5);
+  }
+  function onLeave() {
+    px.set(0);
+    py.set(0);
+  }
+
   return (
-    <section className="relative flex items-center overflow-hidden py-8 sm:py-16 lg:min-h-[92vh] lg:py-0">
+    <section
+      onMouseMove={onPointer}
+      onMouseLeave={onLeave}
+      className="relative flex items-center overflow-hidden py-8 sm:py-16 lg:min-h-[92vh] lg:py-0"
+    >
       {/* Partículas flutuando (só em telas grandes: no celular competem com
           o conteúdo e gastam bateria sem ninguém reparar nelas) */}
       <div aria-hidden className="pointer-events-none absolute inset-0 max-sm:hidden">
@@ -149,7 +221,7 @@ export function Hero({ stockTotal = 0 }: { stockTotal?: number }) {
               variants={fade}
               initial="hidden"
               animate="show"
-              className="text-[2.6rem] font-extrabold leading-[1.02] tracking-[-0.04em] sm:mt-6 sm:text-6xl lg:text-6xl xl:text-7xl"
+              className="text-[3.1rem] font-extrabold leading-[0.95] tracking-[-0.05em] sm:mt-6 sm:text-7xl lg:text-[5.25rem] xl:text-8xl"
             >
               {copy.hero.headline.map((line, i) => (
                 <span
@@ -179,9 +251,8 @@ export function Hero({ stockTotal = 0 }: { stockTotal?: number }) {
               animate="show"
               className="mt-7 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row lg:justify-start"
             >
-              {/* CTA duplo — dois públicos: quem compra (catálogo) e quem
-                  troca (avaliação). Largura cheia no celular: empilhados com
-                  larguras diferentes parecem desalinhados. */}
+              {/* CTA único: catálogo. A avaliação de troca já tem botão
+                  próprio na seção de trade-in (#trocar) logo abaixo. */}
               <a
                 href="#produtos"
                 className={buttonClasses(
@@ -192,18 +263,6 @@ export function Hero({ stockTotal = 0 }: { stockTotal?: number }) {
               >
                 {copy.hero.ctaPrimary}
               </a>
-              <button
-                type="button"
-                onClick={() => setTradeInOpen(true)}
-                className={buttonClasses(
-                  "outline",
-                  "lg",
-                  "h-14 w-full px-8 text-base sm:w-auto sm:text-lg",
-                )}
-              >
-                <PhoneIcon className="size-5" />
-                {copy.hero.ctaSecondary}
-              </button>
             </m.div>
 
             {/* Prova de confiança na primeira dobra do mobile (o selo do
@@ -224,8 +283,8 @@ export function Hero({ stockTotal = 0 }: { stockTotal?: number }) {
             </m.p>
           </div>
 
-          {/* Coluna do device — foto premium em moldura */}
-          <PhoneVisual />
+          {/* Coluna do device — foto premium em moldura de vidro com parallax */}
+          <PhoneVisual px={px} py={py} />
         </div>
       </Container>
 
@@ -245,10 +304,6 @@ export function Hero({ stockTotal = 0 }: { stockTotal?: number }) {
           />
         </div>
       </m.div>
-
-      <AnimatePresence>
-        {tradeInOpen && <TradeInForm onClose={() => setTradeInOpen(false)} />}
-      </AnimatePresence>
     </section>
   );
 }

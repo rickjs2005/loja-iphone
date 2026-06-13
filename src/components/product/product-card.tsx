@@ -49,7 +49,7 @@ export function ProductCard({
       onMouseMove={onMove}
       whileHover={{ y: -8, scale: 1.02 }}
       transition={{ type: "spring", stiffness: 280, damping: 22 }}
-      className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors duration-300 hover:border-white/30 hover:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.8)]"
+      className="group glass glass-rim glass-spec relative flex flex-col overflow-hidden rounded-3xl transition-shadow duration-300 hover:shadow-[0_34px_80px_-22px_rgba(0,0,0,0.9)]"
     >
       {/* Spotlight que segue o cursor */}
       <m.div

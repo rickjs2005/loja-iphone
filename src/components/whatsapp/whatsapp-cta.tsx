@@ -122,7 +122,7 @@ function UnitPicker({
         exit={{ opacity: 0, y: 24 }}
         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-t-3xl border border-white/10 bg-surface p-6 sm:rounded-3xl"
+        className="glass-strong glass-rim w-full max-w-md rounded-t-3xl p-6 sm:rounded-3xl"
       >
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>

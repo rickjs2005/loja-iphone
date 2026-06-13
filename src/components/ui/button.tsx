@@ -8,16 +8,23 @@ type Size = "sm" | "md" | "lg";
 export const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60";
 
-const base = `inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 ${focusRing} disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]`;
+// Cápsula (rounded-full) = assinatura visual da Apple. `glass-sheen` varre a
+// luz no hover; `glass-gloss` é o domo de brilho líquido na metade superior;
+// o ring-inset branco é a borda iluminada do vidro.
+const base = `glass-sheen inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-tight transition-all duration-200 ${focusRing} disabled:opacity-50 disabled:pointer-events-none active:scale-[0.97]`;
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-primary text-white hover:brightness-110 shadow-lg shadow-primary/20",
-  accent: "bg-accent text-white hover:brightness-110 shadow-lg shadow-accent/20",
+    "glass-gloss bg-primary text-white ring-1 ring-inset ring-white/30 shadow-lg shadow-primary/40 hover:brightness-110 hover:shadow-primary/55 hover:-translate-y-0.5",
+  accent:
+    "glass-gloss bg-accent text-white ring-1 ring-inset ring-white/30 shadow-lg shadow-accent/40 hover:brightness-110 hover:shadow-accent/55 hover:-translate-y-0.5",
+  // Secundário de vidro: cápsula translúcida, discreta mas premium.
   outline:
-    "border border-white/15 bg-surface/60 text-fg hover:border-white/30 hover:bg-surface",
+    "border border-white/20 bg-white/[0.08] text-fg backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] hover:border-white/35 hover:bg-white/[0.12]",
   ghost: "text-fg hover:bg-white/5",
-  whatsapp: "bg-[#25D366] text-black hover:brightness-105 shadow-lg shadow-[#25D366]/20",
+  // CTA principal do sistema: cápsula de vidro verde com glow forte e gloss.
+  whatsapp:
+    "glass-gloss bg-[#25D366] text-black ring-1 ring-inset ring-white/45 shadow-lg shadow-[#25D366]/45 hover:brightness-105 hover:shadow-[#25D366]/65 hover:-translate-y-0.5",
 };
 
 const sizes: Record<Size, string> = {

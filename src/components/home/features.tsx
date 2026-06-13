@@ -43,8 +43,8 @@ export function Features() {
               generoso e hierarquia calma (título médio, descrição suave). */}
           {FEATURES.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.08}>
-              <div className="h-full rounded-3xl border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-xl transition-colors duration-300 hover:border-white/[0.16] hover:bg-white/[0.06]">
-                <div className="mb-5 inline-flex size-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.04] text-fg/90">
+              <div className="glass glass-rim glass-spec h-full rounded-3xl p-7 transition-shadow duration-300 hover:shadow-[0_28px_60px_-26px_rgba(0,0,0,0.9)]">
+                <div className="glass glass-rim mb-5 inline-flex size-12 items-center justify-center rounded-2xl text-fg/90">
                   {f.icon}
                 </div>
                 <h3 className="font-medium tracking-tight text-fg">{f.title}</h3>
