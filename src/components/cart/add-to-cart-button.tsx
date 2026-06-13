@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BagIcon } from "@/components/ui/icons";
 import { useCartStore, type CartItem } from "@/lib/cart/store";
@@ -27,13 +27,23 @@ export function AddToCartButton({
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartUI((s) => s.open);
   const [added, setAdded] = useState(false);
+  const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const esgotado = product.stock <= 0;
+
+  // Cancela o timer pendente ao desmontar (evita setState em componente morto).
+  useEffect(
+    () => () => {
+      if (resetTimer.current) clearTimeout(resetTimer.current);
+    },
+    [],
+  );
 
   function handleAdd() {
     addItem(product, quantity);
     openCart();
     setAdded(true);
-    window.setTimeout(() => setAdded(false), 1500);
+    if (resetTimer.current) clearTimeout(resetTimer.current);
+    resetTimer.current = setTimeout(() => setAdded(false), 1500);
   }
 
   return (

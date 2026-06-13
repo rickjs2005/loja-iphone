@@ -7,6 +7,7 @@ import { MapPinIcon, WhatsappIcon, XIcon } from "@/components/ui/icons";
 import { focusRing } from "@/components/ui/button";
 import { storeConfig } from "@/config/theme.config";
 import { waUrl } from "@/lib/whatsapp";
+import { isValidWhatsapp, normalizeWhatsapp } from "@/lib/phone";
 import {
   useAttendingUnits,
   useDefaultWhatsapp,
@@ -39,6 +40,25 @@ export function WhatsappCta({
   // 1 → direto nela; 2+ → o cliente escolhe.
   if (units.length < 2) {
     const phone = units[0]?.whatsapp || defaultPhone || storeConfig.whatsapp;
+    // Loja recém-criada sem WhatsApp configurado: NUNCA gerar link wa.me sem
+    // destinatário (abriria o app numa conversa vazia = conversão perdida em
+    // silêncio). Renderiza o gatilho inerte e avisa o dono em dev.
+    if (!isValidWhatsapp(normalizeWhatsapp(phone))) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          "[WhatsappCta] WhatsApp ausente/inválido — defina NEXT_PUBLIC_STORE_WHATSAPP ou o número em Informações da loja (admin).",
+        );
+      }
+      return (
+        <span
+          className={`${className ?? ""} pointer-events-none opacity-60`}
+          aria-disabled="true"
+          title="WhatsApp ainda não configurado"
+        >
+          {children}
+        </span>
+      );
+    }
     return (
       <a
         href={waUrl(phone, message)}
@@ -168,7 +188,7 @@ function UnitPicker({
                     </span>
                   )}
                 </span>
-                <WhatsappIcon className="size-5 shrink-0 text-[#25D366]" />
+                <WhatsappIcon className="size-5 shrink-0 text-whatsapp" />
               </a>
             </li>
           ))}

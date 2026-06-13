@@ -24,7 +24,7 @@ const variants: Record<Variant, string> = {
   ghost: "text-fg hover:bg-white/5",
   // CTA principal do sistema: cápsula de vidro verde com glow forte e gloss.
   whatsapp:
-    "glass-gloss bg-[#25D366] text-black ring-1 ring-inset ring-white/45 shadow-lg shadow-[#25D366]/45 hover:brightness-105 hover:shadow-[#25D366]/65 hover:-translate-y-0.5",
+    "glass-gloss bg-whatsapp text-black ring-1 ring-inset ring-white/45 shadow-lg shadow-whatsapp/45 hover:brightness-105 hover:shadow-whatsapp/65 hover:-translate-y-0.5",
 };
 
 const sizes: Record<Size, string> = {

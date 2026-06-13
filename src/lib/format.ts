@@ -35,9 +35,10 @@ const brl = new Intl.NumberFormat("pt-BR", {
   currency: "BRL",
 });
 
-/** 999900 -> "R$ 9.999,00" */
+/** 999900 -> "R$ 9.999,00". Não-finito (NaN/Infinity por dado ruim) vira 0
+ *  — defesa em profundidade para a vitrine nunca renderizar "R$ ∞". */
 export function formatCents(cents: number): string {
-  return brl.format(cents / 100);
+  return brl.format(Number.isFinite(cents) ? cents / 100 : 0);
 }
 
 /**
@@ -53,7 +54,10 @@ export function formatCentsInput(cents: number | null): string {
  * exibida nunca somar menos que o total. 999900 -> "12x de R$ 833,25"
  */
 export function formatInstallments(cents: number, parts = 12): string {
-  return `${parts}x de ${formatCents(Math.ceil(cents / parts))}`;
+  // Guarda contra parts <= 0 (dado importado/seed fora do schema): evita
+  // divisão por zero → Infinity → "Nx de R$ ∞".
+  const n = Number.isFinite(parts) && parts > 0 ? Math.trunc(parts) : 12;
+  return `${n}x de ${formatCents(Math.ceil(cents / n))}`;
 }
 
 // ---------------------------------------------------------------------------

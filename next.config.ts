@@ -32,6 +32,12 @@ if (process.env.NODE_ENV === "production") {
     key: "Content-Security-Policy",
     value: contentSecurityPolicy,
   });
+  // HSTS: força HTTPS no domínio próprio (fecha downgrade/SSL-strip). Só em
+  // produção — em dev (http://localhost) quebraria o acesso.
+  securityHeaders.push({
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains",
+  });
 }
 
 const nextConfig: NextConfig = {

@@ -16,6 +16,8 @@
   --color-accent: var(--store-accent);
   --color-fg: var(--store-text);
   --color-muted: var(--store-muted);
+  /* Verde do WhatsApp como token (não hardcodar #25D366 em componente). */
+  --color-whatsapp: var(--whatsapp);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -29,7 +31,11 @@
   --store-primary: #0a84ff;
   --store-accent: #6e5cf6;
   --store-text: #ffffff;
-  --store-muted: #a1a1aa;
+  /* Espelha o fallback de theme.config.ts (legibilidade no sol); antes
+     divergia (#a1a1aa) e degradava o contraste no SSG pré-injector. */
+  --store-muted: #b8b8c0;
+  /* Verde institucional do WhatsApp — constante de marca, igual em toda loja. */
+  --whatsapp: #25d366;
 
   color-scheme: dark;
 }

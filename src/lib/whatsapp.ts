@@ -49,14 +49,19 @@ export function tradeInMessage(data?: {
 }): string {
   const model = data?.model?.trim() ?? "";
   const battery = data?.battery?.trim() ?? "";
-  return [
+  const linhas = [
     `Olá, ${storeConfig.name}! Quero dar meu iPhone usado como entrada.`,
     "",
     `Modelo do meu aparelho: ${model}`,
-    `Saúde da bateria (%): ${battery}`,
+  ];
+  // Bateria é opcional no formulário: só vai pra mensagem se preenchida
+  // (sem isso o cliente mandava "Saúde da bateria (%): " em branco).
+  if (battery) linhas.push(`Saúde da bateria (%): ${battery}`);
+  linhas.push(
     "",
     "Vou mandar as fotos em seguida. Quanto ele vale de crédito?",
-  ].join("\n");
+  );
+  return linhas.join("\n");
 }
 
 /** Abordagem genérica (header/footer). */
