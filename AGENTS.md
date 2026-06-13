@@ -3,6 +3,14 @@
 Stack: **Next.js 15** (App Router) + TypeScript + **Tailwind v4** + Framer Motion
 + Supabase (@supabase/ssr) + Zustand + Zod.
 
+> **Escopo: modelo de loja APPLE.** A personalização (marca/cores/contatos/
+> endereços/copy/catálogo) é por configuração, sem código. Mas o domínio
+> **assume produtos Apple por design**: as categorias (`CATEGORIES` em
+> `src/lib/data/types.ts` + constraint no banco), a marca `Apple` no JSON-LD
+> de produto e alguns rótulos de navegação são **fixos**. Trocar de nicho =
+> fork (alterar esses 3 pontos + migration). Não tente "generalizar" isso em
+> mudanças de rotina — é decisão de produto. Detalhes no README ("Escopo").
+
 ## Regras ao editar este repositório
 
 - **Personalização white-label**: cores/logo/WhatsApp vivem só em

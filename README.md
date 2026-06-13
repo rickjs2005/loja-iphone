@@ -1,9 +1,31 @@
-# Loja de iPhone — White-label
+# Loja de iPhone — modelo white-label (produtos Apple)
 
-Loja online de iPhones, dark, rápida e personalizável. Pensada como **produto
-demo white-label**: cada cliente troca **paleta, logo, WhatsApp e produtos**
-mexendo em **um único arquivo de config + o logo**. O fechamento da compra é
-100% pelo **WhatsApp** (sem gateway de pagamento).
+Loja online de iPhones, dark, rápida e personalizável. Pensada como **modelo
+de loja Apple white-label**: cada cliente troca **paleta, logo, WhatsApp e
+produtos** mexendo em **um único arquivo de config + o logo**. O fechamento da
+compra é 100% pelo **WhatsApp** (sem gateway de pagamento).
+
+> ## 🍎 Escopo do produto: modelo de **loja Apple**, não white-label genérico
+>
+> A personalização cobre **marca, identidade visual, contatos, endereços,
+> textos da vitrine e catálogo** — isso é trocado por loja **sem editar
+> código** (env vars + admin). Veja a seção de personalização abaixo.
+>
+> O que é **fixo por design** (assume produtos Apple) e exigiria **código +
+> migration** para outro nicho:
+>
+> - **Categorias** — `iphone / macbook / ipad / watch / airpods / accessory`
+>   estão em `src/lib/data/types.ts` (`CATEGORIES`) e na coluna `category`
+>   (check no banco). Uma loja de Android/games/etc. precisaria alterar o
+>   union type e migrar a constraint.
+> - **Marca no SEO** — o JSON-LD de produto declara `brand: "Apple"` para
+>   itens que não são acessório (`src/app/(loja)/produtos/[id]/page.tsx`).
+> - **Rótulos de navegação** ("iPhones", "MacBooks", "Trocar meu iPhone") e
+>   algumas frases assumem o universo Apple.
+>
+> Para uma loja de **outra marca Apple-cêntrica** (revenda de iPhone/Mac/iPad)
+> nada disso precisa mudar — é só configurar. Para um **nicho diferente**,
+> trate como fork e ajuste os 3 pontos acima.
 
 ## Stack
 
