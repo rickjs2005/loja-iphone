@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { SiteSettingsInput } from "@/lib/validation/site.schema";
 import type {
@@ -38,7 +39,7 @@ const DEMO_SETTINGS: StoreSettingsRow = {
 export const getStoreSettings = cache(async (): Promise<StoreSettingsRow> => {
   if (!isSupabaseConfigured()) return DEMO_SETTINGS;
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("store_settings")
     .select("*")
@@ -71,7 +72,7 @@ export const getSiteImages = cache(
   async (section: SiteSection): Promise<SiteImageRow[]> => {
     if (!isSupabaseConfigured()) return [];
 
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("site_images")
       .select("*")

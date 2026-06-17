@@ -17,8 +17,10 @@ import { getUnits } from "@/lib/data/units";
 import { CATEGORIES } from "@/lib/data/types";
 import { copy } from "@/config/copy";
 
-// Sempre buscar dados frescos (estoque/preço mudam no admin).
-export const dynamic = "force-dynamic";
+// ISR: servida do cache (CDN) e revalidada a cada 5 min. As alterações no
+// admin (produto/loja/estoque) já chamam revalidatePath("/"), então o
+// conteúdo atualiza na hora — sem pagar render dinâmico em toda visita.
+export const revalidate = 300;
 
 export default async function HomePage() {
   const [products, settings, lojaImgs, entregaImgs, instagramImgs, units] =

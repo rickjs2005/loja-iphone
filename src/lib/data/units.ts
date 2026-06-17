@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { UnitInput } from "@/lib/validation/unit.schema";
 import type { InventoryRow, UnitRow } from "@/types/database.types";
@@ -15,7 +16,7 @@ import type { InventoryRow, UnitRow } from "@/types/database.types";
 export const getUnits = cache(async (): Promise<UnitRow[]> => {
   if (!isSupabaseConfigured()) return [];
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("units")
     .select("*")

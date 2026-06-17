@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { ProductInput } from "@/lib/validation/product.schema";
 import type { ProductImageRow } from "@/types/database.types";
@@ -46,7 +47,8 @@ export const getActiveProducts = cache(
   async (): Promise<ProductWithImages[]> => {
     if (!isSupabaseConfigured()) return demoProducts;
 
-    const supabase = await createClient();
+    // Leitura pública (anon, sem cookies) → permite cache/ISR da home.
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("products")
       .select(PRODUCT_WITH_IMAGES)
@@ -90,7 +92,7 @@ export const getUpsellAccessories = cache(
         .slice(0, limit);
     }
 
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("products")
       .select(PRODUCT_WITH_IMAGES)
@@ -168,7 +170,7 @@ export const getRelatedProducts = cache(
         .slice(0, limit);
     }
 
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("products")
       .select(PRODUCT_WITH_IMAGES)

@@ -19,8 +19,11 @@ import { storeConfig } from "@/config/theme.config";
 import { ConditionCard } from "@/components/product/condition-card";
 import { UnitAvailability } from "@/components/product/unit-availability";
 
-// Página sempre dinâmica: preço/estoque mudam com frequência.
-export const dynamic = "force-dynamic";
+// Meta: ISR (revalidate 5 min) — o admin já chama revalidatePath em cada
+// alteração. Hoje esta página ainda renderiza dinâmico porque lê produto e
+// estoque via client com sessão (cookies); migrar essas leituras para o
+// client público (como na home) é o que vai cachear esta página de fato.
+export const revalidate = 300;
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -30,7 +33,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 /**
  * Validade da oferta no JSON-LD: hoje + 30 dias (recomendado pelo Google).
  * Fora do componente para satisfazer a regra de pureza do render — roda no
- * servidor a cada request (página é force-dynamic).
+ * servidor a cada render.
  */
 function offerValidUntil(): string {
   const date = new Date();
