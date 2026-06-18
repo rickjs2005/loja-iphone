@@ -39,3 +39,22 @@ export function formatWhatsappDisplay(digits: string): string {
   if (!m) return digits;
   return `+55 (${m[1]}) ${m[2]}-${m[3]}`;
 }
+
+/**
+ * Máscara para digitação ao vivo no input: vai formatando enquanto o lojista
+ * digita, sem deixar passar caractere inválido. Mostra o formato local
+ * "(33) 99983-0475" (sem o DDI). Suporta fixo (10 dígitos) e celular (11).
+ * É só cosmético — quem normaliza para o canônico no submit é normalizeWhatsapp.
+ */
+export function maskWhatsappInput(input: string): string {
+  let d = input.replace(/\D/g, "");
+  // Colou com DDI (ex.: canônico "5533998304750")? remove o 55 da frente.
+  if (d.length > 11 && d.startsWith("55")) d = d.slice(2);
+  d = d.slice(0, 11);
+  if (d.length === 0) return "";
+  if (d.length <= 2) return `(${d}`;
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10)
+    return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7, 11)}`;
+}

@@ -11,7 +11,8 @@ import {
   type SiteFormState,
 } from "@/app/admin/loja/actions";
 import { formatUnitAddress } from "@/lib/format";
-import { formatWhatsappDisplay } from "@/lib/phone";
+import { formatWhatsappDisplay, maskWhatsappInput } from "@/lib/phone";
+import { formatCep, fetchAddressByCep, isCompleteCep } from "@/lib/cep";
 import type { UnitRow } from "@/types/database.types";
 
 /**
@@ -28,6 +29,43 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
   // Após erro, a action ecoa o que foi digitado: o reset do React 19 aplica
   // o defaultValue ATUAL, então usar o eco evita perder o preenchido.
   const v = state.values;
+
+  // Campos controlados pra dar superpoderes ao preenchimento: máscara de
+  // WhatsApp ao vivo e auto-preenchimento de endereço pelo CEP. Os demais
+  // campos seguem não-controlados (defaultValue) como antes.
+  const [whatsapp, setWhatsapp] = useState(() =>
+    maskWhatsappInput(v?.whatsapp ?? unit?.whatsapp ?? ""),
+  );
+  const [city, setCity] = useState(v?.city ?? unit?.city ?? "");
+  const [neighborhood, setNeighborhood] = useState(
+    v?.neighborhood ?? unit?.neighborhood ?? "",
+  );
+  const [street, setStreet] = useState(v?.street ?? unit?.street ?? "");
+  const [cep, setCep] = useState("");
+  const [cepStatus, setCepStatus] = useState<
+    "idle" | "loading" | "ok" | "notfound"
+  >("idle");
+
+  // Busca no ViaCEP quando o CEP fica completo (8 dígitos) e preenche
+  // cidade/bairro/endereço — sem sobrescrever número e ponto de referência.
+  async function handleCep(raw: string) {
+    const masked = formatCep(raw);
+    setCep(masked);
+    if (!isCompleteCep(masked)) {
+      setCepStatus("idle");
+      return;
+    }
+    setCepStatus("loading");
+    const addr = await fetchAddressByCep(masked);
+    if (!addr) {
+      setCepStatus("notfound");
+      return;
+    }
+    if (addr.city) setCity(addr.city);
+    if (addr.neighborhood) setNeighborhood(addr.neighborhood);
+    if (addr.street) setStreet(addr.street);
+    setCepStatus("ok");
+  }
 
   // Sucesso: em edição fecha o form inline; em criação mostra a mensagem
   // temporária (some sozinha, padrão do settings-form).
@@ -71,11 +109,12 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
             id={`unit-whatsapp-${unit?.id ?? "nova"}`}
             name="whatsapp"
             inputMode="tel"
-            defaultValue={v?.whatsapp ?? unit?.whatsapp ?? ""}
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(maskWhatsappInput(e.target.value))}
             placeholder="(33) 99983-0475"
           />
           <FormHelp>
-            Com DDD — pode digitar com máscara, +55 ou só dígitos; o sistema
+            Com DDD — vai sendo formatado enquanto você digita; o sistema
             salva no formato certo.
           </FormHelp>
           <FieldError>{err.whatsapp?.[0]}</FieldError>
@@ -83,13 +122,51 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
       </div>
 
       {/* Endereço estruturado: nenhum campo é obrigatório. */}
+      {/* Atalho: busca por CEP preenche cidade, bairro e endereço sozinho. */}
+      <div className="sm:max-w-[12rem]">
+        <Label htmlFor={`unit-cep-${unit?.id ?? "nova"}`}>
+          CEP (preenche o endereço)
+        </Label>
+        <Input
+          id={`unit-cep-${unit?.id ?? "nova"}`}
+          inputMode="numeric"
+          autoComplete="postal-code"
+          value={cep}
+          onChange={(e) => handleCep(e.target.value)}
+          placeholder="36900-000"
+          aria-describedby={`unit-cep-help-${unit?.id ?? "nova"}`}
+        />
+        <p
+          id={`unit-cep-help-${unit?.id ?? "nova"}`}
+          className="mt-1.5 text-xs"
+          aria-live="polite"
+        >
+          {cepStatus === "loading" ? (
+            <span className="text-zinc-400">Buscando endereço…</span>
+          ) : cepStatus === "ok" ? (
+            <span className="text-emerald-400">
+              Endereço preenchido — confira o número.
+            </span>
+          ) : cepStatus === "notfound" ? (
+            <span className="text-amber-400">
+              CEP não encontrado — preencha à mão.
+            </span>
+          ) : (
+            <span className="text-zinc-400">
+              Digite o CEP e preenchemos cidade, bairro e rua.
+            </span>
+          )}
+        </p>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <Label htmlFor={`unit-city-${unit?.id ?? "nova"}`}>Cidade</Label>
           <Input
             id={`unit-city-${unit?.id ?? "nova"}`}
             name="city"
-            defaultValue={v?.city ?? unit?.city ?? ""}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
             placeholder="Manhuaçu"
           />
           <FieldError>{err.city?.[0]}</FieldError>
@@ -102,7 +179,8 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
           <Input
             id={`unit-neighborhood-${unit?.id ?? "nova"}`}
             name="neighborhood"
-            defaultValue={v?.neighborhood ?? unit?.neighborhood ?? ""}
+            value={neighborhood}
+            onChange={(e) => setNeighborhood(e.target.value)}
             placeholder="Centro"
           />
           <FieldError>{err.neighborhood?.[0]}</FieldError>
@@ -115,7 +193,8 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
           <Input
             id={`unit-street-${unit?.id ?? "nova"}`}
             name="street"
-            defaultValue={v?.street ?? unit?.street ?? ""}
+            value={street}
+            onChange={(e) => setStreet(e.target.value)}
             placeholder="Av. Salime Nacif"
           />
           <FieldError>{err.street?.[0]}</FieldError>

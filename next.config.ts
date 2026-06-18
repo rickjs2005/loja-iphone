@@ -21,7 +21,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https://*.supabase.co https://store.storeimages.cdn-apple.com https://images.unsplash.com",
   "media-src 'self'",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co",
+  "connect-src 'self' https://*.supabase.co https://viacep.com.br",
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",
