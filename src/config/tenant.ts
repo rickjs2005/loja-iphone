@@ -19,5 +19,3 @@ export const tenant = {
   accent: storeConfig.colors.primary,
   colors: storeConfig.colors,
 } as const;
-
-export type Tenant = typeof tenant;

@@ -22,6 +22,7 @@ import {
 } from "@/lib/data/storage";
 import { getUnits, setProductInventory } from "@/lib/data/units";
 import { isUuid } from "@/lib/uuid";
+import { echoValues, collectValidImages } from "@/lib/forms";
 
 export type ProductFormState = {
   ok?: boolean;
@@ -33,16 +34,6 @@ export type ProductFormState = {
    */
   values?: Record<string, string>;
 };
-
-
-/** Campos de texto do FormData (nunca Files) pro form repreencher após erro. */
-function echoValues(formData: FormData): Record<string, string> {
-  const values: Record<string, string> = {};
-  for (const [key, value] of formData.entries()) {
-    if (typeof value === "string") values[key] = value;
-  }
-  return values;
-}
 
 function parseProduct(formData: FormData) {
   return productSchema.safeParse({
@@ -224,20 +215,9 @@ export async function uploadImagesAction(
   const productId = String(formData.get("productId") || "");
   if (!isUuid(productId)) return { error: "Produto inválido." };
 
-  const files = formData
-    .getAll("images")
-    .filter((f): f is File => f instanceof File && f.size > 0);
-
-  if (files.length === 0) return { error: "Selecione ao menos uma imagem." };
-
-  // Valida TODOS os arquivos antes do primeiro upload: nada de upload
-  // parcial (um retry depois duplicaria as fotos que já subiram).
-  for (const file of files) {
-    const valid = imageFileSchema.safeParse(file);
-    if (!valid.success) {
-      return { error: valid.error.issues[0]?.message ?? "Imagem inválida." };
-    }
-  }
+  const result = collectValidImages(formData);
+  if (!result.ok) return { error: result.error };
+  const { files } = result;
 
   try {
     let order = await getNextImageOrder(productId);

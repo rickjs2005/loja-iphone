@@ -25,6 +25,7 @@ import {
 } from "@/lib/data/units";
 import { getStoreSettings } from "@/lib/data/site";
 import { removeProductImageByUrl, uploadSiteImage } from "@/lib/data/storage";
+import { echoValues, collectValidImages } from "@/lib/forms";
 import type { SiteSection } from "@/types/database.types";
 
 export type SiteFormState = {
@@ -40,15 +41,6 @@ export type SiteFormState = {
 
 const isSection = (v: string): v is SiteSection =>
   v === "loja" || v === "entrega" || v === "instagram";
-
-/** Campos de texto do FormData (nunca Files) pro form repreencher após erro. */
-function echoValues(formData: FormData): Record<string, string> {
-  const values: Record<string, string> = {};
-  for (const [key, value] of formData.entries()) {
-    if (typeof value === "string") values[key] = value;
-  }
-  return values;
-}
 
 export async function saveSettingsAction(
   _prev: SiteFormState,
@@ -216,19 +208,9 @@ export async function uploadSiteImagesAction(
   const section = String(formData.get("section") || "");
   if (!isSection(section)) return { error: "Seção inválida." };
 
-  const files = formData
-    .getAll("images")
-    .filter((f): f is File => f instanceof File && f.size > 0);
-  if (files.length === 0) return { error: "Selecione ao menos uma imagem." };
-
-  // Valida TODOS os arquivos antes do primeiro upload: nada de upload
-  // parcial (um retry depois duplicaria as fotos que já subiram).
-  for (const file of files) {
-    const valid = imageFileSchema.safeParse(file);
-    if (!valid.success) {
-      return { error: valid.error.issues[0]?.message ?? "Imagem inválida." };
-    }
-  }
+  const result = collectValidImages(formData);
+  if (!result.ok) return { error: result.error };
+  const { files } = result;
 
   try {
     let order = await getNextSiteImageOrder(section);
