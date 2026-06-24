@@ -12,8 +12,11 @@ export function AuroraBackground() {
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-bg">
       {/* Mobile: as mesmas luzes, ESTÁTICAS — animação infinita com blur de
           160px drena bateria e rouba FPS em celular; o visual fica igual. */}
-      <div className="absolute -top-48 left-1/4 size-[760px] rounded-full bg-primary/10 blur-[160px] lg:hidden" />
-      <div className="absolute top-1/4 right-0 size-[620px] rounded-full bg-white/[0.05] blur-[160px] lg:hidden" />
+      {/* Raio de blur menor no mobile: blur-[160px] num elemento de 760px é
+          caríssimo de pintar mesmo estático; 90px dá quase o mesmo visual
+          difuso por uma fração do custo de GPU. */}
+      <div className="absolute -top-48 left-1/4 size-[760px] rounded-full bg-primary/10 blur-[90px] lg:hidden" />
+      <div className="absolute top-1/4 right-0 size-[620px] rounded-full bg-white/[0.05] blur-[90px] lg:hidden" />
       <m.div
         className="absolute -top-48 left-1/4 size-[760px] rounded-full bg-primary/10 blur-[160px] max-lg:hidden"
         animate={{ x: [0, 80, -30, 0], y: [0, 50, 10, 0], scale: [1, 1.15, 0.95, 1] }}

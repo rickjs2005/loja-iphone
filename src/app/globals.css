@@ -199,4 +199,19 @@ body {
   .glass-sheen:hover::before {
     transform: translateX(130%);
   }
+
+  /* Mobile: o backdrop-filter é o efeito mais caro em GPU de celular, e o
+     header (.glass) é sticky — repinta o desfoque a CADA frame de rolagem,
+     causando o engasgo. Reduzir o raio do blur no celular mantém a sensação
+     de vidro e corta o jank. No desktop fica o efeito cheio. */
+  @media (max-width: 640px) {
+    .glass {
+      backdrop-filter: blur(10px) saturate(150%);
+      -webkit-backdrop-filter: blur(10px) saturate(150%);
+    }
+    .glass-strong {
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
+    }
+  }
 }
