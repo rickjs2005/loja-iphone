@@ -40,8 +40,10 @@ export function Header() {
           <Image
             src={storeConfig.logoUrl}
             alt={storeConfig.name}
-            width={400}
-            height={120}
+            // Selo é quadrado; wordmark é horizontal. Declarar o ratio certo
+            // evita distorção e CLS no carregamento.
+            width={storeConfig.logoIsBadge ? 192 : 400}
+            height={storeConfig.logoIsBadge ? 192 : 120}
             priority
             className={storeConfig.logoIsBadge ? "h-11 w-auto" : "h-10 w-auto"}
           />

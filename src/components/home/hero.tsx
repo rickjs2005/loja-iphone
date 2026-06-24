@@ -1,5 +1,7 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
+import Image from "next/image";
 import {
   m,
   useMotionValue,
@@ -25,6 +27,22 @@ const PARTICLES = [
   { x: "83%", y: "80%", s: 2, d: 1.1 },
   { x: "30%", y: "12%", s: 2, d: 1.9 },
 ];
+
+/**
+ * `true` quando a viewport tem ao menos `px` de largura. SSR-safe: o snapshot
+ * do servidor é `false` (mobile-first) → no celular nunca baixa o vídeo.
+ */
+function useMinWidth(px: number) {
+  return useSyncExternalStore(
+    (cb) => {
+      const mq = window.matchMedia(`(min-width: ${px}px)`);
+      mq.addEventListener("change", cb);
+      return () => mq.removeEventListener("change", cb);
+    },
+    () => window.matchMedia(`(min-width: ${px}px)`).matches,
+    () => false,
+  );
+}
 
 const fade = {
   hidden: { opacity: 0, y: 24 },
@@ -76,6 +94,12 @@ function PhoneVisual({
   // Reflexo de vidro que varre a moldura conforme o cursor anda na horizontal.
   const glarePos = useTransform(px, [-0.5, 0.5], ["20%", "80%"]);
 
+  // O vídeo é DECORATIVO. No mobile ele NÃO é baixado: mostramos só o poster
+  // (LCP leve, ~17 KB). Em telas sm+ o vídeo monta no cliente DEPOIS da
+  // primeira pintura — zero custo na primeira dobra do celular, onde autoplay
+  // forçaria baixar o arquivo inteiro em loop.
+  const showVideo = useMinWidth(640);
+
   return (
     <m.div
       // Última entrada da sequência de reveal: headline → subtítulo → botões → device.
@@ -110,29 +134,41 @@ function PhoneVisual({
         {/* Mobile: o vídeo é APOIO (~300px), não o protagonista — a primeira
             dobra entrega a mensagem + CTAs. No sm+ volta ao retrato grande. */}
         <div className="glass-rim relative h-[300px] w-full min-w-0 overflow-hidden rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-25px_rgba(0,0,0,0.75)] sm:h-auto sm:aspect-[4/5]">
-          {/* Nome versionado: trocar o vídeo = trocar o nome (evita cache). */}
-          <video
-            // O React NÃO emite o atributo `muted` no HTML do servidor (bug
-            // antigo do react-dom) e o iOS só dá autoplay em vídeo que já
-            // nasce mudo — sem isto o iPhone mostrava o botão de play.
-            ref={(el) => {
-              if (!el) return;
-              el.muted = true;
-              el.play().catch(() => {
-                // Low Power Mode bloqueia autoplay: fica o poster, sem erro.
-              });
-            }}
-            src="/hero-v4.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            // Primeiro frame leve enquanto o vídeo carrega (melhora o LCP).
-            poster="/hero-poster.jpg"
-            aria-label="iPhone em destaque"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+          {showVideo ? (
+            /* Nome versionado: trocar o vídeo = trocar o nome (evita cache). */
+            <video
+              // O React NÃO emite o atributo `muted` no HTML do servidor (bug
+              // antigo do react-dom) e o iOS só dá autoplay em vídeo que já
+              // nasce mudo — sem isto o iPhone mostrava o botão de play.
+              ref={(el) => {
+                if (!el) return;
+                el.muted = true;
+                el.play().catch(() => {
+                  // Low Power Mode bloqueia autoplay: fica o poster, sem erro.
+                });
+              }}
+              src="/hero-v5.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              // Primeiro frame leve enquanto o vídeo carrega (melhora o LCP).
+              poster="/hero-poster.jpg"
+              aria-label="iPhone em destaque"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : (
+            /* Mobile (e primeira pintura no desktop): só o poster otimizado. */
+            <Image
+              src="/hero-poster.jpg"
+              alt="iPhone em destaque"
+              fill
+              sizes="(max-width: 640px) 90vw, 460px"
+              priority
+              className="object-cover"
+            />
+          )}
           {/* Reflexo de vidro fixo: brilho diagonal no topo da moldura. */}
           <div
             aria-hidden
