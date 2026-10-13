@@ -1,97 +1,39 @@
-# Postura de Segurança
+# Security Policy
 
-Resumo das proteções implementadas nesta loja. Use como checklist ao entregar
-para um cliente.
+[Português](#português)
 
-## Autenticação e sessão
+## Reporting a vulnerability
 
-- **Auth server-side** com `@supabase/ssr`; a sessão vive em **cookies httpOnly**
-  (o navegador não tem acesso via JavaScript).
-- Toda checagem de autorização usa **`getUser()`** (revalida o token no servidor
-  do Supabase), nunca `getSession()` (que só lê o cookie e pode ser forjado).
-- **Middleware** (`src/middleware.ts`) protege `/admin/*`: sem sessão →
-  redireciona para `/admin/login`. Já logado em `/admin/login` →
-  redireciona para o painel.
-- As **Server Actions** também chamam `requireAdmin()` (defesa em profundidade,
-  além da RLS no banco): valida a sessão com `getUser()` **e** confirma que o
-  usuário está na allow-list de admins via RPC `is_admin()`.
+Please **do not open a public issue** for security problems.
 
-## Banco de dados (RLS)
+Use GitHub's private reporting instead: go to the [Security tab](https://github.com/rickjs2005/loja-iphone/security) and choose **Report a vulnerability**. If that button is not available, open an issue asking for a private contact channel without including any details of the problem.
 
-RLS habilitada em **todas** as tabelas de `public` (ver `supabase/migrations`).
-Verificado no projeto de produção em 2026-06-15.
+Include the affected file or URL, steps to reproduce and the impact you expect. Never include real credentials or personal data in a report.
 
-- **Allow-list de admins** (`public.admins`): escrever no catálogo/conteúdo exige
-  estar nessa tabela. A função `public.is_admin()` (SECURITY DEFINER) checa o
-  `auth.uid()` da sessão. Um usuário `authenticated` que NÃO esteja na allow-list
-  (ex.: signup indesejado) não consegue escrever nada. Adicionar admin é manual,
-  via SQL/dashboard.
-- `SELECT` público: anon vê apenas produtos **ativos** (e imagens de produtos
-  ativos). O admin vê tudo.
-- `INSERT` / `UPDATE` / `DELETE` em `products`, `product_images`, `store_settings`,
-  `site_images`, `units`, `inventory`: exigem `is_admin()`. As policies de UPDATE
-  têm `USING` **e** `WITH CHECK`.
-- `admins` e `login_attempts`: RLS habilitada **sem nenhuma policy** (deny-all) —
-  inacessíveis pela Data API; só funções SECURITY DEFINER as tocam. O advisor
-  lista isso como INFO; é proposital.
+## Secrets
 
-## Storage
+This project never needs real secrets in the repository. Configuration lives in local environment files that are ignored by Git; only placeholder examples are versioned.
 
-- Bucket `product-images` com **leitura pública** e **escrita só de admin**
-  (policies de INSERT/SELECT/UPDATE/DELETE com `is_admin()`; upsert exige as três
-  primeiras). RLS forçada em `storage.objects`.
+## Security posture
 
-## Mutações
+The protections implemented in this project (RLS, Storage policies, httpOnly session cookies, login rate limit, headers) are documented in Portuguese in [docs/SECURITY-POSTURE.md](docs/SECURITY-POSTURE.md).
 
-- **100% via Server Actions** (`'use server'`) → proteção **CSRF/origin nativa**
-  do Next.js. Não há token CSRF manual (não é necessário).
-- **Validação Zod** em toda action antes de tocar o banco (`src/lib/validation`).
-- Upload de imagem valida **tipo** (JPG/PNG/WebP) e **tamanho** (≤ 5 MB).
-- O `redirect` pós-login só aceita caminhos internos `/admin` (evita open
-  redirect).
+---
 
-## Chaves e segredos
+## Português
 
-- **A `service_role` NÃO é usada em lugar nenhum.** Todas as operações do admin
-  rodam com a sessão autenticada do dono + RLS.
-- No client só existe a chave pública (`NEXT_PUBLIC_SUPABASE_ANON_KEY`), segura
-  por design enquanto a RLS estiver ativa.
-- `.env.local` está no `.gitignore`.
+### Como reportar uma vulnerabilidade
 
-## Rate limiting
+**Não abra uma issue pública** para problemas de segurança.
 
-- Login (e pedido de reset de senha) limitado a **5 tentativas / 15 min por IP**
-  (`src/lib/auth/rate-limit.ts`).
-- **Persistido no Postgres** (tabela `login_attempts` via RPC SECURITY DEFINER),
-  então sobrevive a cold starts em serverless. Se o RPC ficar indisponível, cai
-  num **fallback em memória** (por instância).
-- **LGPD**: o IP nunca vai ao banco em claro — grava-se um `SHA-256(salt + IP)`.
+Use o canal privado do GitHub: na [aba Security](https://github.com/rickjs2005/loja-iphone/security), escolha **Report a vulnerability**. Se o botão não estiver disponível, abra uma issue pedindo um canal privado, sem incluir detalhes do problema.
 
-## Funções e RPC (hardening)
+Informe o arquivo ou a URL afetada, os passos para reproduzir e o impacto esperado. Nunca inclua credenciais reais ou dados pessoais no relato.
 
-- `login_rate_check` / `login_rate_fail` ficam acessíveis ao `anon` **de
-  propósito**: o app as chama antes do login (role anon). São seguras (check é
-  read-only; fail só incrementa a janela do próprio chamador). O aviso do advisor
-  do Supabase nessas duas é **esperado e aceito**.
-- `login_rate_reset`, `is_admin` e a trigger `sync_product_stock` tiveram o
-  `EXECUTE` do `anon` revogado (migration `..._hardening_rpc_grants.sql`):
-  `is_admin`/`login_rate_reset` ficam só para `authenticated`; `sync_product_stock`
-  sai da Data API (dispara como trigger, não precisa de GRANT).
+### Segredos
 
-## Headers HTTP
+O projeto nunca precisa de segredos reais no repositório. A configuração fica em arquivos de ambiente locais, ignorados pelo Git; só exemplos com placeholders são versionados.
 
-`next.config.ts` envia: `Content-Security-Policy`, `Strict-Transport-Security`
-(HSTS), `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
-`Permissions-Policy`, e desabilita o header `X-Powered-By`.
+### Postura de segurança
 
-## Antes de ir para produção
-
-- [ ] Criar o usuário do dono no Supabase Auth e **desabilitar signups públicos**
-      (Dashboard → Authentication → Providers/Settings).
-- [ ] Conferir que **anonymous sign-ins** está **desligado**.
-- [ ] Habilitar **Leaked Password Protection** (Auth → Password Security) —
-      checa a senha contra o HaveIBeenPwned. Recomendado: ativar **MFA** na conta
-      do dono.
-- [ ] Confirmar que **só o `user_id` do dono está em `public.admins`**.
-- [ ] Rodar os advisors do Supabase (`supabase db advisors` ou MCP `get_advisors`).
-- [ ] Confirmar que `.env.local` tem apenas `NEXT_PUBLIC_*` (sem service_role).
+As proteções implementadas (RLS, policies do Storage, cookies httpOnly, rate limit de login, headers) estão descritas em [docs/SECURITY-POSTURE.md](docs/SECURITY-POSTURE.md).

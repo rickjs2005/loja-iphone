@@ -63,8 +63,8 @@ produção isso gera um `console.error` nos logs, mas confira antes de entregar.
 Arquivos em `/public` (trocar pelo material do cliente, MESMOS nomes):
 
 - `logo.svg` — logo do cabeçalho (ou aponte `NEXT_PUBLIC_STORE_LOGO_URL`).
-- `hero-v4.mp4` — vídeo do hero (~10s, 720p, **≤ 800 KB**, sem áudio:
-  `ffmpeg -i bruto.mp4 -an -c:v libx264 -preset slow -crf 28 -movflags +faststart hero-v4.mp4`).
+- `hero-v5.mp4` — vídeo do hero (~10s, 720p, **≤ 800 KB**, sem áudio:
+  `ffmpeg -i bruto.mp4 -an -c:v libx264 -preset slow -crf 28 -movflags +faststart hero-v5.mp4`).
 - `hero-poster.jpg` — frame de capa do vídeo.
 - `tradein-v2.webp` — imagem da seção de troca.
 

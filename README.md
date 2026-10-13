@@ -1,210 +1,218 @@
-# Loja de iPhone — modelo white-label (produtos Apple)
+**English** | [Português](README.pt-BR.md)
 
-Loja online de iPhones, dark, rápida e personalizável. Pensada como **modelo
-de loja Apple white-label**: cada cliente troca **paleta, logo, WhatsApp e
-produtos** mexendo em **um único arquivo de config + o logo**. O fechamento da
-compra é 100% pelo **WhatsApp** (sem gateway de pagamento).
+# iPhone Store — white-label template (Apple products)
 
-> ## 🍎 Escopo do produto: modelo de **loja Apple**, não white-label genérico
+A dark, fast, customizable online store for iPhones, with an admin panel. Built
+as a **white-label Apple-reseller template**: each client swaps **palette, logo,
+WhatsApp number and products** through environment variables (or a single
+config file) and the admin panel. Checkout happens entirely over **WhatsApp**
+(no payment gateway). The UI is in Brazilian Portuguese.
+
+> **Type:** commercial demo / white-label base · **Demo:** <https://loja-de-iphone-demo.vercel.app>
 >
-> A personalização cobre **marca, identidade visual, contatos, endereços,
-> textos da vitrine e catálogo** — isso é trocado por loja **sem editar
-> código** (env vars + admin). Veja a seção de personalização abaixo.
->
-> O que é **fixo por design** (assume produtos Apple) e exigiria **código +
-> migration** para outro nicho:
->
-> - **Categorias** — `iphone / macbook / ipad / watch / airpods / accessory`
->   estão em `src/lib/data/types.ts` (`CATEGORIES`) e na coluna `category`
->   (check no banco). Uma loja de Android/games/etc. precisaria alterar o
->   union type e migrar a constraint.
-> - **Marca no SEO** — o JSON-LD de produto declara `brand: "Apple"` para
->   itens que não são acessório (`src/app/(loja)/produtos/[id]/page.tsx`).
-> - **Rótulos de navegação** ("iPhones", "MacBooks", "Trocar meu iPhone") e
->   algumas frases assumem o universo Apple.
->
-> Para uma loja de **outra marca Apple-cêntrica** (revenda de iPhone/Mac/iPad)
-> nada disso precisa mudar — é só configurar. Para um **nicho diferente**,
-> trate como fork e ajuste os 3 pontos acima.
+> Independent project. **Not affiliated with, sponsored or endorsed by Apple
+> Inc.** "Apple", "iPhone", "iPad", "MacBook", "Apple Watch" and "AirPods" are
+> trademarks of Apple Inc., used only to describe products sold by resellers.
+> The demo store's name, logo and contacts are fictional.
+
+![Demo store home page](docs/screenshots/home.jpg)
+
+## Features
+
+- **Storefront**: video hero, trust band, product-line cards (iPhone, MacBook,
+  iPad, accessories), per-line catalog with price, installments, battery
+  health and condition; accessories section with filters.
+- **Product page** with gallery/lightbox, specs, per-store availability and
+  related products.
+- **Cart** (Zustand, persisted in the browser) with **"Checkout on
+  WhatsApp"**: opens the chat with a prefilled message (items and total).
+- **Trade-in**: form that builds the trade-in message for WhatsApp.
+- **Editable sections**: "Our store"/locations (address, hours, map link,
+  per-location WhatsApp), completed deliveries, Instagram.
+- **Admin panel** (`/admin`): login, password recovery, product CRUD with
+  photos, activate/deactivate, store info, locations and site images.
+- **SEO**: product JSON-LD, `sitemap.xml`, `robots.txt`, Open Graph image.
+- **Demo mode**: without Supabase configured, the store runs with sample products.
+
+## Scope: an **Apple store** template, not a generic white-label
+
+Customization covers **brand, visual identity, contacts, addresses, storefront
+copy and catalog** — changed per store **without editing code** (env vars +
+admin).
+
+**Fixed by design** (assumes Apple products); another niche would need **code +
+a migration**:
+
+- **Categories** — `iphone / macbook / ipad / watch / airpods / accessory` in
+  `src/lib/data/types.ts` (`CATEGORIES`) and the `category` column (DB check).
+- **SEO brand** — product JSON-LD declares `brand: "Apple"` for non-accessory
+  items (`src/app/(loja)/produtos/[id]/page.tsx`).
+- **Navigation labels** ("iPhones", "MacBooks", "Trocar meu iPhone") and some
+  copy assume the Apple universe.
+
+For an Apple-centric reseller nothing changes — just configure. For a different
+niche, treat it as a fork and adjust the three points above.
 
 ## Stack
 
-- **Next.js 15** (App Router) + **TypeScript**
-- **Tailwind CSS v4** (tema via CSS variables)
-- **Framer Motion** (hero animado, micro-interações)
-- **Supabase**: Auth (dono), Postgres (produtos/estoque), Storage (fotos)
-- **Zustand** (carrinho) + **Zod** (validação)
+- **Next.js 15** (App Router) + **TypeScript** + React 19
+- **Tailwind CSS v4** (theme via CSS variables)
+- **Framer Motion** (animated hero, micro-interactions)
+- **Supabase** (`@supabase/ssr`): Auth (owner), Postgres (products/stock/content), Storage (photos)
+- **Zustand** (cart) + **Zod** (validation)
 
----
+## Prerequisites
 
-## 🎨 Personalizar para um novo cliente (< 5 min)
+- Node.js 20+ (tested with Node 22) and npm
+- A Supabase project (optional to see demo mode)
 
-### 1. Edite `src/config/theme.config.ts`
+## Setup
 
-É a **fonte única** de personalização:
-
-```ts
-export const storeConfig = {
-  name: "Nome da Loja",
-  description: "Frase curta da loja",
-  logoUrl: "/logo.svg",          // arquivo em /public
-  whatsapp: "5511900000000",     // só dígitos, com DDI 55
-  social: { instagram: "...", facebook: "", tiktok: "" },
-  colors: {                       // viram CSS variables e o Tailwind consome
-    bg: "#0A0A0B",
-    surface: "#141416",
-    primary: "#3B82F6",
-    accent: "#A855F7",
-    text: "#FAFAFA",
-    muted: "#A1A1AA",
-  },
-};
-```
-
-### 2. Ajuste os textos em `src/config/copy.ts` (opcional)
-
-Todos os títulos, frases e CTAs da vitrine (hero, "por que comprar",
-trade-in, seções da home, benefícios do produto) moram em **um arquivo só**.
-Quer um hero diferente para um cliente? Edita uma linha, sem tocar em
-componente.
-
-### 3. Troque o logo e o vídeo do hero
-
-Substitua `public/logo.svg` e `public/hero-v4.mp4` (ou aponte `logoUrl` para
-outro arquivo em `/public`, ex.: `/logo.png`).
-
-### 4. Cadastre os produtos
-
-No painel admin (`/admin`) ou rodando o `supabase/seed.sql`.
-
-**Pronto.** Nenhum componente precisa ser editado.
-
-> 📋 Roteiro completo de provisionamento (banco novo, admin, deploy,
-> conferência final): [`docs/NOVA-LOJA.md`](./docs/NOVA-LOJA.md).
-
-### Revenda (1 código, várias lojas)
-
-Para revender, prefira **não** editar o `theme.config.ts` por loja — defina as
-variáveis `NEXT_PUBLIC_STORE_*` e `NEXT_PUBLIC_COLOR_*` (ver `.env.example`) no
-deploy de cada loja (ex.: Environment Variables da Vercel). Assim cada loja é o
-**mesmo código com env vars diferentes**. O `theme.config.ts` usa essas
-variáveis e cai nos defaults quando vazias. O único arquivo por loja é o logo
-em `/public` (ou aponte `NEXT_PUBLIC_STORE_LOGO_URL`).
-
-> Como funciona: `theme.config.ts` → `<ThemeInjector>` injeta as cores como
-> CSS variables (`--store-*`) no `:root` → o Tailwind (em `globals.css`, via
-> `@theme inline`) gera os utilitários `bg-bg`, `bg-surface`, `text-primary`,
-> etc. Os componentes só usam esses utilitários.
-
----
-
-## 🚀 Setup do zero
-
-### 1. Dependências
+### 1. Dependencies
 
 ```bash
-npm install
+npm ci
 ```
 
-### 2. Crie o projeto no Supabase
+### 2. Supabase project
 
-- Crie um projeto em [supabase.com](https://supabase.com).
-- Em **Project Settings → API**, copie a **Project URL** e a **anon/publishable key**.
+Create a project at [supabase.com](https://supabase.com). Under **Project
+Settings → API**, copy the **Project URL** and the **anon/publishable key**.
 
-### 3. Variáveis de ambiente
+### 3. Environment variables
 
-Copie `.env.example` para `.env.local` e preencha:
+Copy `.env.example` to `.env.local` and fill it in (the file lists and
+documents every variable):
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+NEXT_PUBLIC_SUPABASE_URL=https://<your-project>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+NEXT_PUBLIC_SITE_URL=
+NEXT_PUBLIC_STORE_NAME=
+NEXT_PUBLIC_STORE_WHATSAPP=
 ```
 
-> ⚠️ Este projeto **não usa** a `service_role`. Não a coloque em lugar nenhum.
+> This project **does not use** the `service_role` key. Never put it anywhere.
+> Without the Supabase variables the store runs in **demo mode**.
 
-### 4. Banco de dados
+### 4. Database
 
-Rode a migration (cria tabelas, RLS, bucket e policies). Opções:
-
-**a) SQL Editor (mais simples):** cole o conteúdo de
-`supabase/migrations/20260607000001_init.sql` no SQL Editor do dashboard e
-execute. Para dados de exemplo, rode também `supabase/seed.sql`.
-
-**b) Supabase CLI:**
+Apply **all** migrations in `supabase/migrations/` (tables, RLS, bucket,
+policies, rate limit, stock trigger):
 
 ```bash
 supabase link --project-ref <REF>
 supabase db push
-# (opcional) dados de exemplo:
-#   psql "$DATABASE_URL" -f supabase/seed.sql
 ```
 
-### 5. Crie o usuário do dono
+Without the CLI, run the files in the SQL Editor **in order**. For sample data,
+also run `supabase/seed.sql`.
 
-No dashboard: **Authentication → Users → Add user** (e-mail + senha).
-**Desative os signups públicos** em Authentication → Settings, para que só o
-dono tenha acesso ao admin.
+### 5. Owner account
 
-### 6. Rode
+Create the user under **Authentication → Users → Add user**, add it to the
+`public.admins` allow-list and **disable public sign-ups**. Step by step (in
+Portuguese) in [`docs/NOVA-LOJA.md`](docs/NOVA-LOJA.md).
+
+### 6. Run
 
 ```bash
 npm run dev
 ```
 
-- Loja: <http://localhost:3000>
+- Store: <http://localhost:3000>
 - Admin: <http://localhost:3000/admin>
 
----
+## Customizing for a new client
 
-## 📁 Estrutura
+1. **`src/config/theme.config.ts`** — single source for name, description,
+   logo, WhatsApp, social links and colors. Values come from the
+   `NEXT_PUBLIC_STORE_*` / `NEXT_PUBLIC_COLOR_*` variables and fall back to the
+   "iDemo" store defaults when empty.
+2. **`src/config/copy.ts`** (optional) — storefront headlines, copy and CTAs.
+3. **Media in `/public`** — `logo.svg` (or `NEXT_PUBLIC_STORE_LOGO_URL`),
+   `hero-v5.mp4`, `hero-poster.jpg`, `tradein-v2.webp`.
+4. **Products and content** — via the `/admin` panel or `supabase/seed.sql`.
+
+**Reselling (one codebase, many stores):** avoid editing `theme.config.ts` per
+store — set each store's variables in its deployment. Golden rule:
+**1 client = 1 Supabase project + 1 deployment**. Full checklist:
+[`docs/NOVA-LOJA.md`](docs/NOVA-LOJA.md).
+
+> How it works: `theme.config.ts` → `<ThemeInjector>` injects colors as CSS
+> variables (`--store-*`) on `:root` → Tailwind (`@theme inline` in
+> `globals.css`) generates `bg-bg`, `bg-surface`, `text-primary`, etc.
+
+## Structure
 
 ```
 src/
   app/
-    (loja)/                # rotas públicas (home, produtos, carrinho)
-    admin/                 # login + CRUD protegido
-  components/              # componentes reutilizáveis (sem queries)
-  config/theme.config.ts   # 👈 personalização: cores, contatos, redes
-  config/copy.ts           # 👈 personalização: textos da vitrine
+    (loja)/                # public routes (home, products, cart)
+    admin/                 # login, password recovery and protected CRUD
+  components/              # reusable components (no queries)
+  config/theme.config.ts   # customization: colors, contacts, social
+  config/copy.ts           # customization: storefront copy
   lib/
-    data/                  # ÚNICA camada que fala com o Supabase
+    data/                  # the ONLY layer that talks to Supabase
     supabase/              # clients (server, client, middleware)
-    validation/            # schemas Zod
-    auth/                  # helpers de sessão + rate limit
-    cart/                  # store do carrinho (Zustand)
+    validation/            # Zod schemas
+    auth/                  # session helpers + rate limit
+    cart/                  # cart store (Zustand)
 supabase/
   migrations/              # schema + RLS + Storage
-  seed.sql                 # produtos de exemplo
+  seed.sql                 # sample products
+docs/                      # new-store checklist, security posture, screenshots
 ```
 
-## Convenções
+## Conventions
 
-- **Preços em centavos** (inteiro) no banco; `formatCents()` formata só na UI.
-- **Nenhum componente** importa o Supabase direto — tudo passa por `lib/data/`.
-- **Mutações** só via Server Actions com validação Zod.
-- **Texto de marketing** mora em `config/copy.ts`; componente não tem frase
-  de marca hardcoded (rótulos de UI, como "Adicionar ao carrinho", podem).
-- **Número de WhatsApp** sempre passa por `lib/phone.ts` (normalização) e
-  links saem por `waUrl()`/`<WhatsappCta>` — nunca monte `wa.me` na mão.
+- **Prices in cents** (integer) in the DB; `formatCents()` formats only in the UI.
+- **No component** imports Supabase directly — everything goes through `lib/data/`.
+- **Mutations** only via Server Actions with Zod validation.
+- **Marketing copy** lives in `config/copy.ts`.
+- **WhatsApp numbers** are always normalized by `lib/phone.ts`; links come from
+  `waUrl()`/`<WhatsappCta>` — never build `wa.me` URLs by hand.
 
-## Regenerar os types do banco
-
-Com o projeto Supabase ativo:
+Regenerate the database types:
 
 ```bash
 supabase gen types typescript --project-id <REF> > src/types/database.types.ts
 ```
 
-## Segurança
-
-Veja [`SECURITY.md`](./SECURITY.md) para a postura completa (RLS, Storage,
-cookies httpOnly, rate limit, headers).
-
 ## Scripts
 
 ```bash
-npm run dev     # desenvolvimento
-npm run build   # build de produção
-npm run start   # servir o build
+npm run dev     # development
+npm run build   # production build
+npm run start   # serve the build
 npm run lint    # eslint
+npx tsc --noEmit
 ```
+
+## Limitations
+
+- No payment gateway: purchases are closed over WhatsApp.
+- No automated tests; CI runs lint, typecheck and build.
+- Domain fixed on Apple products (see "Scope").
+- No multi-tenant isolation in the database: each store needs its own Supabase project.
+
+## Media
+
+Videos and images in `/public` and the demo store logo: origin not documented.
+Replace them with the client's material before publishing a real store.
+
+## Further documentation (Portuguese)
+
+- [`docs/NOVA-LOJA.md`](docs/NOVA-LOJA.md) — checklist to launch a new store.
+- [`DESCRICAO_PRODUTO.md`](DESCRICAO_PRODUTO.md) — product description and sales pitch.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) to report vulnerabilities and
+[docs/SECURITY-POSTURE.md](docs/SECURITY-POSTURE.md) for the full posture
+(RLS, Storage, httpOnly cookies, rate limit, headers).
+
+## License
+
+No license has been chosen yet; all rights reserved by the author.
