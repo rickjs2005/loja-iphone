@@ -8,7 +8,7 @@ WhatsApp number and products** through environment variables (or a single
 config file) and the admin panel. Checkout happens entirely over **WhatsApp**
 (no payment gateway). The UI is in Brazilian Portuguese.
 
-> **Type:** commercial demo / white-label base · **Demo:** <https://loja-de-iphone-demo.vercel.app>
+> **Type:** commercial demo / white-label base
 >
 > Independent project. **Not affiliated with, sponsored or endorsed by Apple
 > Inc.** "Apple", "iPhone", "iPad", "MacBook", "Apple Watch" and "AirPods" are

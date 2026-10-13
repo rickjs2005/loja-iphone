@@ -8,7 +8,7 @@ WhatsApp e produtos** por variáveis de ambiente (ou um único arquivo de config
 e pelo painel. O fechamento da compra é 100% pelo **WhatsApp** (sem gateway de
 pagamento).
 
-> **Tipo:** demo comercial / base white-label · **Demo:** <https://loja-de-iphone-demo.vercel.app>
+> **Tipo:** demo comercial / base white-label
 >
 > Projeto independente. **Não é afiliado, patrocinado ou endossado pela Apple
 > Inc.** "Apple", "iPhone", "iPad", "MacBook", "Apple Watch" e "AirPods" são
