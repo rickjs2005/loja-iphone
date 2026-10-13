@@ -111,7 +111,7 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
             inputMode="tel"
             value={whatsapp}
             onChange={(e) => setWhatsapp(maskWhatsappInput(e.target.value))}
-            placeholder="(33) 99983-0475"
+            placeholder="(11) 90000-0000"
           />
           <FormHelp>
             Com DDD — vai sendo formatado enquanto você digita; o sistema
@@ -195,7 +195,7 @@ function UnitForm({ unit, onDone }: { unit?: UnitRow; onDone?: () => void }) {
             name="street"
             value={street}
             onChange={(e) => setStreet(e.target.value)}
-            placeholder="Av. Salime Nacif"
+            placeholder="Rua Exemplo"
           />
           <FieldError>{err.street?.[0]}</FieldError>
         </div>

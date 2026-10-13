@@ -58,7 +58,7 @@ export function SettingsForm({
           name="whatsapp"
           inputMode="tel"
           defaultValue={v?.whatsapp ?? settings.whatsapp ?? ""}
-          placeholder="(33) 99983-0475"
+          placeholder="(11) 90000-0000"
         />
         <FormHelp>
           Com DDD — pode digitar com máscara, +55 ou só dígitos; o sistema
@@ -125,7 +125,7 @@ export function SettingsForm({
             id="street"
             name="street"
             defaultValue={v?.street ?? settings.street ?? ""}
-            placeholder="Av. Salime Nacif"
+            placeholder="Rua Exemplo"
           />
           <FieldError>{err.street?.[0]}</FieldError>
         </div>

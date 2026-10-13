@@ -12,5 +12,5 @@ export const whatsappField = z
   .transform(normalizeWhatsapp)
   .refine(
     isValidWhatsapp,
-    "Número inválido — confira o DDD e o número (ex.: 33 99983-0475)",
+    "Número inválido — confira o DDD e o número (ex.: 11 90000-0000)",
   );

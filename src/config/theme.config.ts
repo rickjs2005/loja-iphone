@@ -8,7 +8,7 @@
  *
  *  - name......: nome exibido no cabeçalho, título da aba e mensagens.
  *  - logoUrl...: caminho do logo dentro de /public (ex: "/logo.svg").
- *  - whatsapp..: somente dígitos, com DDI 55 (ex: "5533999999999").
+ *  - whatsapp..: somente dígitos, com DDI 55 (ex: "5511900000000").
  *  - social....: links das redes (deixe "" para esconder).
  *  - colors....: viram CSS variables no :root e são consumidas pelo Tailwind.
  *

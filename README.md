@@ -48,7 +48,7 @@ export const storeConfig = {
   name: "Nome da Loja",
   description: "Frase curta da loja",
   logoUrl: "/logo.svg",          // arquivo em /public
-  whatsapp: "5533999999999",     // só dígitos, com DDI 55
+  whatsapp: "5511900000000",     // só dígitos, com DDI 55
   social: { instagram: "...", facebook: "", tiktok: "" },
   colors: {                       // viram CSS variables e o Tailwind consome
     bg: "#0A0A0B",
